@@ -1,7 +1,3 @@
 *.o
 *.os
 *.so
-.sconsign.dblite
-test/rng_mt_test
-test/runif_geti_test
-test/runif_getf_test
