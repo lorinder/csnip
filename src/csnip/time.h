@@ -229,7 +229,11 @@ struct timespec csnip_time_sub(struct timespec a, struct timespec b);
 	  csnip_time_AsTimespec(time_a), \
 	  csnip_time_AsTimespec(time_b))
 
-#ifdef CSNIP_SHORT_NAMES
+/** @} */
+
+#endif /* CSNIP_TIME_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_TIME_HAVE_SHORT_NAMES)
 #define time_time_t_as_timespec		csnip_time_time_t_as_timespec
 #define time_float_as_timespec		csnip_time_float_as_timespec
 #define time_double_as_timespec		csnip_time_double_as_timespec
@@ -252,8 +256,5 @@ struct timespec csnip_time_sub(struct timespec a, struct timespec b);
 #define time_IsLessEqual		csnip_time_IsLessEqual
 #define time_Add			csnip_time_Add
 #define time_Sub			csnip_time_Sub
-#endif /* CSNIP_SHORT_NAMES */
-
-/** @} */
-
-#endif /* CSNIP_TIME_H */
+#define CSNIP_TIME_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_TIME_HAVE_SHORT_NAMES */

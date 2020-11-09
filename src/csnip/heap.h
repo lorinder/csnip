@@ -144,3 +144,10 @@
 /** @} */
 
 #endif /* CSNIP_HEAP_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_HEAP_HAVE_SHORT_NAMES)
+#define heap_SiftUp		csnip_heap_SiftUp
+#define heap_SiftDown		csnip_heap_SiftDown
+#define heap_Heapify		csnip_heap_Heapify
+#define CSNIP_HEAP_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_HEAP_HAVE_SHORT_NAMES */

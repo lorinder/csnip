@@ -127,7 +127,11 @@ inline size_t csnip_next_pow_of_2(size_t a)
 #define csnip_Copy(src_begin, src_end, dest) \
 	csnip_Copy_n(src_begin, (src_end) - (src_begin), dest)
 
-#ifdef CSNIP_SHORT_NAMES
+/** @} */
+
+#endif /* CSNIP_UTIL_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_UTIL_HAVE_SHORT_NAMES)
 #define Tswap			csnip_Tswap
 #define Swap			csnip_Swap
 #define Cswap			csnip_Cswap
@@ -139,8 +143,5 @@ inline size_t csnip_next_pow_of_2(size_t a)
 #define Fill			csnip_Fill
 #define Copy_n			csnip_Copy_n
 #define Copy			csnip_Copy
-#endif
-
-/** @} */
-
-#endif /* CSNIP_UTIL_H */
+#define CSNIP_UTIL_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_UTIL_HAVE_SHORT_NAMES */

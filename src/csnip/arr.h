@@ -263,8 +263,11 @@
 		{ \
 			csnip_arr_Free(a, n, cap); \
 		}
+/** @} */
 
-#ifdef CSNIP_SHORT_NAMES
+#endif /* CSNIP_ARR_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_ARR_HAVE_SHORT_NAMES)
 #define arr_Init		csnip_arr_Init
 #define arr_Reserve		csnip_arr_Reserve
 #define arr_Push		csnip_arr_Push
@@ -272,8 +275,5 @@
 #define arr_InsertAt		csnip_arr_InsertAt
 #define arr_DeleteAt		csnip_arr_DeleteAt
 #define arr_Free		csnip_arr_Free
-#endif
-
-/** @} */
-
-#endif /* CSNIP_ARR_H */
+#define CSNIP_ARR_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_ARR_HAVE_SHORT_NAMES */

@@ -28,7 +28,11 @@ typedef long double csnip_ldouble;		/**< long double */
 typedef char* csnip_pchar;			/**< char* */
 typedef void* csnip_pvoid;			/**< void* */
 
-#ifdef CSNIP_SHORT_NAMES
+/** @} */
+
+#endif /* CSNIP_PODTYPES_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_PODTYPES_HAVE_SHORT_NAMES)
 #define	uchar		csnip_uchar
 #define ushort		csnip_ushort
 #define uint		csnip_uint
@@ -38,8 +42,5 @@ typedef void* csnip_pvoid;			/**< void* */
 #define ldouble		csnip_ldouble
 #define pchar		csnip_pchar
 #define pvoid		csnip_pvoid
-#endif
-
-/** @} */
-
-#endif /* CSNIP_PODTYPES_H */
+#define CSNIP_PODTYPES_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_PODTYPES_HAVE_SHORT_NAMES */

@@ -47,12 +47,13 @@ inline void csnip_rng_seed(const csnip_rng* R,
 	(*R->seed)(R, nseed, seed);
 }
 
-#ifdef CSNIP_SHORT_NAMES
-#define	rng		csnip_rng
-#define rng_getnum	csnip_rng_getnum
-#define rng_seed	csnip_rng_seed
-#endif
-
 /** @} */
 
 #endif /* CSNIP_RNG_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_RNG_HAVE_SHORT_NAMES)
+#define	rng		csnip_rng
+#define rng_getnum	csnip_rng_getnum
+#define rng_seed	csnip_rng_seed
+#define CSNIP_RNG_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_RNG_HAVE_SHORT_NAMES */

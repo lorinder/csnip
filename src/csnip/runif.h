@@ -50,7 +50,9 @@ float csnip_runif_getf(const csnip_rng* R, float lim);
 			double: csnip_runif_getd((R), (lim)), \
 			float: csnip_runif_getf((R), (lim)))
 
-#ifdef CSNIP_SHORT_NAMES
+#endif /* CSNIP_RUNIF_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_RUNIF_HAVE_SHORT_NAMES)
 #define runif_getull		csnip_runif_getull
 #define runif_getul		csnip_runif_getul
 #define runif_getu		csnip_runif_getu
@@ -59,6 +61,5 @@ float csnip_runif_getf(const csnip_rng* R, float lim);
 #define runif_getd		csnip_runif_getd
 #define runif_getf		csnip_runif_getf
 #define runif_Getf		csnip_runif_Getf
-#endif
-
-#endif /* CSNIP_RUNIF_H */
+#define CSNIP_RUNIF_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_RUNIF_HAVE_SHORT_NAMES */

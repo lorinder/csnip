@@ -226,12 +226,13 @@
 #endif
 /** @endcond */
 
-#ifdef CSNIP_SHORT_NAMES
-#define limit_Int		csnip_limit_Int
-#define limit_Mini		csnip_limit_Mini
-#define limit_Maxi		csnip_limit_Maxi
-#endif
-
 /** @} */
 
 #endif /* CSNIP_LIMITS_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_LIMITS_HAVE_SHORT_NAMES)
+#define limit_Int		csnip_limit_Int
+#define limit_Mini		csnip_limit_Mini
+#define limit_Maxi		csnip_limit_Maxi
+#define CSNIP_LIMITS_HAVE_SHORT_NAMES
+#endif

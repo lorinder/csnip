@@ -112,8 +112,11 @@ const char* csnip_err_str(int csnip_errnumber);
 }
 #endif
 
+/** @} */
 
-#ifdef CSNIP_SHORT_NAMES
+#endif /* CSNIP_ERR_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_ERR_HAVE_SHORT_NAMES)
 #define err_Unhandled		csnip_err_Unhandled
 #define err_str			csnip_err_str
 #define err_SUCCESS		csnip_err_SUCCESS
@@ -123,8 +126,5 @@ const char* csnip_err_str(int csnip_errnumber);
 #define err_RANGE		csnip_err_RANGE
 #define err_FORMAT		csnip_err_FORMAT
 #define err_UNEXPECTED_NULL	csnip_err_UNEXPECTED_NULL
-#endif
-
-/** @} */
-
-#endif /* CSNIP_ERR_H */
+#define CSNIP_ERR_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_ERR_HAVE_SHORT_NAMES */

@@ -539,7 +539,11 @@
 		return csnip__ret; \
 	}
 
-#ifdef CSNIP_SHORT_NAMES
+/** @} */
+
+#endif /* CSNIP_RINGBUF_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_RINGBUF_HAVE_SHORT_NAMES)
 #define ringbuf_Init		csnip_ringbuf_Init
 #define ringbuf_GetHeadIdx	csnip_ringbuf_GetHeadIdx
 #define ringbuf_GetTailIdx	csnip_ringbuf_GetTailIdx
@@ -556,8 +560,5 @@
 #define ringbuf_PopHead		csnip_ringbuf_PopHead
 #define ringbuf_PushTail	csnip_ringbuf_PushTail
 #define ringbuf_PopTail		csnip_ringbuf_PopTail
-#endif
-
-/** @} */
-
-#endif /* CSNIP_RINGBUF_H */
+#define CSNIP_RINGBUF_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_RINGBUF_HAVE_SHORT_NAMES */

@@ -207,7 +207,12 @@ void csnip_log__print(
 	} while (0)
 #endif
 
-#ifdef CSNIP_SHORT_NAMES
+/** @} */
+
+#endif /* CSNIP_LOG_H */
+
+/* Short names */
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_LOG_HAVE_SHORT_NAMES)
 #define LOG_PRIO_DEBUGV		CSNIP_LOG_PRIO_DEBUGV
 #define LOG_PRIO_DEBUG		CSNIP_LOG_PRIO_DEBUG
 #define LOG_PRIO_INFO		CSNIP_LOG_PRIO_INFO
@@ -219,8 +224,5 @@ void csnip_log__print(
 #define log_MesgForComp		csnip_log_MesgForComp
 #define log_Perror		csnip_log_Perror
 #define log_PerrorForComp	csnip_log_PerrorForComp
-#endif
-
-/** @} */
-
-#endif /* CSNIP_LOG_H */
+#define CSNIP_LOG_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES */

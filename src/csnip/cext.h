@@ -42,12 +42,13 @@
 #define csnip_cext_import
 #endif
 
-#ifdef CSNIP_SHORT_NAMES
-#define cext_unused		csnip_cext_unused
-#define cext_export		csnip_cext_export
-#define cext_import		csnip_cext_import
-#endif
-
 /**@}*/
 
 #endif /* CSNIP_CEXT_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_CEXT_HAVE_SHORT_NAMES)
+#define cext_unused		csnip_cext_unused
+#define cext_export		csnip_cext_export
+#define cext_import		csnip_cext_import
+#define CSNIP_CEXT_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_CEXT_HAVE_SHORT_NAMES */

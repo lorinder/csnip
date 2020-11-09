@@ -74,10 +74,11 @@
 		(ret) = hi; \
 	} while(0)
 
-#ifdef CSNIP_SHORT_NAMES
-#define Bsearch		csnip_Bsearch
-#endif
-
 /** @} */
 
 #endif /* CSNIP_FIND_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_FIND_HAVE_SHORT_NAMES)
+#define Bsearch		csnip_Bsearch
+#define CSNIP_FIND_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && ! CSNIP_FIND_HAVE_SHORT_NAMES */

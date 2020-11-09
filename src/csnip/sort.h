@@ -468,13 +468,14 @@
 		return ret; \
 	}
 
-#ifdef CSNIP_SHORT_NAMES
+/** @} */
+
+#endif /* CSNIP_SORT_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_SORT_HAVE_SHORT_NAMES)
 #define Qsort			csnip_Qsort
 #define Heapsort		csnip_Heapsort
 #define Shellsort		csnip_Shellsort
 #define IsSorted		csnip_IsSorted
-#endif
-
-/** @} */
-
-#endif /* CSNIP_SORT_H */
+#define CSNIP_SORT_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_SORT_HAVE_SHORT_NAMES */

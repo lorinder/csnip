@@ -104,13 +104,15 @@ uint64_t csnip_hash_fnv64_b(const void* buf, size_t sz, uint64_t h0);
  */
 uint64_t csnip_hash_fnv64_s(const char* str, uint64_t h0);
 
-#ifdef CSNIP_SHORT_NAMES
+#endif /* CSNIP_HASH_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_HASH_HAVE_SHORT_NAMES)
 #define FNV32_INIT	CSNIP_FNV32_INIT
 #define FNV64_INIT	CSNIP_FNV64_INIT
 #define hash_fnv32_b	csnip_hash_fnv32_b
 #define hash_fnv32_s	csnip_hash_fnv32_s
 #define hash_fnv64_b	csnip_hash_fnv64_b
 #define hash_fnv64_s	csnip_hash_fnv64_s
-#endif
+#define CSNIP_HASH_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_HASH_HAVE_SHORT_NAMES */
 
-#endif /* CSNIP_HASH_H */

@@ -506,9 +506,13 @@
 		return phead == NULL; \
 	}
 
-/** @} */
+/** @}
+    @}
+ */
 
-#ifdef CSNIP_SHORT_NAMES
+#endif /* CSNIP_LIST_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_LIST_HAVE_SHORT_NAMES)
 #define	dlist_Init		csnip_dlist_Init
 #define dlist_IsEmpty		csnip_dlist_IsEmpty
 #define dlist_PushHead		csnip_dlist_PushHead
@@ -523,8 +527,5 @@
 #define slist_PopHead		csnip_slist_PopHead
 #define slist_PushTail		csnip_slist_PushTail
 #define slist_InsertAfter	csnip_slist_InsertAfter
-#endif
-
-/** @} */
-
-#endif /* CSNIP_LIST_H */
+#define CSNIP_LIST_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_LIST_HAVE_SHORT_NAMES */

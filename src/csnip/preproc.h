@@ -36,8 +36,18 @@
 #define csnip_pp_cat(a, b) csnip_pp__cat(a, b)
 /** @cond */
 #define csnip_pp__cat(a, b)	a ## b
-/** @endcond */
-
-/** @} */
+/** @endcond
+    @} */
 
 #endif /* CSNIP_PREPROC_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_PREPROC_HAVE_SHORT_NAMES)
+#define	pp_prepend_args		csnip_pp_prepend_args
+#define pp_append_args		csnip_pp_append_args
+#define pp_list_args		csnip_pp_list_args
+#define pp_prepend_noargs	csnip_pp_prepend_noargs
+#define pp_append_noargs	csnip_pp_append_noargs
+#define pp_list_noargs		csnip_pp_list_noargs
+#define pp_cat			csnip_pp_cat
+#define CSNIP_PREPROC_HAVE_SHORT_NAMES
+#endif

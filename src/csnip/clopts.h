@@ -356,7 +356,11 @@ csnip_clopts__tspec(char const*, pchar)
 
 #endif
 
-#ifdef CSNIP_SHORT_NAMES
+/** @}*/
+
+#endif /* CSNIP_CLOPTS_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_CLOPTS_HAVE_SHORT_NAMES)
 #define clopts			csnip_clopts
 #define clopts_optinfo		csnip_clopts_optinfo
 #define clopts_parser		csnip_clopts_parser
@@ -375,8 +379,5 @@ csnip_clopts__tspec(char const*, pchar)
 #define clopts_parser_pchar	csnip_clopts_parser_pchar
 #define clopts_Addvar		csnip_clopts_Addvar
 #define clopts_Addflag		csnip_clopts_Addflag
-#endif
-
-/** @}*/
-
-#endif /* CSNIP_CLOPTS_H */
+#define CSNIP_CLOPTS_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_CLOPTS_HAVE_SHORT_NAMES */

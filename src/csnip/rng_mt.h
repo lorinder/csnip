@@ -38,13 +38,14 @@ uint32_t csnip_rng_mt_getnum(csnip_rng_mt_state* S);
 }
 #endif
 
-#ifdef CSNIP_SHORT_NAMES
+/** @} */
+
+#endif /* CSNIP_RNG_MT_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_RNG_MT_HAVE_SHORT_NAMES)
 #define rng_mt_state		csnip_rng_mt_state
 #define rng_mt_makerng		csnip_rng_mt_makerng
 #define rng_mt_seed		csnip_rng_mt_seed
 #define rng_mt_getnum		csnip_rng_mt_getnum
-#endif
-
-/** @} */
-
-#endif /* CSNIP_RNG_MT_H */
+#define CSNIP_RNG_MT_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_RNG_MT_HAVE_SHORT_NAMES */

@@ -16,10 +16,11 @@
 
 int csnip_x_strerror_r(int errnum, char* buf, size_t buflen);
 
-#ifdef CSNIP_SHORT_NAMES
-#define x_strerror_r			csnip_x_strerror_r
-#endif /* CSNIP_SHORT_NAMES */
-
 /** @} */
 
 #endif /* CSNIP_X_H */
+
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_X_HAVE_SHORT_NAMES)
+#define x_strerror_r			csnip_x_strerror_r
+#define CSNIP_X_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && !CSNIP_X_HAVE_SHORT_NAMES */
