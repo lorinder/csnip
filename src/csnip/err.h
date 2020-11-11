@@ -43,10 +43,12 @@
  */
 #define csnip_err_Unhandled(errnumber) \
 	do { \
+		char buf[128]; \
+		csnip_err_str(errnumber, buf, sizeof(buf)); \
 		fprintf(stderr, "%s:%d: %s\n", \
 			__FILE__, \
 			__LINE__, \
-			csnip_err_str(errnumber)); \
+			buf); \
 		_Exit(127); \
 	} while(0)
 #endif
@@ -88,13 +90,14 @@
  *  @{
  */
 #define csnip_err_SUCCESS		0	/**< Success / no error */
-#define csnip_err_ERRNO			1	/**< Error code in errno */
-#define csnip_err_NOMEM			2	/**< Out of memory */
-#define csnip_err_UNDERFLOW		3	/**< Data structure underflow */
-#define csnip_err_RANGE			4	/**< Range error */
-#define csnip_err_FORMAT		5	/**< Format error */
-#define csnip_err_UNEXPECTED_NULL	6	/**< Invalid NULL pointer */
-#define csnip_err_INVAL			7	/**< Invalid value */
+#define csnip_err_ERRNO			(-1)	/**< Error code in errno */
+#define csnip_err_NOMEM			(-2)	/**< Out of memory */
+#define csnip_err_UNDERFLOW		(-3)	/**< Data structure underflow */
+#define csnip_err_RANGE			(-4)	/**< Range error */
+#define csnip_err_FORMAT		(-5)	/**< Format error */
+#define csnip_err_UNEXPECTED_NULL	(-6)	/**< Invalid NULL pointer */
+#define csnip_err_INVAL			(-7)	/**< Invalid value */
+#define csnip_err_CALLFLOW		(-8)	/**< Invalid call flow */
 /** @} */
 
 #ifdef __cplusplus
@@ -103,10 +106,19 @@ extern "C" {
 
 /** Return a descriptive error string.
  *
- *  Given a csnip error code, return a descriptive string.  The string
- *  is statically allocated and must not be freed by the user.
+ *  Given a csnip error code, write a descriptive string into a caller
+ *  supplied buffer.
+ *
+ *  @param[in]	errnum
+ *		the csnip error code (one of the csnip_err_* constants).
+ *
+ *  @param	buf
+ *		the buffer to write the error to.
+ *
+ *  @param	buf_len
+ *		the length of the supplied buffer.
  */
-const char* csnip_err_str(int csnip_errnumber);
+void csnip_err_str(int errnum, char* buf, size_t buf_len);
 
 #ifdef __cplusplus
 }
@@ -126,5 +138,7 @@ const char* csnip_err_str(int csnip_errnumber);
 #define err_RANGE		csnip_err_RANGE
 #define err_FORMAT		csnip_err_FORMAT
 #define err_UNEXPECTED_NULL	csnip_err_UNEXPECTED_NULL
+#define err_INVAL		csnip_err_INVAL
+#define err_CALLFLOW		csnip_err_CALLFLOW
 #define CSNIP_ERR_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_ERR_HAVE_SHORT_NAMES */

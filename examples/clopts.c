@@ -24,7 +24,9 @@ int main(int argc, char** argv)
 	clopts_Addflag(&opts, 'f', "flag", "flag", &flag, _);
 	int err = clopts_process(&opts, argc - 1, argv + 1, NULL);
 	if (err != 0) {
-		printf("Error from clopts_process: %s\n", err_str(err));
+		char buf[128];
+		err_str(err, buf, sizeof(buf));
+		printf("Error from clopts_process: %s\n", buf);
 		return 1;
 	}
 

@@ -330,10 +330,10 @@
 		return phead == NULL; \
 	}
 
-/** @} */
+/**	@} */
 
-/** @defgroup slist		Singly Linked Lists with tail pointers
- *  @{
+/**	@defgroup slist		Singly Linked Lists with tail pointers
+ *	@{
  */
 
 /**	Initialize an slist. */
@@ -506,9 +506,8 @@
 		return phead == NULL; \
 	}
 
-/** @}
-    @}
- */
+/** @} */
+/** @} */
 
 #endif /* CSNIP_LIST_H */
 
