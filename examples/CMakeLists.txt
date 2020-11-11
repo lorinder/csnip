@@ -1,5 +1,6 @@
 set(samples_c
 	clopts.c
+	coro.c
 	dlist.c
 	getopt.c
 	sort_cmdline.c

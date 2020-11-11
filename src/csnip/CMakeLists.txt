@@ -26,6 +26,7 @@ set(public_headers
 	arr.h
 	cext.h
 	clopts.h
+	coro.h
 	err.h
 	find.h
 	hash.h
@@ -51,6 +52,7 @@ set(public_headers
 add_library(csnip SHARED
 	${public_headers}
 	clopts.c
+	coro.c
 	err.c
 	fnv_hash.c
 	log.c
