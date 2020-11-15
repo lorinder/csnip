@@ -101,10 +101,24 @@ struct csnip_clopts_s {
  */
 int csnip_clopts_add_defaults(csnip_clopts* opts);
 
-/** Add a processable option. */
+/** Add processable options.
+ *
+ *  @param	opts
+ *		the clopts to add the options to.
+ *
+ *  @param	n_optinfo
+ *		the number of arguments to add.
+ *
+ *  @param	optionfo
+ *		the array of options to add.  Must be of size at least
+ *		n_optinfo.
+ *
+ *  @return	0	on success
+ *		< 0	csnip error code.
+ */
 int csnip_clopts_add(csnip_clopts* opts,
-			int n,
-			const csnip_clopts_optinfo* args_to_add);
+			int n_optinfo,
+			const csnip_clopts_optinfo* optinfo);
 
 /** Process command line arguments.
  *
