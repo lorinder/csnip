@@ -2,7 +2,10 @@
 #define CSNIP_HASH_H
 
 /** @file hash.h
- *  @brief			Non-cryptographic hashing functions
+ *  @addtogroup hash_functions	Hash functions
+ *  @{
+ *
+ *  Hash functions
  *
  *  Defines good non-cryptographic hashing functions.
  *  Included are the 32 and 64 bit variants of the FNV-1a hash.
@@ -103,6 +106,8 @@ uint64_t csnip_hash_fnv64_b(const void* buf, size_t sz, uint64_t h0);
  *		strings.
  */
 uint64_t csnip_hash_fnv64_s(const char* str, uint64_t h0);
+
+/** @} */
 
 #endif /* CSNIP_HASH_H */
 

@@ -57,7 +57,32 @@ typedef struct csnip_clopts_optinfo_s csnip_clopts_optinfo;
 /** Short typedef for struct csnip_clopts_s. */
 typedef struct csnip_clopts_s csnip_clopts;
 
-/** Argument parser function pointer type */
+/** Argument parser function pointer type.
+ *
+ *  csnip_clopts_process() calls argument parsers for each argument that
+ *  it encounters.  Csnip's built-in argument parsers, as used in
+ *  particular by csnup_clopts_Addvar() convert the arguments to the
+ *  desired type and store in the supplied memory location.  Custom
+ *  argument parsers provide the flexibility to do other processing.
+ *
+ *  @param	opts
+ *		The csnip_clopts being processed
+ *
+ *  @param	optinfo
+ *		The csnip_clopts_optinfo that matched this argument.  In
+ *		particular, that structure's @a usr pointer may be
+ *		useful.  The builtin parsers use this to store the
+ *		target pointer, but custom parser may use it as a
+ *		pointer to arbitrary information instead.
+ *
+ *  @param	argval
+ *		The argument value string.
+ *
+ *  @return	0	on success,
+ *		< 0	if there was a failure.  In the failure case,
+ *			csnip_clopts_process() will stop processing and
+ *			report the error code back to the caller.
+ */
 typedef int (*csnip_clopts_parser)(const csnip_clopts* opts,
 					const csnip_clopts_optinfo* optinfo,
 					const char* argval);
@@ -109,7 +134,7 @@ int csnip_clopts_add_defaults(csnip_clopts* opts);
  *  @param	n_optinfo
  *		the number of arguments to add.
  *
- *  @param	optionfo
+ *  @param	optinfo
  *		the array of options to add.  Must be of size at least
  *		n_optinfo.
  *

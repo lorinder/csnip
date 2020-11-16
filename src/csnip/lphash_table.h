@@ -38,6 +38,13 @@
 		unsigned char* occ;	/* Occupancy indicators */ \
 	};
 
+/** Declare hash table functions.
+ *
+ *  Generator macro to emit hash table function declarations, without
+ *  the definitions.
+ *
+ *  @sa CSNIP_LPHASH_TABLE_DEF_FUNCS()
+ */
 #define CSNIP_LPHASH_TABLE_DECL_FUNCS(scope, \
 				prefix, \
 				keytype, \
@@ -96,6 +103,102 @@
 			const tbltype* tbl, \
 			size_t i);
 
+/**	Define hashing table functions.
+ *
+ *	Generator macro to define functions to access and manipulate the
+ *	hash table.
+ *
+ *	@param	scope
+ *		scope of function declarations.
+ *
+ *	@param	prefix
+ *		function name prefix to add to generated functions.
+ *
+ *	@param	keytype
+ *		the type for a key of the hash table.  This is used as
+ *		the argument in search functions.  Note that if it's a
+ *		pointer type, than this would typically be a
+ *		pointer-to-const.
+ *
+ *	@param	entrytype
+ *		the type of a hash table entry.
+ *
+ *	@param	tbltype
+ *		the type of the hash table itself, as generated with
+ *		CSNIP_LPHASH_TABLE_DEF_TYPE().
+ *
+ *	@param	k1, k2
+ *		dummy variables representing keys.
+ *
+ *	@param	e
+ *		dummy variables representing entries
+ *
+ *	@param	hash
+ *		an expression evaluating to a hash of @a k1.
+ *
+ *	@param	is_match
+ *		an expression evaluation to true if @a k1 and @a k2
+ *		compare equal, and false otherwise.
+ *
+ *	@param	get_key
+ *		an expression evaluating to the key of entry @a e.
+ *
+ *	The following functions will be generated:
+ *
+ *	Creation and destruction:
+ *		* `make`:  `tbltype* make(int* err);`  Create a table
+ *		  and return a pointer to it.
+ *
+ *		  In the error case:  If `err` is non-`NULL`, `*err` is
+ *		  set to the error code and `NULL` is returned.  If
+ *		  `err` is NULL, an error is raised via
+ *		  csnip_err_Raise().
+ *		* `free`:  `void free(tbltype* tbl);`  Free the memory
+ *		  associated with the hashing table `tbl`.
+ *
+ *	Entry search, insertion and removal:
+ *		* insert
+ *		* `insert_or_assign`: `int insert_or_assign(tbltype*
+ *		  tbl, int* err, entrytype E, entrytype* ret_old);` If
+ *		  an entry with the same key exists in the table,
+ *		  replace this entry with the old one.  Otherwise insert
+ *		  the new entry.  If there was a previous entry, it is
+ *		  returned in `*ret_old`; if there was no previous
+ *		  entry, `*ret_old` is untouched.
+ *
+ *		  Returns 0 if the entry was replaced, and 1 if a new
+ *		  entry was inserted.
+ *		* find_or_insert
+ *		* remove
+ *		* `find`: `entrytype* find(tbltype* T, keytype* k);`
+ *		  Find the entry with the given key.  If it exists, a
+ *		  pointer to the entry is returned.  Otherwise, `NULL`
+ *		  is returned.
+ *
+ *	Size and capacity:
+ *		* size
+ *		* capacity
+ *
+ *	Slot and entry access:
+ *		* findslot
+ *		* isslotoccupied
+ *		* getslotentryaddress
+ *		* getslotfromentryaddress
+ *		* `removeatslot`: `size_t removeatslot(tbltype* T, int*
+ *		  err, size_t i);` Remove the entry at slot i. Returns
+ *		  the next occupied slot after removal.  This can be
+ *		  the same as `i`, if a new entry was put into place.
+ *
+ *	Iteration:
+ *		* `firstoccupiedslot`: `size_t firstoccupiedslot(
+ *		  tbltype* T);`  Find the (index of the) first occupied
+ *		  slot in the hash table.  If the table is empty, the
+ *		  table capacity is returned.
+ *		* `nextoccupiedslot`: `size_t nextoccupiedslot(tbltype*
+ *		  T, size_t i);`  Find the next occupied slot after slot
+ *		  `i`.  If no occupied slots remain, returns the table
+ *		  capacity.
+ */
 #define CSNIP_LPHASH_TABLE_DEF_FUNCS(scope, \
 				prefix, \
 				keytype, \
@@ -373,7 +476,7 @@
 		return (size_t)(entry - T->entry); \
 	} \
 	\
-	scope size_t prefix##removeatslot(tbltype* T, int *err, size_t i) \
+	scope size_t prefix##removeatslot(tbltype* T, int* err, size_t i) \
 	{ \
 		if (err) *err = 0; \
 		\

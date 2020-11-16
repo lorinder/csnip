@@ -267,6 +267,9 @@
  *  Increasing the index by a positive amount corresponds to moving
  *  toward the tail.
  *
+ *  @param[in]	N
+ *		the modulus, i.e., the size of the backing array.
+ *
  *  @param[in]	amount
  *		the number of entries to advance @a base. Needs
  *		to be in the range -@a N < @a amount < @a N.
@@ -429,6 +432,24 @@
 	scope void prefix##push_tail_idx(csnip_pp_list_##gen_args); \
 	scope void prefix##pop_tail_idx(csnip_pp_list_##gen_args); \
 
+/**	Declare value functions.
+ *
+ *	Generator macro to declare value functions.
+ *
+ *	@param	scope
+ *		function scope.
+ *
+ *	@param	prefix
+ *		function name prefix.
+ *
+ *	@param	val_type
+ *		ringbuffer value type.
+ *
+ *	@param	gen_args
+ *		generic arguments to pass to the ringbuffer functions.
+ *
+ *	For details, @sa CSNIP_RINGBUF_DEF_VAL_FUNCS().
+ */
 #define CSNIP_RINGBUF_DECL_VAL_FUNCS(scope, prefix, val_type, gen_args) \
 	scope void prefix##push_head(csnip_pp_prepend_##gen_args \
 					val_type val); \
@@ -518,6 +539,19 @@
 		csnip_ringbuf_PopTailIdx(head, len, N, err); \
 	} \
 
+/**	Define Ringbuffer value functions.
+ *
+ *	Generator macro to define ringbuffer value functions.  The
+ *	functions defined are:
+ *
+ *	* `void push_head(gen_args, val);`
+ *
+ *	* `val_type pop_head(gen_args, val);`
+ *
+ *	* `void push_tail(gen_args, val);`
+ *
+ *	* `val_type pop_tail(gen_args);`
+ */
 #define CSNIP_RINGBUF_DEF_VAL_FUNCS(scope, prefix, val_type, gen_args, \
 	head, len, N, arr, err) \
 	scope void prefix##push_head(csnip_pp_prepend_##gen_args \

@@ -12,14 +12,19 @@
 
 #include <csnip/rng.h>
 
+/** State array size */
 #define CSNIP_RNG_MT_N		624
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/** State of the Mersenne twister. */
 typedef struct {
+	/** State array */
 	uint32_t state[CSNIP_RNG_MT_N];
+
+	/** State position */
 	uint32_t* next;
 } csnip_rng_mt_state;
 

@@ -30,6 +30,10 @@ typedef enum {
 	ST_ITER,
 } coro_state;
 
+/**	Coroutine state.
+ *
+ *	This implementation is based on ucontext_t.
+ */
 struct csnip_coro_s {
 	/** State of the coroutine */
 	coro_state state;
@@ -52,7 +56,13 @@ struct csnip_coro_s {
 	/** Entry point argument */
 	void* farg;
 
-	/* Pointer from / to the coroutine */
+	/** Data transfer pointer.
+	 *
+	 *  Within the coroutine, this is the pointer that was passed to
+	 *  it via csnip_coro_next().  Outside of the coroutine, this is
+	 *  the pointer passed from the coroutine via
+	 *  csnip_coro_yield().
+	 */
 	void* inout_ptr;
 };
 
