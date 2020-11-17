@@ -37,7 +37,6 @@ function(add_docs_target)
 	)
 endfunction()
 
-option(BUILD_DOCS "Build documentation" ON)
 add_docs_target()
 
 # Installation
