@@ -50,6 +50,7 @@ add_library(csnip SHARED
 	runif.c
 	time.c
 	util.c
+	x_asprintf.c
 	x_strerror_r.c
 )
 target_link_libraries(csnip -lm)

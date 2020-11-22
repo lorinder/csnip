@@ -15,6 +15,7 @@ set(tests_c
 	runif_getf_test.c
 	runif_geti_test.c
 	time_test1.c
+	x_asprintf_test.c
 )
 if (BUILD_CXX_PIECES)
 	set(tests_cxx
