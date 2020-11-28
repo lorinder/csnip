@@ -24,6 +24,37 @@
  *	\include coro.c
  */
 
+/* Select the adequate implementation */
+/** @cond */
+#include <csnip/csnip_conf.h>
+
+#if defined CSNIP_CORO_IS_UCTX
+#include <csnip/coro_uctx.h>
+#define csnip_coro_s		csnip_coro_uctx_s
+#define csnip_coro		csnip_coro_uctx
+#define csnip_coro_func_ptr	csnip_coro_uctx_func_ptr
+#define csnip_coro_new		csnip_coro_uctx_new
+#define csnip_coro_set_func	csnip_coro_uctx_set_func
+#define csnip_coro_next		csnip_coro_uctx_next
+#define csnip_coro_yield	csnip_coro_uctx_yield
+#define csnip_coro_get_value	csnip_coro_uctx_get_value
+#define csnip_coro_free		csnip_coro_uctx_free
+#elif defined CSNIP_CORO_IS_PTH
+#include <csnip/coro_pth.h>
+#define csnip_coro_s		csnip_coro_pth_s
+#define csnip_coro		csnip_coro_pth
+#define csnip_coro_func_ptr	csnip_coro_pth_func_ptr
+#define csnip_coro_new		csnip_coro_pth_new
+#define csnip_coro_set_func	csnip_coro_pth_set_func
+#define csnip_coro_next		csnip_coro_pth_next
+#define csnip_coro_yield	csnip_coro_pth_yield
+#define csnip_coro_get_value	csnip_coro_pth_get_value
+#define csnip_coro_free		csnip_coro_pth_free
+#else
+#error No coroutine backend implementation was configured.
+#endif
+/** @endcond */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

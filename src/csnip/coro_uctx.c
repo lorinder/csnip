@@ -1,3 +1,6 @@
+#include <csnip/csnip_conf.h>
+#ifdef CSNIP_HAVE_CORO_UCTX
+
 #include <stdint.h>
 #include <string.h>
 
@@ -8,7 +11,7 @@
 #include <csnip/mem.h>
 #undef CSNIP_SHORT_NAMES
 
-#include "coro.h"
+#include <csnip/coro_uctx.h>
 
 typedef enum {
 	/** No entry point set yet.
@@ -24,7 +27,7 @@ typedef enum {
 	 *  The coroutine has an assigned entry point, but is not yet
 	 *  iterating.
 	 */
-	ST_FUNC_SET,
+	ST_EP_SET,
 
 	/** Coroutine is iterating. */
 	ST_ITER,
@@ -34,7 +37,7 @@ typedef enum {
  *
  *	This implementation is based on ucontext_t.
  */
-struct csnip_coro_s {
+struct csnip_coro_uctx_s {
 	/** State of the coroutine */
 	coro_state state;
 
@@ -51,7 +54,7 @@ struct csnip_coro_s {
 	int stack_size;
 
 	/** Coroutine entry point */
-	csnip_coro_func_ptr fptr;
+	csnip_coro_uctx_func_ptr fptr;
 
 	/** Entry point argument */
 	void* farg;
@@ -59,18 +62,18 @@ struct csnip_coro_s {
 	/** Data transfer pointer.
 	 *
 	 *  Within the coroutine, this is the pointer that was passed to
-	 *  it via csnip_coro_next().  Outside of the coroutine, this is
+	 *  it via csnip_coro_uctx_next().  Outside of the coroutine, this is
 	 *  the pointer passed from the coroutine via
-	 *  csnip_coro_yield().
+	 *  csnip_coro_uctx_yield().
 	 */
 	void* inout_ptr;
 };
 
-csnip_coro* csnip_coro_new(void)
+csnip_coro_uctx* csnip_coro_uctx_new(void)
 {
 	/* Alloc the coro */
 	int err = 0;
-	csnip_coro* C;
+	csnip_coro_uctx* C;
 	mem_Alloc(1, C, err);
 	if (err != 0)
 		return NULL;
@@ -87,7 +90,7 @@ csnip_coro* csnip_coro_new(void)
 	C->inout_ptr = NULL;
 
 	/* The other members, in partuclar the contexts,
-	 * and entry points, are set in csnip_coro_set_func().
+	 * and entry points, are set in csnip_coro_uctx_set_func().
 	 */
 
 	return C;
@@ -131,16 +134,16 @@ static void starter_func(int v0, int v1, int v2, int v3)
 
 static void starter_func2(void* C_)
 {
-	csnip_coro* C = C_;
+	csnip_coro_uctx* C = C_;
 	void* ret = (*C->fptr)(C, C->farg);
 	C->inout_ptr = ret;
 	C->state = ST_EP_UNSET;
 }
 
-int csnip_coro_set_func(csnip_coro* C, csnip_coro_func_ptr fptr, void* arg)
+int csnip_coro_uctx_set_func(csnip_coro_uctx* C, csnip_coro_uctx_func_ptr fptr, void* arg)
 {
 	/* Precondition checks */
-	if (C->state != ST_EP_UNSET && C->state != ST_FUNC_SET) {
+	if (C->state == ST_ITER) {
 		return csnip_err_CALLFLOW;
 	}
 
@@ -174,12 +177,12 @@ int csnip_coro_set_func(csnip_coro* C, csnip_coro_func_ptr fptr, void* arg)
 	C->farg = arg;
 	C->inout_ptr = NULL;
 
-	C->state = ST_FUNC_SET;
+	C->state = ST_EP_SET;
 
 	return 0;
 }
 
-int csnip_coro_next(csnip_coro* C, void* in, void** out)
+int csnip_coro_uctx_next(csnip_coro_uctx* C, void* in, void** out)
 {
 	if (C->state == ST_EP_UNSET) {
 		return csnip_err_CALLFLOW;
@@ -192,23 +195,25 @@ int csnip_coro_next(csnip_coro* C, void* in, void** out)
 	if (out) {
 		*out = C->inout_ptr;
 	}
-	return (C->state != ST_ITER);
+	return C->state != ST_ITER;
 }
 
-void* csnip_coro_yield(csnip_coro* C, void* val)
+void* csnip_coro_uctx_yield(csnip_coro_uctx* C, void* val)
 {
 	C->inout_ptr = val;
 	swapcontext(&C->co_ctx, &C->main_ctx);
 	return C->inout_ptr;
 }
 
-void* csnip_coro_get_value(csnip_coro* C)
+void* csnip_coro_uctx_get_value(csnip_coro_uctx* C)
 {
 	return C->inout_ptr;
 }
 
-void csnip_coro_free(csnip_coro* C)
+void csnip_coro_uctx_free(csnip_coro_uctx* C)
 {
 	mem_Free(C->stack);
 	mem_Free(C);
 }
+
+#endif /* CSNIP_HAVE_CORO_UCTX */

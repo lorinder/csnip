@@ -1,6 +1,7 @@
 set(samples_c
 	clopts.c
 	coro.c
+	coro_perf.c
 	dlist.c
 	getopt.c
 	sort_cmdline.c
