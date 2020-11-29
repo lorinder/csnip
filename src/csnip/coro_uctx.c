@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <sys/mman.h>
 #include <ucontext.h>
 
 #define CSNIP_SHORT_NAMES
@@ -80,8 +81,13 @@ csnip_coro_uctx* csnip_coro_uctx_new(void)
 
 	/* Alloc the stack */
 	C->stack_size = 16384;
-	mem_Alloc(C->stack_size, C->stack, err);
-	if (err != 0) {
+	C->stack = mmap(NULL,				/* addr */
+			C->stack_size,			/* size */
+			PROT_READ|PROT_WRITE|PROT_EXEC,	/* prot */
+			MAP_PRIVATE|MAP_ANONYMOUS,	/* flags */
+			-1,				/* fd */
+			0);				/* offset */
+	if (C->stack == NULL) {
 		mem_Free(C);
 		return NULL;
 	}
@@ -212,7 +218,7 @@ void* csnip_coro_uctx_get_value(csnip_coro_uctx* C)
 
 void csnip_coro_uctx_free(csnip_coro_uctx* C)
 {
-	mem_Free(C->stack);
+	munmap(C->stack, C->stack_size);
 	mem_Free(C);
 }
 
