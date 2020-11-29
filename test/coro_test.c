@@ -3,7 +3,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define CSNIP_SHORT_NAMES
 #include <csnip/coro.h>
+#include <csnip/coro_uctx.h>
+#include <csnip/coro_pth.h>
 
 char* days[] = {
 	"Monday",
@@ -18,71 +21,96 @@ char* days[] = {
 	NULL
 };
 
-static void* enumerate_days(csnip_coro* C, void* arg)
-{
-	(void)arg;
-	for (int i = 0; days[i]; ++i) {
-		csnip_coro_yield(C, days[i]);
-	}
-	return NULL;
-}
+/* define smoke tests for the different coroutine implementations */
+#define DEF_TESTS(V) \
+	static void* enumerate_days##V(coro##V* C, void* arg) \
+	{ \
+		(void)arg; \
+		for (int i = 0; days[i]; ++i) { \
+			coro##V##_yield(C, days[i]); \
+		} \
+		return NULL; \
+	} \
+	\
+	static bool test1##V(csnip_coro##V* C) \
+	{ \
+		puts("Test 1 [" #V "]: Enumeration"); \
+		int i = 0; \
+		coro##V##_set_func(C, enumerate_days##V, C); \
+		do { \
+			void* p; \
+			coro##V##_next(C, NULL, &p); \
+			if (p == NULL) \
+				break; \
+	\
+			/* Check what we got */ \
+			if (i >= 7 || strcmp(days[i], p) != 0) \
+				return false; \
+			puts(p); \
+			++i; \
+		} while(1); \
+	\
+		puts("-> passed\n"); \
+		return true; \
+	} \
+	\
+	/* Iterate, detect end based on status info */ \
+	static bool test2##V(coro##V* C) \
+	{ \
+		puts("Test 2 [" #V "]: Enumeration, variant 2"); \
+		int i = 0; \
+		coro##V##_set_func(C, enumerate_days##V, C); \
+		do { \
+			void* p; \
+			if (coro##V##_next(C, NULL, &p) != 0) \
+				break; \
+	\
+			/* Check output */ \
+			if (i >= 7 || strcmp(days[i], p) != 0) \
+				return false; \
+			puts(p); \
+			++i; \
+		} while(1); \
+	\
+		puts("-> passed\n"); \
+		return true; \
+	} \
 
-/* Iterate, detect end based on returned pointer */
-static bool test1(csnip_coro* C)
-{
-	puts("Test 1: Enumeration");
-	int i = 0;
-	csnip_coro_set_func(C, enumerate_days, C);
-	do {
-		void* p;
-		csnip_coro_next(C, NULL, &p);
-		if (p == NULL)
-			break;
+DEF_TESTS()
+#ifdef CSNIP_HAVE_CORO_UCTX
+DEF_TESTS(_uctx)
+#endif
+#ifdef CSNIP_HAVE_CORO_PTH
+DEF_TESTS(_pth)
+#endif
 
-		/* Check what we got */
-		if (i >= 7 || strcmp(days[i], p) != 0)
-			return false;
-		puts(p);
-		++i;
-	} while(1);
-
-	puts("-> passed\n");
-	return true;
-}
-
-/* Iterate, detect end based on status info */
-static bool test2(csnip_coro* C)
-{
-	puts("Test 2: Enumeration, variant 2");
-	int i = 0;
-	csnip_coro_set_func(C, enumerate_days, C);
-	do {
-		void* p;
-		if (csnip_coro_next(C, NULL, &p) != 0)
-			break;
-
-		/* Check output */
-		if (i >= 7 || strcmp(days[i], p) != 0)
-			return false;
-		puts(p);
-		++i;
-	} while(1);
-
-	puts("-> passed\n");
-	return true;
-}
-
+#undef DEF_TESTS
 
 int main(int argc, char** argv)
 {
-	/* Simple enumeration tests */
-	csnip_coro* C = csnip_coro_new();
-	if (!test1(C))
-		return EXIT_FAILURE;
-	if (!test2(C))
-		return EXIT_FAILURE;
-	csnip_coro_free(C);
+	bool success = true;
+#define RUN_TESTS(V) \
+	do { \
+		/* Simple enumeration tests */ \
+		coro##V* C = coro##V##_new(); \
+		if (!test1##V(C)) \
+			success = false; \
+		if (!test2##V(C)) \
+			success = false; \
+		coro##V##_free(C); \
+	} while (0)
+
+	/* Run tests for the different coro variants */
+	RUN_TESTS();
+#ifdef CSNIP_HAVE_CORO_UCTX
+	RUN_TESTS(_uctx);
+#endif
+#ifdef CSNIP_HAVE_CORO_PTH
+	RUN_TESTS(_pth);
+#endif
+
+#undef RUN_TESTS
 
 	/* Clean up */
-	return EXIT_SUCCESS;
+	return (success ? EXIT_SUCCESS : EXIT_FAILURE);
 }
