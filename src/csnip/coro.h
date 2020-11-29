@@ -10,11 +10,15 @@
  *
  *	This module provides support for asymmetric coroutines.  Values
  *	can be passed both to and from the coroutine at each next/yield
- *	pair, maling it trivial to implement iterators and generators.
+ *	pair, making it trivial to implement iterators and generators.
  *	Integration with event loops, such as e.g. provided with
  *	libevent, is also straightforward.
  *
- *	*Requirements*:  Currently requires System V context control API.
+ *	*Requirements*:  Two backend implementations are supported.  The
+ *	first one requires the System V context control API (ucontext_t,
+ *	getcontext, makecontext, etc.).  The second implementation uses
+ *	pthreads.  The one based on context control is faster, and thus
+ *	chosen if those APIs are available.
  *
  *	The following example code implements a coroutine, get_primes()
  *	that computes the sequence of prime numbers and passes them via
