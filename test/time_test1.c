@@ -56,7 +56,12 @@ void func_tests()
 		double diff;
 		csnip_time_Convert(csnip_time_Sub(t1, t0), diff);
 		printf("After sleeping 0.1s, got delta of %gs. ", diff);
-		if (diff < 0.1 || diff > 0.11) {
+		/* Ideally, we would like to check that diff is not
+		 * too much larger than 0.1, but on a heavily loaded
+		 * system there is no bound on how much larger it really
+		 * can be.
+		 */
+		if (diff < 0.1) {
 			fflush(stdout);
 			fprintf(stderr, "-> FAIL\n");
 			exit(1);
