@@ -1,6 +1,7 @@
 set(tests_c
 	arr_test0.c
-	coro_test.c
+	coro_test0.c
+	coro_test1.c
 	err_test0.c
 	err_test1.c
 	fnv_hash_test.c
