@@ -418,19 +418,27 @@
  *	@param	prefix
  *		Prefix to the name of the functions declared.
  *
+ *	@param	idx_type
+ *		Type used for indexing.
+ *
  *	@param	gen_args
  *		Generic argument list.
  *
  *	For details, @sa CSNIP_RINGBUF_DEF_IDX_FUNCS().
  */
-#define CSNIP_RINGBUF_DECL_IDX_FUNCS(scope, prefix, gen_args) \
+#define CSNIP_RINGBUF_DECL_IDX_FUNCS(scope, prefix, idx_type, gen_args) \
 	scope void prefix##init(csnip_pp_list_##gen_args); \
-	scope size_t prefix##get_head_idx(csnip_pp_list_##gen_args); \
-	scope size_t prefix##get_tail_idx(csnip_pp_list_##gen_args); \
+	scope idx_type prefix##get_head_idx(csnip_pp_list_##gen_args); \
+	scope idx_type prefix##get_tail_idx(csnip_pp_list_##gen_args); \
 	scope void prefix##push_head_idx(csnip_pp_list_##gen_args); \
 	scope void prefix##pop_head_idx(csnip_pp_list_##gen_args); \
 	scope void prefix##push_tail_idx(csnip_pp_list_##gen_args); \
 	scope void prefix##pop_tail_idx(csnip_pp_list_##gen_args); \
+	scope void prefix##check_idx(csnip_pp_prepend_##gen_args idx_type); \
+	scope idx_type prefix##add_wrap(csnip_pp_prepend_##gen_args \
+				idx_type, idx_type); \
+	scope idx_type prefix##sub_wrap(csnip_pp_prepend_##gen_args \
+				idx_type, idx_type); \
 
 /**	Declare value functions.
  *
@@ -469,6 +477,10 @@
  *	@param	prefix
  *		Function name prefixes for the defined functions.
  *
+ *	@param	idx_type
+ *		Type used for indexing; common choices are int or
+ *		size_t.
+ *
  *	@param	gen_args
  *		General argument list (function prototype).
  *
@@ -490,39 +502,51 @@
  *
  *	The following functions are defined:
  *
- *	* void init(gen_args):  Zero-initialize the indices; wraps
- *	  csnip_ringbuf_Init().
+ *	* void init(gen_args):  Zero-initialize the indices.
+ *	  @sa csnip_ringbuf_Init()
  *
- *	* size_t get_head_idx(gen_args):  Get the head index; wraps
- *	  csnip_ringbuf_GetHeadIdx().
+ *	* size_t get_head_idx(gen_args):  Get the head index.
+ *	  @sa csnip_ringbuf_GetHeadIdx()
  *
- *	* size_t get_tail_idx(gen_args):  Get the tail index; wraps
- *	  csnip_ringbuf_GetTailIdx().
+ *	* size_t get_tail_idx(gen_args):  Get the tail index.
+ *	  @sa csnip_ringbuf_GetTailIdx()
  *
- *	* void push_head_idx(gen_args):  Push to the head; wraps
- *	  csnip_ringbuf_PushHeadIdx().
+ *	* void push_head_idx(gen_args):  Push to the head.
+ *	  @sa csnip_ringbuf_PushHeadIdx()
  *
- *	* void pop_head_idx(gen_args):  Pop from the head; wraps
- *	  csnip_ringbuf_PopHeadIdx().
+ *	* void pop_head_idx(gen_args):  Pop from the head.
+ *	  @sa csnip_ringbuf_PopHeadIdx()
  *
- *	* void push_tail_idx(gen_args):  Push to the tail; wraps
- *	  csnip_ringbuf_PushTailIdx().
+ *	* void push_tail_idx(gen_args):  Push to the tail.
+ *	  @sa csnip_ringbuf_PushTailIdx()
  *
- *	* void pop_tail_idx(gen_args):  Pop from the taill wraps
- *	  csnip_ringbuf_PopTailIdx().
+ *	* void pop_tail_idx(gen_args):  Pop from the tail; wraps.
+ *	  @sa csnip_ringbuf_PopTailIdx()
+ *
+ *	* void check_idx(gen_args, idx_type i):  Check if the index i
+ *	  points to within a currently occupied slot of the ring buffer.
+ *	  @sa csnip_ringbuf_CheckIdx()
+ *
+ *	* idx_type add_wrap(gen_args, idx_type off, idx_type i): Add
+ *	  off to i modulo N.
+ *	  @sa csnip_ringbuf_AddWrap()
+ *
+ *	* idx_type sub_wrap(gen_args, idx_type off, idx_type i): Add
+ *	  off from i modulo N.
+ *	  @sa csnip_ringbuf_SubWrap()
  */
-#define CSNIP_RINGBUF_DEF_IDX_FUNCS(scope, prefix, gen_args, \
+#define CSNIP_RINGBUF_DEF_IDX_FUNCS(scope, prefix, idx_type, gen_args, \
 	head, len, N, err) \
 	scope void prefix##init(csnip_pp_list_##gen_args) { \
 		csnip_ringbuf_Init(head, len, N); \
 	} \
-	scope size_t prefix##get_head_idx(csnip_pp_list_##gen_args) { \
-		size_t csnip__ret; \
+	scope idx_type prefix##get_head_idx(csnip_pp_list_##gen_args) { \
+		idx_type csnip__ret; \
 		csnip_ringbuf_GetHeadIdx(head, len, N, csnip__ret, err); \
 		return csnip__ret; \
 	} \
-	scope size_t prefix##get_tail_idx(csnip_pp_list_##gen_args) { \
-		size_t csnip__ret; \
+	scope idx_type prefix##get_tail_idx(csnip_pp_list_##gen_args) { \
+		idx_type csnip__ret; \
 		csnip_ringbuf_GetTailIdx(head, len, N, csnip__ret, err); \
 		return csnip__ret; \
 	} \
@@ -538,6 +562,21 @@
 	scope void prefix##pop_tail_idx(csnip_pp_list_##gen_args) { \
 		csnip_ringbuf_PopTailIdx(head, len, N, err); \
 	} \
+	scope void prefix##check_idx(csnip_pp_prepend_##gen_args \
+					idx_type csnip__i) \
+	{ \
+		csnip_ringbuf_CheckIdx(head, len, N, csnip__i, err); \
+	} \
+	scope idx_type prefix##add_wrap(csnip_pp_prepend_##gen_args \
+			idx_type csnip__amount, idx_type csnip__base) \
+	{ \
+		return csnip_ringbuf_AddWrap(N, csnip__amount, csnip__base); \
+	} \
+	scope idx_type prefix##sub_wrap(csnip_pp_prepend_##gen_args \
+			idx_type csnip__amount, idx_type csnip__base) \
+	{ \
+		return csnip_ringbuf_SubWrap(N, csnip__amount, csnip__base); \
+	}
 
 /**	Define Ringbuffer value functions.
  *
@@ -552,8 +591,8 @@
  *
  *	* `val_type pop_tail(gen_args);`
  */
-#define CSNIP_RINGBUF_DEF_VAL_FUNCS(scope, prefix, val_type, gen_args, \
-	head, len, N, arr, err) \
+#define CSNIP_RINGBUF_DEF_VAL_FUNCS(scope, prefix, val_type, \
+	gen_args, head, len, N, arr, err) \
 	scope void prefix##push_head(csnip_pp_prepend_##gen_args \
 					val_type val) { \
 		csnip_ringbuf_PushHead(head, len, N, arr, val, err); \
