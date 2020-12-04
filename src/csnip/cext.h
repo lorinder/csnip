@@ -24,6 +24,8 @@
  */
 #if defined(__GNUC__) || defined(__clang__)
 #define csnip_cext_unused		__attribute__((__unused__))
+#else
+#define csnip_cext_unused
 #endif
 
 /**	Mark a symbol as belonging to the public API.
