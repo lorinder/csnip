@@ -2,6 +2,7 @@ set(samples_c
 	clopts.c
 	dlist.c
 	getopt.c
+	coro.c
 	sort_cmdline.c
 )
 if (BUILD_CXX_PIECES)

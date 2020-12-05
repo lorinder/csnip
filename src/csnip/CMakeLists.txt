@@ -15,6 +15,7 @@ set(public_headers
 	arr.h
 	cext.h
 	clopts.h
+	coro.h
 	err.h
 	find.h
 	hash.h
