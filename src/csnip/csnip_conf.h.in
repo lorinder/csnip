@@ -5,20 +5,6 @@
  * Csnip compile-time configuration settings.
  */
 
-/*
- * csnip_coro configuration
- */
-
-/* Set if coro_uctx_* is available */
-#cmakedefine CSNIP_HAVE_CORO_UCTX
-
-/* Set if coro_pth_* is available */
-#cmakedefine CSNIP_HAVE_CORO_PTH
-
-/* Set if the csnip_coro default implementation uses ucontext_t */
-#cmakedefine CSNIP_CORO_IS_UCTX
-
-/* Set if the csnip_coro default implementation uses pthreads */
-#cmakedefine CSNIP_CORO_IS_PTH
+/* ... None, currently ... */
 
 #endif /* CSNIP_CSNIP_CONF_H */

@@ -2,40 +2,19 @@
 
 include(Symbols)
 
-set(THREADS_PREFER_PTHREAD_FLAG TRUE)
-include(FindThreads)
-
-function(create_csnip_conf_h)
-	# Coro possible variants
-	if (HAVE_GETCONTEXT)
-		set(CSNIP_HAVE_CORO_UCTX 1)
-	endif()
-	if (Threads_FOUND AND CMAKE_USE_PTHREADS_INIT)
-		set(CSNIP_HAVE_CORO_PTH 1)
-	endif()
-
-	# Select default coro implementation
-	if (CSNIP_HAVE_CORO_UCTX)
-		set(CSNIP_CORO_IS_UCTX 1)
-	else (CSNIP_HAVE_CORO_PTH)
-		set(CSNIP_CORO_IS_PTH 1)
-	endif ()
-
-	# Configure the file
-	configure_file(csnip_conf.h.in csnip_conf.h)
-endfunction()
-create_csnip_conf_h()
+#function(create_csnip_conf_h)
+#	# Configure the file
+#	configure_file(csnip_conf.h.in csnip_conf.h)
+#endfunction()
+#create_csnip_conf_h()
 
 ## Axl build rules
 
 set(public_headers
-	${CMAKE_CURRENT_BINARY_DIR}/csnip_conf.h
+#	${CMAKE_CURRENT_BINARY_DIR}/csnip_conf.h
 	arr.h
 	cext.h
 	clopts.h
-	coro.h
-	coro_uctx.h
-	coro_pth.h
 	err.h
 	find.h
 	hash.h
@@ -61,8 +40,6 @@ set(public_headers
 add_library(csnip SHARED
 	${public_headers}
 	clopts.c
-	coro_uctx.c
-	coro_pth.c
 	err.c
 	fnv_hash.c
 	log.c
@@ -74,7 +51,7 @@ add_library(csnip SHARED
 	util.c
 	x_strerror_r.c
 )
-target_link_libraries(csnip Threads::Threads -lm)
+target_link_libraries(csnip -lm)
 target_include_directories(csnip PUBLIC ..)
 target_include_directories(csnip PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
 
@@ -91,7 +68,6 @@ add_feature_defs(mem.c HAVE_POSIX_MEMALIGN HAVE_ALIGNED_ALLOC HAVE_MEMALIGN
   HAVE_ALIGNED_MALLOC)
 add_feature_defs(log.c HAVE_REGCOMP HAVE_FLOCKFILE)
 add_feature_defs(x_strerror_r.c HAVE_STRERROR_R HAVE_STRERROR_S)
-add_feature_defs(coro_uctx.c HAVE_GETCONTEXT)
 
 set_target_properties(csnip PROPERTIES
 	SOVERSION	1
