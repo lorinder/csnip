@@ -229,6 +229,20 @@
 	} while (0)
 /** @endcond */
 
+/** Check whether a ringbuffer is full.
+ *
+ *  Expression macro to check whether a ringbuffer is full, i.e.,
+ *  whether there is no space to insert another element into it.
+ */
+#define csnip_ringbuf_IsFull(head, len, N) ((len) == (N))
+
+/** Check whether a ringbuffer is empty.
+ *
+ *  Expression macro to check whether a ringbuffer is empty, i.e.,
+ *  whether it contains 0 elements.
+ */
+#define csnip_ringbuf_IsEmpty(head, len, N) ((len) == 0)
+
 /** Check whether a given index is valid.
  *
  *  Checks whether a given index points to within the ring buffer as
@@ -434,6 +448,8 @@
 	scope void prefix##pop_head_idx(csnip_pp_list_##gen_args); \
 	scope void prefix##push_tail_idx(csnip_pp_list_##gen_args); \
 	scope void prefix##pop_tail_idx(csnip_pp_list_##gen_args); \
+	scope int prefix##is_full(csnip_pp_list_##gen_args); \
+	scope int prefix##is_empty(csnip_pp_list_##gen_args); \
 	scope void prefix##check_idx(csnip_pp_prepend_##gen_args idx_type); \
 	scope idx_type prefix##add_wrap(csnip_pp_prepend_##gen_args \
 				idx_type, idx_type); \
@@ -523,6 +539,12 @@
  *	* void pop_tail_idx(gen_args):  Pop from the tail; wraps.
  *	  @sa csnip_ringbuf_PopTailIdx()
  *
+ *	* int is_full(gen_args):  Check if ringbuffer is full.
+ *	  @sa csnip_ringbuf_IsFull()
+ *
+ *	* int is_empty(gen_args):  Check if ringbuffer is empty.
+ *	  @sa csnip_ringbuf_IsEmpty()
+ *
  *	* void check_idx(gen_args, idx_type i):  Check if the index i
  *	  points to within a currently occupied slot of the ring buffer.
  *	  @sa csnip_ringbuf_CheckIdx()
@@ -561,6 +583,12 @@
 	} \
 	scope void prefix##pop_tail_idx(csnip_pp_list_##gen_args) { \
 		csnip_ringbuf_PopTailIdx(head, len, N, err); \
+	} \
+	scope int prefix##is_full(csnip_pp_list_##gen_args) { \
+		return csnip_ringbuf_IsFull(head, len, N); \
+	} \
+	scope int prefix##is_empty(csnip_pp_list_##gen_args) { \
+		return csnip_ringbuf_IsEmpty(head, len, N); \
 	} \
 	scope void prefix##check_idx(csnip_pp_prepend_##gen_args \
 					idx_type csnip__i) \
