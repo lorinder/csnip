@@ -14,6 +14,7 @@
  */
 
 #include <string.h>
+#include <stdint.h>
 
 /**  Swap two variables, type explicitly specified. */
 #define csnip_Tswap(type, a, b) \
@@ -71,8 +72,9 @@ inline size_t csnip_next_pow_of_2(size_t a)
 	a |= a >> 4;
 	a |= a >> 8;
 	a |= a >> 16;
-	if (sizeof(a) > 4)
-		a |= a >> 32;
+#if SIZE_MAX > 0xFFFFFFFF
+	a |= a >> 32;
+#endif
 	++a;
 	return a;
 }
