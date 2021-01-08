@@ -64,6 +64,13 @@
 		(head) = (tail) = NULL; \
 	} while (0)
 
+/**	Check if a list is empty.
+ *
+ *	Expression macro to check if a list is empty.
+ */
+#define csnip_dlist_IsEmpty(head, tail, mprev, mnext) \
+	((head) == NULL)
+
 /**	Push an element to the head of a dlist. */
 #define csnip_dlist_PushHead(head, tail, mprev, mnext, el) \
 	do { \
@@ -205,6 +212,7 @@
  */
 #define CSNIP_DLIST_DECL_FUNCS(scope, prefix, entry_ptr_type, gen_args) \
 	scope void prefix ## init(csnip_pp_list_##gen_args); \
+	scope char prefix ## is_empty(csnip_pp_list_##gen_args); \
 	scope void prefix ## push_head(csnip_pp_prepend_##gen_args \
 					entry_ptr_type csnip_el); \
 	scope void prefix ## pop_head(csnip_pp_list_##gen_args); \
@@ -225,7 +233,6 @@
 	scope entry_ptr_type prefix ## tail(csnip_pp_list_##gen_args); \
 	scope entry_ptr_type prefix ## prev(entry_ptr_type csnip_el); \
 	scope entry_ptr_type prefix ## next(entry_ptr_type csnip_el); \
-	scope char prefix ## is_empty(csnip_pp_list_##gen_args); \
 
 /**	Define a set of dlist functions.
  *
@@ -274,6 +281,9 @@
 	scope void prefix ## init(csnip_pp_list_##gen_args) \
 	{ \
 		csnip_dlist_Init(phead, ptail, mprev, mnext); \
+	} \
+	scope char prefix ## is_empty(csnip_pp_list_##gen_args) { \
+		return csnip_dlist_IsEmpty(phead, ptail, mprev, mnext); \
 	} \
 	scope void prefix ## push_head(csnip_pp_prepend_##gen_args \
 					entry_ptr_type csnip_el) \
@@ -325,9 +335,6 @@
 	} \
 	scope entry_ptr_type prefix ## next(entry_ptr_type csnip_el) { \
 		return csnip_el->mnext; \
-	} \
-	scope char prefix ## is_empty(csnip_pp_list_##gen_args) { \
-		return phead == NULL; \
 	}
 
 /**	@} */
