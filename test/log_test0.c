@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	clopts_Addflag(&opts, 'u', "uninitialized",
 	  "skip csnip_log_config0", &uninitialized, _);
 	clopts_Addvar(&opts, 'e', "expr", "logger expression", &expr, _);
-	if (csnip_clopts_process(&opts, argc - 1, argv + 1, NULL) != 0) {
+	if (csnip_clopts_process(&opts, argc - 1, argv + 1, NULL, true) != 0) {
 		return 1;
 	}
 

@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 		"Number of iterations", &nIter, _);
 	clopts_Addvar(&opts, 'c', "coroutines",
 		"Number of coroutines", &nCoro, _);
-	if (clopts_process(&opts, argc - 1, argv + 1, NULL) != 0) {
+	if (clopts_process(&opts, argc - 1, argv + 1, NULL, true) != 0) {
 		return 1;
 	}
 

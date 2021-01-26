@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 	clopts_Addvar(&opts, 'u', "ulong", "unsigned long argument", &ul, _);
 	clopts_Addvar(&opts, 's', "string", "string argument", &str, _);
 	clopts_Addflag(&opts, 'f', "flag", "flag", &flag, _);
-	int err = clopts_process(&opts, argc - 1, argv + 1, NULL);
+	int err = clopts_process(&opts, argc - 1, argv + 1, NULL, true);
 	if (err != 0) {
 		char buf[128];
 		err_str(err, buf, sizeof(buf));

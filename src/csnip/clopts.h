@@ -103,11 +103,6 @@ struct csnip_clopts_optinfo_s {
 
 /** Set of descriptors for all command line options. */
 struct csnip_clopts_s {
-	/* The array of clopts_optinfo members */
-	int n_optinfo;			/**< Number of command line options */
-	int n_optinfo_cap;		/**< Capacity of the option array */
-	csnip_clopts_optinfo* optinfo;	/**< The options array */
-
 	/** General program description.
 	 *
 	 *  This description is used typically to describe the purpose
@@ -115,6 +110,11 @@ struct csnip_clopts_s {
 	 *  descriptions.
 	 */
 	const char *description;
+
+	/* The array of clopts_optinfo members */
+	int n_optinfo;			/**< Number of command line options */
+	int n_optinfo_cap;		/**< Capacity of the option array */
+	csnip_clopts_optinfo* optinfo;	/**< The options array */
 };
 
 /* Operations on csnip_clopts */
@@ -127,6 +127,10 @@ struct csnip_clopts_s {
 int csnip_clopts_add_defaults(csnip_clopts* opts);
 
 /** Add processable options.
+ *
+ *  Adds a set of command line options to the clopts.  Since the
+ *  optinfos are copied, adding options causes memory to be allocated.
+ *  To free that memory after use, call csnip_clopts_clear().
  *
  *  @param	opts
  *		the clopts to add the options to.
@@ -152,6 +156,33 @@ int csnip_clopts_add(csnip_clopts* opts,
  *  passed to main() is assumed not to be present, therefore an offset
  *  to the main args should be applied.
  *
+ *  This library function prints messages about any parsing errors to
+ *  stderr, thus it is usually sufficient to simply terminate the
+ *  program if an error number is returned.
+ *
+ *  @param	opts
+ *		the options to process.
+ *
+ *  @param	argc
+ *		the size of the argv vector.
+ *
+ *  @param	argv
+ *		the array of command line arguments; as mentioned above,
+ *		unlike the argv[] seen in main() this command should
+ *		remove the initial argument.
+ *
+ *  @param	ret_pos_args
+ *		return pointer to assign the index of trailing
+ *		non-option arguments to.  If set to NULL, no non-option
+ *		arguments are expected, and thus an error is flagged in
+ *		this case when non-option arguments are found.
+ *
+ *  @param	do_clear
+ *		flag indicating whether @a opts should be cleared after
+ *		processing.  This is a convenience flag for the most
+ *		common case where csnip_clopts_process() is invoked
+ *		exactly once. @sa csnip_clopts_clear().
+ *
  *  @return	0	on success
  *		< 0	csnip error code.  In the typical case of an
  *			error in the format sequence, an error message
@@ -160,7 +191,18 @@ int csnip_clopts_add(csnip_clopts* opts,
 int csnip_clopts_process(csnip_clopts* opts,
 			int argc,
 			char** argv,
-			int* ret_pos_args);
+			int* ret_pos_args,
+			bool do_clear);
+
+/** Clear clopts assignments, freeing memory.
+ *
+ *  Remove any added options from the clopts, freeing the memory they
+ *  occupied in the process.
+ *
+ *  @param	opts
+ *		the clopts to add.
+ */
+void csnip_clopts_clear(csnip_clopts* opts);
 
 /** @defgroup CloptsParsers	Argument parsers for clopts
  *  @{
@@ -408,6 +450,7 @@ csnip_clopts__tspec(char const*, pchar)
 #define clopts_add_defaults	csnip_clopts_add_defaults
 #define clopts_add		csnip_clopts_add
 #define clopts_process		csnip_clopts_process
+#define clopts_clear		csnip_clopts_clear
 #define clopts_parser_uchar	csnip_clopts_parser_uchar
 #define clopts_parser_uint	csnip_clopts_parser_uint
 #define clopts_parser_ulong	csnip_clopts_parser_ulong

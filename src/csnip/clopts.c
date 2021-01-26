@@ -87,7 +87,8 @@ static bool check_longopt_match(const char* optstr,
 	return true;
 }
 
-int csnip_clopts_process(csnip_clopts* opts,
+/* Internal version of clopts_process() that does not clear memory. */
+static int process_noclear(csnip_clopts* opts,
 			int argc,
 			char** argv,
 			int* ret_pos_args)
@@ -206,6 +207,23 @@ int csnip_clopts_process(csnip_clopts* opts,
 		}
 	}
 	return 0;
+}
+
+int csnip_clopts_process(csnip_clopts* opts,
+			int argc,
+			char** argv,
+			int* ret_pos_args,
+			bool do_clear)
+{
+	const int rc = process_noclear(opts, argc, argv, ret_pos_args);
+	if (do_clear)
+		csnip_clopts_clear(opts);
+	return rc;
+}
+
+void csnip_clopts_clear(csnip_clopts* opts)
+{
+	arr_Free(opts->optinfo, opts->n_optinfo, opts->n_optinfo_cap);
 }
 
 int csnip_clopts_parser_uchar(const csnip_clopts* opts,
