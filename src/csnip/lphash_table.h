@@ -162,13 +162,16 @@
  *		  tbl, int* err, entrytype E, entrytype* ret_old);` If
  *		  an entry with the same key exists in the table,
  *		  replace this entry with the old one.  Otherwise insert
- *		  the new entry.  If there was a previous entry, it is
- *		  returned in `*ret_old`; if there was no previous
- *		  entry, `*ret_old` is untouched.
- *
+ *		  the new entry.  If there was a previous entry, and
+ *		  `ret_old` is non-NULL, it is
+ *		  returned in `*ret_old`; otherwise `*ret_old` is untouched.
  *		  Returns 0 if the entry was replaced, and 1 if a new
  *		  entry was inserted.
- *		* find_or_insert
+ *		* `find_or_insert`:  `entrytype* find_or_insert(tbltype*
+ *		  tbl, int* err, entrytype E)`.  If an entry with the
+ *		  same key as E exists, return a pointer to that entry.
+ *		  Otherwise, insert E into the table, and return a
+ *		  pointer to the newly inserted element.
  *		* remove
  *		* `find`: `entrytype* find(tbltype* T, keytype* k);`
  *		  Find the entry with the given key.  If it exists, a
