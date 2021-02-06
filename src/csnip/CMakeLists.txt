@@ -25,6 +25,7 @@ set(public_headers
 	log.h
 	lphash.h
 	lphash_table.h
+	meanvar.h
 	mem.h
 	podtypes.h
 	preproc.h
@@ -44,6 +45,7 @@ add_library(csnip SHARED
 	err.c
 	fnv_hash.c
 	log.c
+	meanvar.c
 	mem.c
 	rng.c
 	rng_mt.c

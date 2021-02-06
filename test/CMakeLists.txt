@@ -9,6 +9,7 @@ set(tests_c
 	list_test0.c
 	log_test0.c
 	log_test1.c
+	meanvar_test0.c
 	mem_test0.c
 	ringbuf_test.c
 	rng_mt_test.c
@@ -19,6 +20,7 @@ set(tests_c
 )
 if (BUILD_CXX_PIECES)
 	set(tests_cxx
+		meanvar_test0_cxx.cc
 		mem_test0_cxx.cc
 	)
 else()

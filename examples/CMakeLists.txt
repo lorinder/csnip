@@ -1,8 +1,9 @@
 set(samples_c
 	clopts.c
+	coro.c
 	dlist.c
 	getopt.c
-	coro.c
+	meanvar.c
 	sort_cmdline.c
 )
 if (BUILD_CXX_PIECES)
