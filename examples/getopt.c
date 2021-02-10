@@ -52,6 +52,12 @@ int main(int argc, char** argv)
 	/* Display result */
 	printf("Done with argument processing.\n");
 	printf("Got i = %d, l = %ld, ul = %lu, str = \"%s\"\n", i, l, ul, str);
+	if (optind < argc) {
+		printf("Positional arguments:");
+		for (int i = optind; i < argc; ++i)
+			printf(" \"%s\"", argv[i]);
+		putchar('\n');
+	}
 
 	return 0;
 }
