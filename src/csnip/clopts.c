@@ -96,8 +96,13 @@ static int process_noclear(csnip_clopts* opts,
 	int i;
 	for (i = 0; i < argc; ++i) {
 		const char* optstr = argv[i];
-		if (*optstr != '-') {
-			// TODO:  Permute this to positional arguments.
+
+		/* Exit processing on "-", "--" or argument starting
+		 * without dash.
+		 *
+		 * In the case of "--", consume that argument first.
+		 */
+		if (*optstr != '-' || optstr[1] == '\0') {
 			break;
 		}
 		if (strcmp(optstr, "--") == 0) {
