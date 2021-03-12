@@ -1,10 +1,12 @@
 #ifndef CSNIP_CSNIP_CONF_H
 #define CSNIP_CSNIP_CONF_H
 
-/*
- * Csnip compile-time configuration settings.
+/**	@file csnip_conf.h
+ *
+ *	Csnip compile-time configuration settings.
  */
 
-/* ... None, currently ... */
+/** Macro defined if "struct timeval" is a known type. */
+#cmakedefine CSNIP_CONF__HAVE_TIMEVAL
 
 #endif /* CSNIP_CSNIP_CONF_H */

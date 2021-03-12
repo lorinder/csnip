@@ -48,15 +48,18 @@
  *	and that time_t is not a float type.
  */
 
+#include <csnip/csnip_conf.h>
+
 #include <time.h>
+#ifdef CSNIP_CONF__HAVE_TIMEVAL
+#include <sys/time.h>
+#endif
 
 #include <csnip/err.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-struct timeval;
 
 /** @name Conversion to struct timespec. */
 /**@{*/
@@ -68,8 +71,10 @@ struct timespec csnip_time_float_as_timespec(float f);
 struct timespec csnip_time_double_as_timespec(double d);
 /** long double -> timespec */
 struct timespec csnip_time_ldouble_as_timespec(long double d);
+#ifdef CSNIP_CONF__HAVE_TIMEVAL
 /** timeval -> timespec */
 struct timespec csnip_time_timeval_as_timespec(struct timeval tv);
+#endif
 /**@}*/
 
 
@@ -83,8 +88,10 @@ float csnip_time_timespec_as_float(struct timespec ts);
 double csnip_time_timespec_as_double(struct timespec ts);
 /** timespec -> long double */
 long double csnip_time_timespec_as_ldouble(struct timespec ts);
+#ifdef CSNIP_CONF__HAVE_TIMEVAL
 /** timespec -> timeval */
 struct timeval csnip_time_timespec_as_timeval(struct timespec ts);
+#endif
 /**@}*/
 
 /** Sleep with subsecond precision. */
@@ -112,6 +119,15 @@ struct timespec csnip_time_sub(struct timespec a, struct timespec b);
 #define csnip_time_AsTimespec(src) \
 	csnip_time__AsTimespec((src))
 /** @cond */
+#ifdef CSNIP_CONF__HAVE_TIMEVAL
+#define csnip_time__GselTimevalAsTimespec(src) \
+	  struct timeval: \
+	    csnip_time_timeval_as_timespec( \
+	      _Generic(src, struct timeval: src, \
+			default: (struct timeval){ 0 })),
+#else
+#define csnip_time__GselTimevalAsTimespec(src)
+#endif
 #define csnip_time__AsTimespec(src) \
 	_Generic(src, \
 	  time_t: \
@@ -126,10 +142,7 @@ struct timespec csnip_time_sub(struct timespec a, struct timespec b);
 	  long double: \
 	    csnip_time_ldouble_as_timespec( \
 		_Generic(src, long double: src, default: 0)), \
-	  struct timeval: \
-	    csnip_time_timeval_as_timespec( \
-	      _Generic(src, struct timeval: src, \
-			default: (struct timeval){ 0 })), \
+	  csnip_time__GselTimevalAsTimespec(src) \
 	  struct timespec: src)
 /** @endcond */
 
@@ -143,6 +156,13 @@ struct timespec csnip_time_sub(struct timespec a, struct timespec b);
 #define csnip_time_Convert(src, target) \
 	csnip_time__Convert((src), (target), csnip__tmp_ts)
 /** @cond */
+#ifdef CSNIP_CONF__HAVE_TIMEVAL
+#define csnip_time__GselTimespecAsTimeval(tmp) \
+	struct timeval: \
+	  csnip_time_timespec_as_timeval(tmp),
+#else
+#define csnip_time__GselTimespecAsTimeval(tmp)
+#endif
 #define csnip_time__Convert(src, target,		tmp) \
 	do { \
 		struct timespec tmp = \
@@ -156,8 +176,7 @@ struct timespec csnip_time_sub(struct timespec a, struct timespec b);
 		    csnip_time_timespec_as_double(tmp), \
 		  long double: \
 		    csnip_time_timespec_as_ldouble(tmp), \
-		  struct timeval: \
-		    csnip_time_timespec_as_timeval(tmp), \
+		  csnip_time__GselTimespecAsTimeval(tmp) \
 		  struct timespec: \
 		    tmp); \
 	} while (0)

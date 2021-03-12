@@ -1,17 +1,22 @@
 ## Configure csnip
 
 include(Symbols)
+include(CheckStructHasMember)
 
-#function(create_csnip_conf_h)
-#	# Configure the file
-#	configure_file(csnip_conf.h.in csnip_conf.h)
-#endfunction()
-#create_csnip_conf_h()
+function(create_csnip_conf_h)
+	# Define the variables
+	check_struct_has_member("struct timeval" tv_sec "sys/time.h"
+	  CSNIP_CONF__HAVE_TIMEVAL)
+
+	# Create the template file
+	configure_file(csnip_conf.h.in csnip_conf.h)
+endfunction()
+create_csnip_conf_h()
 
 ## Axl build rules
 
 set(public_headers
-#	${CMAKE_CURRENT_BINARY_DIR}/csnip_conf.h
+	${CMAKE_CURRENT_BINARY_DIR}/csnip_conf.h
 	arr.h
 	cext.h
 	clopts.h
