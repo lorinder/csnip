@@ -58,6 +58,7 @@ add_library(csnip SHARED
 	time.c
 	util.c
 	x_asprintf.c
+	x_strdup.c
 	x_strerror_r.c
 )
 target_link_libraries(csnip -lm)

@@ -40,6 +40,9 @@ int csnip_x_asprintf(char** strp, const char* format, ...);
  */
 int csnip_x_vasprintf(char** strp, const char* format, va_list ap);
 
+/**	Portable strdup(). */
+char* csnip_x_strdup(const char* s);
+
 /** @} */
 
 #endif /* CSNIP_X_H */
@@ -48,5 +51,6 @@ int csnip_x_vasprintf(char** strp, const char* format, va_list ap);
 #define x_strerror_r			csnip_x_strerror_r
 #define x_asprintf			csnip_x_asprintf
 #define x_vasprintf			csnip_x_vasprintf
+#define x_strdup			csnip_x_strdup
 #define CSNIP_X_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_X_HAVE_SHORT_NAMES */
