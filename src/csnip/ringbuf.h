@@ -652,6 +652,8 @@
 #define ringbuf_PopHeadIdx	csnip_ringbuf_PopHeadIdx
 #define ringbuf_PushTailIdx	csnip_ringbuf_PushTailIdx
 #define ringbuf_PopTailIdx	csnip_ringbuf_PopTailIdx
+#define ringbuf_IsFull		csnip_ringbuf_IsFull
+#define ringbuf_IsEmpty		csnip_ringbuf_IsEmpty
 #define ringbuf_CheckIdx	csnip_ringbuf_CheckIdx
 #define ringbuf_AddWrap		csnip_ringbuf_AddWrap
 #define ringbuf_AddWrapSet	csnip_ringbuf_AddWrapSet
