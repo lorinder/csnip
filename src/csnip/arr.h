@@ -134,6 +134,7 @@
 				(a)[csnip_i] = (a)[csnip_i - 1]; \
 			} \
 			(a)[(index)] = (val); \
+			++(n); \
 		} while(0)
 
 /**	Remove an array member at a given index.
