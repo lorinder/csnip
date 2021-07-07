@@ -43,9 +43,7 @@ set(public_headers
 	util.h
 	x.h
 )
-
-add_library(csnip SHARED
-	${public_headers}
+set(c_sources
 	clopts.c
 	err.c
 	fnv_hash.c
@@ -61,9 +59,22 @@ add_library(csnip SHARED
 	x_strdup.c
 	x_strerror_r.c
 )
+
+add_library(csnip SHARED
+	${public_headers}
+	${c_sources}
+)
 target_link_libraries(csnip -lm)
 target_include_directories(csnip PUBLIC ..)
 target_include_directories(csnip PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
+
+add_library(csnip-static STATIC
+	${public_headers}
+	${c_sources}
+)
+target_link_libraries(csnip-static -lm)
+target_include_directories(csnip-static PUBLIC ..)
+target_include_directories(csnip-static PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 # Add feature preprocessor flags
 function (add_feature_defs src)
@@ -85,6 +96,6 @@ set_target_properties(csnip PROPERTIES
 	PUBLIC_HEADER "${public_headers}"
 )
 
-install(TARGETS csnip LIBRARY
+install(TARGETS csnip csnip-static LIBRARY
 	DESTINATION ${INSTALL_LIBDIR}
 	PUBLIC_HEADER DESTINATION ${INSTALL_INCLUDEDIR}/csnip)
