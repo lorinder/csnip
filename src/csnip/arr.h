@@ -60,7 +60,7 @@
  *
  *	It is possible to shrink the reserved size of an array by
  *	calling csnip_arr_Reserve, but not to shrink the array itself.
- *	That is, requests for least_cap < n are not honoured.
+ *	That is, requests for least_cap < n are silently ignored.
  */
 #define csnip_arr_Reserve(a, n, cap, least_cap, err) \
 	csnip_arr__Reserve((a), (n), (cap), (least_cap), (err), \
