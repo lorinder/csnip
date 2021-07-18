@@ -1,4 +1,4 @@
-#include "x.h"
+#include <csnip/x.h>
 
 #if defined(HAVE_STRERROR_R)
 /*  Linux: Make sure we get XSI version of strerror_r() */

@@ -55,9 +55,9 @@ set(c_sources
 	runif.c
 	time.c
 	util.c
-	x_asprintf.c
-	x_strdup.c
-	x_strerror_r.c
+	x/asprintf.c
+	x/strdup.c
+	x/strerror_r.c
 )
 
 add_library(csnip SHARED
@@ -88,7 +88,7 @@ endfunction ()
 add_feature_defs(mem.c HAVE_POSIX_MEMALIGN HAVE_ALIGNED_ALLOC HAVE_MEMALIGN
   HAVE_ALIGNED_MALLOC)
 add_feature_defs(log.c HAVE_REGCOMP HAVE_FLOCKFILE)
-add_feature_defs(x_strerror_r.c HAVE_STRERROR_R HAVE_STRERROR_S)
+add_feature_defs(x/strerror_r.c HAVE_STRERROR_R HAVE_STRERROR_S)
 
 set_target_properties(csnip PROPERTIES
 	SOVERSION	1
