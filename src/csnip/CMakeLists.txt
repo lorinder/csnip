@@ -64,7 +64,7 @@ add_library(csnip SHARED
 	${public_headers}
 	${c_sources}
 )
-target_link_libraries(csnip -lm)
+target_link_libraries(csnip -lm Threads::Threads)
 target_include_directories(csnip PUBLIC ..)
 target_include_directories(csnip PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
 
@@ -72,7 +72,7 @@ add_library(csnip-static STATIC
 	${public_headers}
 	${c_sources}
 )
-target_link_libraries(csnip-static -lm)
+target_link_libraries(csnip-static -lm Threads::Threads)
 target_include_directories(csnip-static PUBLIC ..)
 target_include_directories(csnip-static PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
 

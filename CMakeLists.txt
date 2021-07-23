@@ -8,6 +8,8 @@ project(csnip
 # Add module path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
+find_package(Threads REQUIRED)
+
 include(EnableWarnings)
 include(CxxSetup)
 include(DoxySetup)

@@ -157,7 +157,10 @@
  *		  associated with the hashing table `tbl`.
  *
  *	Entry search, insertion and removal:
- *		* insert
+ *		* `insert`: `int insert(tbltype* tbl, int* err,
+ *		  entrytype E)`.  Insert a new entry only if no entry
+ *		  with the same key exists already in the table.
+ *		  Returns 1 if the key was inserted, 0 otherwise.
  *		* `insert_or_assign`: `int insert_or_assign(tbltype*
  *		  tbl, int* err, entrytype E, entrytype* ret_old);` If
  *		  an entry with the same key exists in the table,

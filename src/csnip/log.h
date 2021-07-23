@@ -92,6 +92,9 @@ extern "C" {
 void csnip_log_config0(const char* filters_expr,
 		FILE* log_out);
 
+/**	Free the logger. */
+void csnip_log_free(void);
+
 /** @cond */
 void csnip_log__mesg_trailer(FILE* fp);
 void csnip_log__perror_trailer(FILE* fp);
@@ -220,6 +223,7 @@ void csnip_log__print(
 #define LOG_PRIO_WARN		CSNIP_LOG_PRIO_WARN
 #define LOG_PRIO_ERR		CSNIP_LOG_PRIO_ERR
 #define log_config0		csnip_log_config0
+#define log_free		csnip_log_free
 #define log_Mesg		csnip_log_Mesg
 #define log_MesgForComp		csnip_log_MesgForComp
 #define log_Perror		csnip_log_Perror

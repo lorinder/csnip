@@ -1,4 +1,3 @@
-
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -10,6 +9,7 @@
 #ifdef HAVE_REGCOMP
 #include <regex.h>
 #endif
+#include <pthread.h>
 
 #define CSNIP_SHORT_NAMES
 #include <csnip/cext.h>
@@ -53,6 +53,7 @@ typedef struct {
 /**	Priority cache table. */
 CSNIP_LPHASH_TABLE_DEF_TYPE(priotbl, comp_prio)
 
+/**	Log Processor */
 typedef struct {
 
 	/** @{ Linked list of filter rules */
@@ -62,6 +63,12 @@ typedef struct {
 
 	/** Global minimum priority */
 	int min_prio;
+
+	/** Access lock.
+	 *
+	 *  This access lock protects access to ptbl.
+	 */
+	pthread_rwlock_t lock;
 
 	/** Priorities cache */
 	struct priotbl* ptbl;
@@ -90,7 +97,8 @@ static void proc_init(csnip_log_processor* P)
 	P->rules_head = P->rules_tail = NULL;
 	P->min_prio = 100;
 	int err = 0;
-	P->ptbl = ptbl_make(&err);
+	pthread_rwlock_init(&P->lock, NULL);
+	P->ptbl = ptbl_make(&err); // error handling
 	P->fp = NULL;
 }
 
@@ -110,6 +118,9 @@ static void proc_free(csnip_log_processor* P)
 		next = h->next;
 		mem_Free(h);
 	}
+
+	/* Free lock */
+	pthread_rwlock_destroy(&P->lock);
 
 	/* Free the hashing table */
 	ptbl_free(P->ptbl);
@@ -182,7 +193,7 @@ void csnip_log_config0(const char* filter_expr,
 		FILE* log_out_)
 {
 	/* Clear out old, if any */
-	if (proc != NULL) {
+	if (proc) {
 		proc_free(proc);
 		proc = NULL;
 	}
@@ -203,6 +214,14 @@ void csnip_log_config0(const char* filter_expr,
 
 	/* Set the log file target */
 	proc->fp = (log_out_ ? log_out_ : stderr);
+}
+
+void csnip_log_free(void)
+{
+	if (proc != 0) {
+		proc_free(proc);
+		proc = NULL;
+	}
 }
 
 void csnip_log__mesg_trailer(FILE* fp)
@@ -233,7 +252,9 @@ void csnip_log__print(
 	csnip_log_processor* P = proc;
 
 	/* Check whether to display */
+	pthread_rwlock_rdlock(&P->lock);
 	comp_prio* cp = ptbl_find(proc->ptbl, component);
+	pthread_rwlock_unlock(&P->lock);
 	if (cp != NULL) {
 		if (prio < cp->min_prio)
 			return;
@@ -263,7 +284,9 @@ void csnip_log__print(
 			.component = component,
 			.min_prio = comp_min_prio
 		};
+		pthread_rwlock_wrlock(&P->lock);
 		ptbl_insert(P->ptbl, NULL, Pent);
+		pthread_rwlock_unlock(&P->lock);
 
 		/* Check if we should display */
 		if (prio < Pent.min_prio)
