@@ -75,6 +75,9 @@ add_library(csnip-static STATIC
 target_link_libraries(csnip-static -lm Threads::Threads)
 target_include_directories(csnip-static PUBLIC ..)
 target_include_directories(csnip-static PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
+set_target_properties(csnip-static PROPERTIES
+	POSITION_INDEPENDENT_CODE	ON
+)
 
 # Add feature preprocessor flags
 function (add_feature_defs src)
