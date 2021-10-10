@@ -2,9 +2,11 @@ set(samples_c
 	clopts.c
 	coro.c
 	dlist.c
+	fmt.c
 	getopt.c
 	meanvar.c
 	sort_cmdline.c
+	toy_printf.c
 )
 if (BUILD_CXX_PIECES)
 	set(samples_cxx

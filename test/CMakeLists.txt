@@ -4,6 +4,7 @@ set(tests_c
 	clopts_test0.c
 	err_test0.c
 	err_test1.c
+	fmt_test0.c
 	fnv_hash_test.c
 	hashtable_test0.c
 	hashtable_test1.c

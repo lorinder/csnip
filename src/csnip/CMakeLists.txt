@@ -23,6 +23,7 @@ set(public_headers
 	coro.h
 	err.h
 	find.h
+	fmt.h
 	hash.h
 	heap.h
 	limits.h
