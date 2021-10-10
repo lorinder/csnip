@@ -176,14 +176,17 @@
  *		  Otherwise, insert E into the table, and return a
  *		  pointer to the newly inserted element.
  *		* remove
- *		* `find`: `entrytype* find(tbltype* T, keytype* k);`
+ *		* `find`: `entrytype* find(tbltype* T, keytype k);`
  *		  Find the entry with the given key.  If it exists, a
  *		  pointer to the entry is returned.  Otherwise, `NULL`
  *		  is returned.
  *
  *	Size and capacity:
- *		* size
- *		* capacity
+ *		* `size`: `size_t size(tbltype* tbl);`  Retrieve the
+ *		  number of entries in the hash table.
+ *		* `capacity`: `size_t capacity(tbltype* tbl);`  Retrieve
+ *		  the capacity of the hash table, i.e., the size of the
+ *		  underlying backing array.
  *
  *	Slot and entry access:
  *		* findslot
