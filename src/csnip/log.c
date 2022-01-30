@@ -1,3 +1,5 @@
+#include <csnip/csnip_conf.h>
+
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -6,7 +8,7 @@
 #include <stdbool.h>
 
 #include <sys/types.h>
-#ifdef HAVE_REGCOMP
+#ifdef CSNIP_CONF__HAVE_REGCOMP
 #include <regex.h>
 #endif
 #include <pthread.h>
@@ -29,7 +31,7 @@
  *	priority is at least equal to the @a prio field given.
  */
 struct filter_rule_S {
-#ifdef HAVE_REGCOMP
+#ifdef CSNIP_CONF__HAVE_REGCOMP
 	regex_t re;		/**< Component matching expr */
 #else
 	char* substr;		/**< Substring to match */
@@ -110,7 +112,7 @@ static void proc_free(csnip_log_processor* P)
 		h != NULL;
 		h = next)
 	{
-#ifdef HAVE_REGCOMP
+#ifdef CSNIP_CONF__HAVE_REGCOMP
 		regfree(&h->re);
 #else
 		mem_Free(h->substr);
@@ -153,7 +155,7 @@ static void proc_add_filters(csnip_log_processor* P, char* filters_expr)
 			struct filter_rule_S* ent;
 			mem_Alloc(1, ent, _);
 			ent->prio = prio;
-#ifdef HAVE_REGCOMP
+#ifdef CSNIP_CONF__HAVE_REGCOMP
 			int err = regcomp(&ent->re,
 					expr,
 					REG_EXTENDED|REG_NOSUB);
@@ -167,7 +169,7 @@ static void proc_add_filters(csnip_log_processor* P, char* filters_expr)
 						next,		// mnext
 						ent);		// el
 			} else {
-#ifdef HAVE_REGCOMP
+#ifdef CSNIP_CONF__HAVE_REGCOMP
 				char errbuf[80];
 				regerror(err, &ent->re, errbuf, sizeof(errbuf));
 				fprintf(stderr,
@@ -265,7 +267,7 @@ void csnip_log__print(
 			rule != NULL;
 			rule = rule->next)
 		{
-#ifdef HAVE_REGCOMP
+#ifdef CSNIP_CONF__HAVE_REGCOMP
 			const bool match \
 			  = (regexec(&rule->re, component, 0, NULL, 0) == 0);
 #else
@@ -294,7 +296,7 @@ void csnip_log__print(
 	}
 
 	/* Display log entry */
-#ifdef HAVE_FLOCKFILE
+#ifdef CSNIP_CONF__HAVE_FLOCKFILE
 	flockfile(P->fp);
 #endif
 	if (P->fp) {
@@ -314,7 +316,7 @@ void csnip_log__print(
 		errno = errno_save;
 		(*print_trailer)(P->fp);
 	}
-#ifdef HAVE_FLOCKFILE
+#ifdef CSNIP_CONF__HAVE_FLOCKFILE
 	funlockfile(P->fp);
 #endif
 }

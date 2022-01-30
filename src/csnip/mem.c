@@ -1,7 +1,10 @@
+#include <csnip/csnip_conf.h>
+
 #include <errno.h>
 #include <stdlib.h>
 
-#if defined(HAVE_MEMALIGN) || defined(HAVE_ALIGNED_MALLOC)
+#if defined(CSNIP_CONF__HAVE_MEMALIGN) \
+	|| defined(CSNIP_CONF__HAVE_ALIGNED_MALLOC)
 #include <malloc.h>
 #endif
 
@@ -14,14 +17,16 @@
  * back to memalign().
  */
 
-#if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE_ALIGNED_ALLOC) \
-	|| defined(HAVE_MEMALIGN)
+#if defined(CSNIP_CONF__HAVE_POSIX_MEMALIGN) \
+	|| defined(CSNIP_CONF__HAVE_ALIGNED_ALLOC) \
+	|| defined(CSNIP_CONF__HAVE_MEMALIGN)
 
 void* csnip_mem_aligned_alloc(size_t nAlign, size_t nSize, int* err_ret)
 {
-#if defined(HAVE_POSIX_MEMALIGN) || !defined(HAVE_ALIGNED_ALLOC)
+#if defined(CSNIP_CONF__HAVE_POSIX_MEMALIGN) \
+	|| !defined(CSNIP_CONF__HAVE_ALIGNED_ALLOC)
 	void* p_ret;
-#ifdef HAVE_POSIX_MEMALIGN
+#ifdef CSNIP_CONF__HAVE_POSIX_MEMALIGN
 	const int err = posix_memalign(&p_ret, nAlign, nSize);
 #else
 	int err = 0;
@@ -74,7 +79,7 @@ void csnip_mem_aligned_free(void* mem)
 	free(mem);
 }
 
-#elif defined(HAVE_ALIGNED_MALLOC)
+#elif defined(CSNIP_CONF__HAVE_ALIGNED_MALLOC)
 
 /* Windows: aligned allocation is provided with the _aligned_malloc()
  * / _aligned_free() pair of functions.
@@ -92,4 +97,4 @@ void csnip_mem_aligned_free(void* mem)
 	_aligned_free(mem);
 }
 
-#endif /* HAVE_ALIGNED_MALLOC */
+#endif /* CSNIP_CONF__HAVE_ALIGNED_MALLOC */

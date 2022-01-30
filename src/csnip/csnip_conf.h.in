@@ -6,7 +6,34 @@
  *	Csnip compile-time configuration settings.
  */
 
-/** Macro defined if "struct timeval" is a known type. */
+/** posix_memalign() */
+#cmakedefine CSNIP_CONF__HAVE_POSIX_MEMALIGN
+
+/** aligned_alloc() */
+#cmakedefine CSNIP_CONF__HAVE_ALIGNED_ALLOC
+
+/** memalign() */
+#cmakedefine CSNIP_CONF__HAVE_MEMALIGN
+
+/** regcomp() */
+#cmakedefine CSNIP_CONF__HAVE_REGCOMP
+
+/** strerror_r() */
+#cmakedefine CSNIP_CONF__HAVE_STRERROR_R
+
+/** strerror_s() */
+#cmakedefine CSNIP_CONF__HAVE_STRERROR_S
+
+/** flockfile() */
+#cmakedefine CSNIP_CONF__HAVE_FLOCKFILE
+
+/** writev() */
+#cmakedefine CSNIP_CONF__HAVE_WRITEV
+
+/** readv() */
+#cmakedefine CSNIP_CONF__HAVE_READV
+
+/** struct timeval */
 #cmakedefine CSNIP_CONF__HAVE_TIMEVAL
 
 #endif /* CSNIP_CSNIP_CONF_H */
