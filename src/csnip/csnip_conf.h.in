@@ -6,6 +6,68 @@
  *	Csnip compile-time configuration settings.
  */
 
+#include <stddef.h>
+
+/** @defgroup conf_user_pref	User preferences
+ *  @{
+ *
+ *  @brief User preferences
+ *
+ *  These settings can be freely changed; though some settings may
+ *  result in a feature-reduced csnip.  E.g. if
+ *  CSNIP_CONF__EMULATE_READV is turned off, and the system does not
+ *  have a readv() API call either, then no csnip_x_readv() function
+ *  will be provided.
+ */
+
+/** Use csnip's emulated readv() implementation.
+ *
+ *  If this option is disabled, csnip will use the system readv()
+ *  for the implementation of csnip_x_readv(); if there is no system
+ *  readv(), then the function will not be available in this case.
+ *
+ *  If the option is enabled, csnip's own implementation based on read()
+ *  is used.  (That implementation is typically less efficient than the
+ *  system one.)
+ *
+ *  By default this option is disabled if readv() is available, and
+ *  enabled if it isn't.
+ */
+#cmakedefine CSNIP_CONF__EMULATE_READV
+
+/** Use csnip's emulated writev() implementation.
+ *
+ *  Anologuous to the similar setting for readv().
+ *  @sa CSNIP_CONF__EMULATE_READV
+ */
+#cmakedefine CSNIP_CONF__EMULATE_WRITEV
+
+/** @}
+ */
+
+/** @defgroup conf_env		Environment properties
+ *  @{
+ *
+ *  @brief Environment properties
+ *
+ *  These contain properties of the build environment.  E.g., results of
+ *  looking for libc function, etc.  It typically does not make sense to
+ *  hand-edit them, unless you know what you're doing.
+ *
+ */
+
+/** sizeof(size_t) */
+#define CSNIP_CONF__SIZEOF_SIZE_T @CSNIP_CONF__SIZEOF_SIZE_T@
+
+/** sys/types.h */
+#cmakedefine CSNIP_CONF__HAVE_SYS_TYPES_H
+
+/** stdint.h */
+#cmakedefine CSNIP_CONF__HAVE_STDINT_H
+
+/** ssize_t */
+#cmakedefine CSNIP_CONF__HAVE_SSIZE_T
+
 /** posix_memalign() */
 #cmakedefine CSNIP_CONF__HAVE_POSIX_MEMALIGN
 
