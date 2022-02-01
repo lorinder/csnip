@@ -14,6 +14,7 @@ include(EnableWarnings)
 include(CxxSetup)
 include(DoxySetup)
 include(InstallSetup)
+include(BuildDirSetup)
 
 enable_testing()
 
