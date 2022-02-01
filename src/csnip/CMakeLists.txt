@@ -34,7 +34,7 @@ check_symbol_exists(aligned_alloc "stdlib.h"
 check_symbol_exists(memalign "malloc.h"
 	CSNIP_CONF__HAVE_MEMALIGN)
 check_symbol_exists(_aligned_malloc "malloc.h"
-	CSNIP_CONF__HAVE_ALIGNED_MALLOC)
+	CSNIP_CONF__HAVE__ALIGNED_MALLOC)
 
 # regular expressions
 check_symbol_exists(regcomp "regex.h"

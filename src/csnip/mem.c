@@ -79,7 +79,7 @@ void csnip_mem_aligned_free(void* mem)
 	free(mem);
 }
 
-#elif defined(CSNIP_CONF__HAVE_ALIGNED_MALLOC)
+#elif defined(CSNIP_CONF__HAVE__ALIGNED_MALLOC)
 
 /* Windows: aligned allocation is provided with the _aligned_malloc()
  * / _aligned_free() pair of functions.

@@ -77,6 +77,9 @@
 /** memalign() */
 #cmakedefine CSNIP_CONF__HAVE_MEMALIGN
 
+/** _aligned_malloc() */
+#cmakedefine CSNIP_CONF__HAVE__ALIGNED_MALLOC
+
 /** regcomp() */
 #cmakedefine CSNIP_CONF__HAVE_REGCOMP
 
