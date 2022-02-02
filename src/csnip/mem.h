@@ -321,6 +321,7 @@ template<typename T>
 
 #if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_MEM_HAVE_SHORT_NAMES)
 #define mem_aligned_alloc	csnip_mem_aligned_alloc
+#define mem_aligned_free	csnip_mem_aligned_free
 #define mem_Alloc		csnip_mem_Alloc
 #define mem_Alloc0		csnip_mem_Alloc0
 #define mem_AlignedAlloc	csnip_mem_AlignedAlloc
