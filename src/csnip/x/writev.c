@@ -1,27 +1,15 @@
-#include <csnip/csnip_conf.h>
+#include <stdlib.h>
+#include <string.h>
 
-#ifdef CSNIP_CONF__EMULATE_WRITEV
-  #include <stdlib.h>
-  #include <string.h>
-
-  #include <errno.h>
-  #include <unistd.h>
-#endif
-
-#ifdef CSNIP_CONF__HAVE_WRITEV
-  #include <sys/uio.h>
-#endif
+#include <errno.h>
+#include <unistd.h>
 
 #include <csnip/x.h>
 
-#if defined(CSNIP_CONF__HAVE_WRITEV) || defined(CSNIP_CONF__EMULATE_WRITEV)
-csnip_x_ssize_t csnip_x_writev(int fd,
+csnip_x_ssize_t csnip_x_writev_imp(int fd,
 			const struct csnip_x_iovec* iov,
 			int iovcnt)
 {
-#ifndef CSNIP_CONF__EMULATE_WRITEV
-	return writev(fd, iov, iovcnt);
-#else
 	/* Compute the total block size */
 	size_t bsz = 0;
 	for (int i = 0; i < iovcnt; ++i)
@@ -45,6 +33,4 @@ csnip_x_ssize_t csnip_x_writev(int fd,
 	/* Free, return */
 	free(p);
 	return r;
-#endif
 }
-#endif

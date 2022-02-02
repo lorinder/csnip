@@ -13,10 +13,11 @@
  *	csnip's wrapper.
  */
 
-#include <csnip/csnip_conf.h>
-
+#include <stdio.h>
 #include <stddef.h>
 #include <stdarg.h>
+
+#include <csnip/csnip_conf.h>
 
 #if defined(CSNIP_CONF__HAVE_READV) || defined(CSNIP_CONF__HAVE_WRITEV)
 #  include <sys/uio.h>
@@ -24,6 +25,10 @@
 
 #if defined(CSNIP_CONF__HAVE_SYS_TYPES_H)
 #  include <sys/types.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 /**	ssize_t */
@@ -86,17 +91,80 @@ struct csnip_x_iovec {
 };
 #endif
 
-/**	Portable writev().  */
-csnip_x_ssize_t csnip_x_writev(int fd,
+/**	Wrapper for writev() or csnip_x_writev().
+ *
+ *	On systems that have writev(), that system call is used.
+ *	Otherwise, the less efficient csnip_x_writev_imp() is used.
+ */
+#define csnip_x_writev writev
+#if !defined(CSNIP_CONF__HAVE_WRITEV)
+#undef csnip_x_writev
+#define csnip_x_writev csnip_x_writev_imp
+#endif
+
+/**	Csnip's own writev().
+ *
+ *	Behaves like writev(), though isn't as efficient.
+ *
+ *	This implementation first copies the scattered blocks into a
+ *	temporary buffer and then calls write().  If the write() system
+ *	call respects POSIX' atomicity guarantees, then so will this
+ *	implementation of readv().
+ */
+csnip_x_ssize_t csnip_x_writev_imp(int fd,
 			const struct csnip_x_iovec* iov,
 			int iovcnt);
 
-/**	Portable readv(). */
-csnip_x_ssize_t csnip_x_readv(int fd,
+/**	Wrapper for readv() or csnip_x_readv_imp().
+ *
+ *	Maps to readv() on systems that have it, and to
+ *	csnip_x_readv_imp() otherwise.
+ */
+#define csnip_x_readv readv
+#if !defined(CSNIP_CONF__HAVE_READV)
+#undef csnip_x_readv
+#define csnip_x_readv csnip_x_readv_imp
+#endif
+
+/**	Csnip's own readv().
+ *
+ *	Reads into a temporary buffer using read(), then copies into the
+ *	scattered blocks.
+ */
+csnip_x_ssize_t csnip_x_readv_imp(int fd,
 			const struct csnip_x_iovec* iov,
 			int iovcnt);
+
+/**	Wrapper for getdelim or csnip_x_getdelim_imp() */
+#define csnip_x_getdelim getdelim
+#if !defined(CSNIP_CONF__HAVE_GETDELIM)
+#undef csnip_getdelim
+#define csnip_x_getdelim csnip_x_getdelim_imp
+#endif
+
+/**	Csnip's own getdelim() */
+csnip_x_ssize_t csnip_x_getdelim_imp(char** lineptr,
+			size_t* n,
+			int delim,
+			FILE* fp);
+
+/**	Wrapper for getline or csnip_x_getline_imp() */
+#define csnip_x_getline getline
+#if !defined(CSNIP_CONF__HAVE_GETLINE)
+#undef csnip_getline
+#define csnip_x_getline csnip_x_getline_imp
+#endif
+
+/**	Csnip's own getline() */
+csnip_x_ssize_t csnip_x_getline_imp(char** lineptr,
+			size_t* n,
+			FILE* fp);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CSNIP_X_H */
 
@@ -108,6 +176,12 @@ csnip_x_ssize_t csnip_x_readv(int fd,
 #define x_vasprintf			csnip_x_vasprintf
 #define x_strdup			csnip_x_strdup
 #define x_writev			csnip_x_writev
+#define x_writev_imp			csnip_x_writev_imp
 #define x_readv				csnip_x_readv
+#define x_readv_imp			csnip_x_readv_imp
+#define x_getdelim			csnip_x_getdelim
+#define x_getdelim_imp			csnip_x_getdelim_imp
+#define x_getline			csnip_x_getline
+#define x_getline_imp			csnip_x_getline_imp
 #define CSNIP_X_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_X_HAVE_SHORT_NAMES */

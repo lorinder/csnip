@@ -26,21 +26,30 @@ if (HAVE_SSIZE_T)
 	set(CSNIP_CONF__HAVE_SSIZE_T 1)
 endif ()
 
-# aligned allocation
-check_symbol_exists(posix_memalign "stdlib.h"
-	CSNIP_CONF__HAVE_POSIX_MEMALIGN)
 check_symbol_exists(aligned_alloc "stdlib.h"
 	CSNIP_CONF__HAVE_ALIGNED_ALLOC)
-check_symbol_exists(memalign "malloc.h"
-	CSNIP_CONF__HAVE_MEMALIGN)
 check_symbol_exists(_aligned_malloc "malloc.h"
 	CSNIP_CONF__HAVE__ALIGNED_MALLOC)
-
-# regular expressions
+check_symbol_exists(flockfile "stdio.h"
+	CSNIP_CONF__HAVE_FLOCKFILE)
+check_symbol_exists(funlockfile "stdio.h"
+	CSNIP_CONF__HAVE_FUNLOCKFILE)
+check_symbol_exists(getc_unlocked "stdio.h"
+	CSNIP_CONF__HAVE_GETC_UNLOCKED)
+check_symbol_exists(getdelim "stdio.h"
+	CSNIP_CONF__HAVE_GETDELIM)
+check_symbol_exists(getline "stdio.h"
+	CSNIP_CONF__HAVE_GETLINE)
+check_symbol_exists(memalign "malloc.h"
+	CSNIP_CONF__HAVE_MEMALIGN)
+check_symbol_exists(posix_memalign "stdlib.h"
+	CSNIP_CONF__HAVE_POSIX_MEMALIGN)
+check_symbol_exists(putc_unlocked "stdio.h"
+	CSNIP_CONF__HAVE_PUTC_UNLOCKED)
+check_symbol_exists(readv "sys/uio.h"
+	CSNIP_CONF__HAVE_READV)
 check_symbol_exists(regcomp "regex.h"
 	CSNIP_CONF__HAVE_REGCOMP)
-
-# strerror_r
 set(CMAKE_REQUIRED_DEFINITIONS
 	"-D_POSIX_C_SOURCE=200809L" "-D_GNU_SOURCE")
 check_symbol_exists(strerror_r "string.h"
@@ -48,37 +57,18 @@ check_symbol_exists(strerror_r "string.h"
 unset(CMAKE_REQUIRED_DEFINITIONS)
 check_symbol_exists(strerror_s "sec_api/string_s.h"
 	CSNIP_CONF__HAVE_STRERROR_S)
-
-# flockfile
-check_symbol_exists(flockfile "stdio.h"
-	CSNIP_CONF__HAVE_FLOCKFILE)
-
-# uio
-check_symbol_exists(writev "sys/uio.h"
-	CSNIP_CONF__HAVE_WRITEV)
-check_symbol_exists(readv "sys/uio.h"
-	CSNIP_CONF__HAVE_READV)
-
-# timeval
 check_struct_has_member("struct timeval" tv_sec "sys/time.h"
 	CSNIP_CONF__HAVE_TIMEVAL)
+check_symbol_exists(writev "sys/uio.h"
+	CSNIP_CONF__HAVE_WRITEV)
 
-## Step 2:  Set compilation variables
-
-if (CSNIP_CONF__HAVE_READV)
-	set(CSNIP_CONF__EMULATE_READV OFF CACHE BOOL
-	  "Use csnip's emulated readv() implementation")
-else ()
-	set(CSNIP_CONF__EMULATE_READV ON CACHE BOOL
-	  "Use csnip's emulated readv() implementation")
-endif ()
-if (CSNIP_CONF__HAVE_WRITEV)
-	set(CSNIP_CONF__EMULATE_WRITEV OFF CACHE BOOL
-	  "Use csnip's emulated writev() implementation")
-else ()
-	set(CSNIP_CONF__EMULATE_WRITEV ON CACHE BOOL
-	  "Use csnip's emulated writev() implementation")
-endif ()
+set(CSNIP_CONF__HAVE_UNLOCKED_STDIO 0)
+if (${CSNIP_CONF__HAVE_FLOCKFILE}
+  AND ${CSNIP_CONF__HAVE_FUNLOCKFILE}
+  AND ${CSNIP_CONF__HAVE_GETC_UNLOCKED}
+  AND ${CSNIP_CONF__HAVE_PUTC_UNLOCKED})
+	set(CSNIP_CONF__HAVE_UNLOCKED_STDIO 1)
+endif()
 
 # Create the template file
 configure_file(csnip_conf.h.in csnip_conf.h)
@@ -127,6 +117,8 @@ set(c_sources
 	time.c
 	util.c
 	x/asprintf.c
+	x/getdelim.c
+	x/getline.c
 	x/readv.c
 	x/strdup.c
 	x/strerror_r.c
