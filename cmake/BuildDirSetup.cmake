@@ -1,10 +1,8 @@
-# On Windows, place all binaries and DLLs into a common path so the DLLs
-# are found when executing the binaries.  This is needed for testing the
-# built binaries in the source tree without installation.
-#
-# On other systems, we leave the default, which places binaries in the
-# build tree corresponding to the source locations.
-if (WIN32)
-	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-out)
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-out)
-endif ()
+# Place all binaries and libraries into a common directory.
+# 
+# This is needed on Windows so that the binaries find the DLLs they are
+# linked against.  We do the same everywhere else for simplicity and
+# uniformity.
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-out)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-out)
