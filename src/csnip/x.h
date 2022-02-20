@@ -138,7 +138,7 @@ csnip_x_ssize_t csnip_x_readv_imp(int fd,
 /**	Wrapper for getdelim or csnip_x_getdelim_imp() */
 #define csnip_x_getdelim getdelim
 #if !defined(CSNIP_CONF__HAVE_GETDELIM)
-#undef csnip_getdelim
+#undef csnip_x_getdelim
 #define csnip_x_getdelim csnip_x_getdelim_imp
 #endif
 
@@ -151,7 +151,7 @@ csnip_x_ssize_t csnip_x_getdelim_imp(char** lineptr,
 /**	Wrapper for getline or csnip_x_getline_imp() */
 #define csnip_x_getline getline
 #if !defined(CSNIP_CONF__HAVE_GETLINE)
-#undef csnip_getline
+#undef csnip_x_getline
 #define csnip_x_getline csnip_x_getline_imp
 #endif
 
