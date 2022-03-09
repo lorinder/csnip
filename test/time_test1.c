@@ -78,7 +78,15 @@ void func_tests()
 	csnip_time_Convert(csnip_time_Add(base, 5.4), baseplus5);
 	char* ascbp5 = strdup(asctime(gmtime(&baseplus5)));
 	printf("+5s  time: %ld  %s", (long int)baseplus5, ascbp5);
-	if (strcmp(ascbp5, "Mon Mar  9 05:14:53 2020\n") != 0) {
+	if (strcmp(ascbp5, "Mon Mar  9 05:14:53 2020\n") != 0
+#if defined(WIN32)
+		/* Microsoft's libc generates a string that is not quite
+		 * conforming to the standard.  This is not our bug, so
+		 * no reason to fail the test suite for this reason.
+		 */
+		&& strcmp(ascbp5, "Mon Mar 09 05:14:53 2020\n") != 0
+#endif
+	) {
 		fprintf(stderr, "Error: Comparison failed.\n");
 		exit(1);
 	}
