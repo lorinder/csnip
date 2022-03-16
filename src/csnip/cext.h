@@ -35,13 +35,19 @@
  *	should use the -fvisibility=hidden flag to avoid marking all
  *	symbols, and then only selectively "export" such symbols.
  */
-#if defined(__GNUC__) || defined(__clang__)
-#define csnip_cext_export		__attribute__ ((visibility ("default")))
+#if defined(_MSC_VER)
+#  define csnip_cext_export		__declspec(dllexport)
+#elif defined(__GNUC__) || defined(__clang__)
+#  define csnip_cext_export		__attribute__ ((visibility ("default")))
+#else
+#  define csnip_cext_export
 #endif
 
 /**	Mark a symbol as being imported. */
-#if defined(__GNUC__) || defined(__clang__)
-#define csnip_cext_import
+#if defined(_MSC_VER)
+#  define csnip_cext_import		__declspec(dllimport)
+#else
+#  define csnip_cext_import
 #endif
 
 /**@}*/
