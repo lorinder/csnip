@@ -135,7 +135,7 @@ static void proc_add_filters(csnip_log_processor* P, char* filters_expr)
 {
 	char* sptr = NULL;
 	char* expr;
-	while ((expr = strtok_r(filters_expr, ":", &sptr)) != NULL) {
+	while ((expr = x_strtok_r(filters_expr, ":", &sptr)) != NULL) {
 		/* Clear filters_expr for subsequent strtok_r */
 		filters_expr = NULL;
 

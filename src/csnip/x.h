@@ -160,6 +160,17 @@ csnip_x_ssize_t csnip_x_getline_imp(char** lineptr,
 			size_t* n,
 			FILE* fp);
 
+
+/**	Wrapper for strtok_r() or csnip_x_strtok_r() */
+#define csnip_x_strtok_r strtok_r
+#if !defined(CSNIP_CONF__HAVE_STRTOK_R)
+#undef csnip_x_strtok_r
+#define csnip_x_strtok_r csnip_x_strtok_r_imp
+#endif
+
+/**	Csnip's own strtok_r() */
+char* csnip_x_strtok_r_imp(char* str, const char* delim, char** saveptr);
+
 /** @} */
 
 #ifdef __cplusplus
@@ -183,5 +194,7 @@ csnip_x_ssize_t csnip_x_getline_imp(char** lineptr,
 #define x_getdelim_imp			csnip_x_getdelim_imp
 #define x_getline			csnip_x_getline
 #define x_getline_imp			csnip_x_getline_imp
+#define x_strtok_r			csnip_x_strtok_r
+#define x_strtok_r_imp			csnip_x_strtok_r_imp
 #define CSNIP_X_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_X_HAVE_SHORT_NAMES */

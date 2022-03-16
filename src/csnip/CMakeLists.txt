@@ -61,7 +61,8 @@ check_struct_has_member("struct timeval" tv_sec "sys/time.h"
 	CSNIP_CONF__HAVE_TIMEVAL)
 check_symbol_exists(writev "sys/uio.h"
 	CSNIP_CONF__HAVE_WRITEV)
-
+check_symbol_exists(strtok_r "string.h"
+	CSNIP_CONF__HAVE_STRTOK_R)
 set(CSNIP_CONF__HAVE_UNLOCKED_STDIO 0)
 if (${CSNIP_CONF__HAVE_FLOCKFILE}
   AND ${CSNIP_CONF__HAVE_FUNLOCKFILE}
@@ -122,6 +123,7 @@ set(c_sources
 	x/readv.c
 	x/strdup.c
 	x/strerror_r.c
+	x/strtok_r.c
 	x/writev.c
 )
 

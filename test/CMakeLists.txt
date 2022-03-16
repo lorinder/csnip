@@ -21,8 +21,9 @@ set(tests_c
 	time_test1.c
 	x_asprintf_test.c
 	x_getdelim_test0.c
-	x_writev_test0.c
 	x_readv_test0.c
+	x_strtok_r_test0.c
+	x_writev_test0.c
 )
 if (BUILD_CXX_PIECES)
 	set(tests_cxx

@@ -84,6 +84,7 @@
 #cmakedefine CSNIP_CONF__HAVE_STRERROR_S
 #cmakedefine CSNIP_CONF__HAVE_TIMEVAL
 #cmakedefine CSNIP_CONF__HAVE_WRITEV
+#cmakedefine CSNIP_CONF__HAVE_STRTOK_R
 
 /** Macros for groups */
 
