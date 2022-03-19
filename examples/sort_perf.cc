@@ -8,9 +8,11 @@
 
 #include <algorithm>
 
+#define CSNIP_SHORT_NAMES
 #include <csnip/util.h>
 #include <csnip/arr.h>
 #include <csnip/sort.h>
+#include <csnip/x.h>
 
 typedef enum {
 	M_STD_SORT,
@@ -430,12 +432,12 @@ int main(int argc, char** argv)
 	int nItem = 10000;
 
 	int c;
-	while ((c = getopt(argc, argv, "k:m:N:t:h")) != -1) {
+	while ((c = x_getopt(argc, argv, "k:m:N:t:h")) != -1) {
 		switch (c) {
 		case 'k': {
-			if (strcmp(optarg, "int") == 0) {
+			if (strcmp(x_optarg, "int") == 0) {
 				key_type = K_INT;
-			} else if (strcmp(optarg, "cstr") == 0) {
+			} else if (strcmp(x_optarg, "cstr") == 0) {
 				key_type = K_CSTR;
 			}
 			break;
@@ -454,20 +456,20 @@ int main(int argc, char** argv)
 			};
 			int i;
 			for (i = 0; mtable[i].name; ++i) {
-				if (strcmp(mtable[i].name, optarg) == 0) {
+				if (strcmp(mtable[i].name, x_optarg) == 0) {
 					meth = mtable[i].m;
 					break;
 				}
 			}
 			if (mtable[i].name == NULL) {
 				fprintf(stderr, "error: sort method `%s' "
-				 "unknown.\n", optarg);
+				 "unknown.\n", x_optarg);
 				exit(1);
 			}
 			break;
 		}
 		case 'N': {
-			nItem = atoi(optarg);
+			nItem = atoi(x_optarg);
 			break;
 		}
 		case 't': {
@@ -485,14 +487,14 @@ int main(int argc, char** argv)
 			};
 			int i;
 			for (i = 0; ttable[i].name; ++i) {
-				if (strcmp(ttable[i].name, optarg) == 0) {
+				if (strcmp(ttable[i].name, x_optarg) == 0) {
 					task = ttable[i].task;
 					break;
 				}
 			}
 			if (ttable[i].name == NULL) {
 				fprintf(stderr, "error: task type `%s' "
-				  "unknown.\n", optarg);
+				  "unknown.\n", x_optarg);
 				exit(1);
 			}
 			break;
