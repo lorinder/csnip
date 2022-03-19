@@ -40,6 +40,8 @@ check_symbol_exists(getdelim "stdio.h"
 	CSNIP_CONF__HAVE_GETDELIM)
 check_symbol_exists(getline "stdio.h"
 	CSNIP_CONF__HAVE_GETLINE)
+check_symbol_exists(getopt "unistd.h"
+	CSNIP_CONF__HAVE_GETOPT)
 check_symbol_exists(memalign "malloc.h"
 	CSNIP_CONF__HAVE_MEMALIGN)
 check_symbol_exists(posix_memalign "stdlib.h"
@@ -120,6 +122,7 @@ set(c_sources
 	x/asprintf.c
 	x/getdelim.c
 	x/getline.c
+	x/getopt.c
 	x/readv.c
 	x/strdup.c
 	x/strerror_r.c

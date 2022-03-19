@@ -22,10 +22,14 @@
 #if defined(CSNIP_CONF__HAVE_READV) || defined(CSNIP_CONF__HAVE_WRITEV)
 #  include <sys/uio.h>
 #endif
-
 #if defined(CSNIP_CONF__HAVE_SYS_TYPES_H)
 #  include <sys/types.h>
 #endif
+#if defined(CSNIP_CONF__HAVE_GETOPT)
+#  include <unistd.h>
+#endif
+
+#include <csnip/cext.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -160,6 +164,54 @@ csnip_x_ssize_t csnip_x_getline_imp(char** lineptr,
 			size_t* n,
 			FILE* fp);
 
+/**	Wrapper for getopt or csnip_x_getopt_imp() */
+#define csnip_x_getopt getopt
+#if !defined(CSNIP_CONF__HAVE_GETOPT)
+#undef csnip_x_getopt
+#define csnip_x_getopt csnip_x_getopt_imp
+#endif
+
+/**	Csnip's own getopt() */
+int csnip_x_getopt_imp(int argc, char* argv[], const char* optstring);
+
+/**	optind */
+#define csnip_x_optind optind
+#if !defined(CSNIP_CONF__HAVE_GETOPT)
+#undef csnip_x_optind
+#define csnip_x_optind csnip_x_optind_imp
+#endif
+
+/**	optarg */
+#define csnip_x_optarg optarg
+#if !defined(CSNIP_CONF__HAVE_GETOPT)
+#undef csnip_x_optarg
+#define csnip_x_optarg csnip_x_optarg_imp
+#endif
+
+/**	optopt */
+#define csnip_x_optopt optopt
+#if !defined(CSNIP_CONF__HAVE_GETOPT)
+#undef csnip_x_optopt
+#define csnip_x_optopt csnip_x_optopt_imp
+#endif
+
+/**	opterr */
+#define csnip_x_opterr opterr
+#if !defined(CSNIP_CONF__HAVE_GETOPT)
+#undef csnip_x_opterr
+#define csnip_x_opterr csnip_x_opterr_imp
+#endif
+
+#ifdef csnip_EXPORTS
+#  define CSNIP_SYMBOL	csnip_cext_export
+#else
+#  define CSNIP_SYMBOL	csnip_cext_import
+#endif
+
+CSNIP_SYMBOL extern char* csnip_x_optarg_imp;
+CSNIP_SYMBOL extern int csnip_x_optind_imp;
+CSNIP_SYMBOL extern int csnip_x_optopt_imp;
+CSNIP_SYMBOL extern int csnip_x_opterr_imp;
 
 /**	Wrapper for strtok_r() or csnip_x_strtok_r() */
 #define csnip_x_strtok_r strtok_r
@@ -194,6 +246,16 @@ char* csnip_x_strtok_r_imp(char* str, const char* delim, char** saveptr);
 #define x_getdelim_imp			csnip_x_getdelim_imp
 #define x_getline			csnip_x_getline
 #define x_getline_imp			csnip_x_getline_imp
+#define x_getopt			csnip_x_getopt
+#define x_getopt_imp			csnip_x_getopt_imp
+#define x_optind			csnip_x_optind
+#define x_optind_imp			csnip_x_optind_imp
+#define x_optarg			csnip_x_optarg
+#define x_optarg_imp			csnip_x_optarg_imp
+#define x_optopt			csnip_x_optopt
+#define x_optopt_imp			csnip_x_optopt_imp
+#define x_opterr			csnip_x_opterr
+#define x_opterr_imp			csnip_x_opterr_imp
 #define x_strtok_r			csnip_x_strtok_r
 #define x_strtok_r_imp			csnip_x_strtok_r_imp
 #define CSNIP_X_HAVE_SHORT_NAMES
