@@ -15,7 +15,7 @@ set(tests_c
 	meanvar_test0.c
 	mem_test0.c
 	ringbuf_test.c
-	rng_mt_test.c
+#	rng_mt_test.c
 	runif_getf_test.c
 	runif_geti_test.c
 	time_test1.c
