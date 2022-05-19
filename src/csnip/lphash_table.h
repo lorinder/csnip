@@ -175,7 +175,10 @@
  *		  same key as E exists, return a pointer to that entry.
  *		  Otherwise, insert E into the table, and return a
  *		  pointer to the newly inserted element.
- *		* remove
+ *		* `remove`: `bool remove(tbltype* T, int* err, keytype
+ *		  key);`.  Remove the entry with the given key.  Returns
+ *		  true if a corresponding entry was found and removed,
+ *		  and false otherwise.
  *		* `find`: `entrytype* find(tbltype* T, keytype k);`
  *		  Find the entry with the given key.  If it exists, a
  *		  pointer to the entry is returned.  Otherwise, `NULL`

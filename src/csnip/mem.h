@@ -177,10 +177,15 @@ void csnip_mem_aligned_free(void* mem);
  *	Frees the memory pointed-to by @a ptr.  The pointer is cleared
  *	afterward.  The memory must have been allocated with one of the
  *	C allocator functions malloc(), calloc(), realloc() or one of
- *	csnip's mem_Alloc() or similar functions.  As a special
- *	exception, for aligned allocations using
- *	csnip_mem_aligned_alloc() or csnip_mem_AlignedAlloc(), portable
- *	code should use csnip_mem_AlignedFree() instead.
+ *	csnip's mem_Alloc() or similar functions.
+ *
+ *	However, this macro should not be used to free memory allocated
+ *	with the aligned allocators such as csnip_mem_aligned_alloc() or
+ *	csnip_mem_AlignedAlloc().  Portable code should use
+ *	csnip_mem_AlignedFree() instead.
+ *
+ *	If the ptr is a null-pointer, no operation is performed.
+ *
  */
 #define csnip_mem_Free(ptr) \
 	do { \
@@ -191,10 +196,15 @@ void csnip_mem_aligned_free(void* mem);
 /**	Free aligned memory.
  *
  *	Frees the memory pointed-to by @a ptr.  This is for memory that
- *	was alloc allocated with an aligned allocator.  On POSIX systems
- *	this is equivalent to csnip_mem_Free(), but some systems, such
- *	as Windows, require a special deallocator to be used for aligned
- *	allocations.
+ *	was alloc allocated with an aligned allocator such as
+ *	csnip_mem_aligned_alloc() or csnip_mem_AlignedAlloc().
+ *
+ *	If ptr is a NULL pointer, no action occurs.
+ *
+ *	Note:  On POSIX systems this is equivalent to csnip_mem_Free(),
+ *	but some systems, such as Windows, require a special deallocator
+ *	to be used for aligned allocations;  therefore csnip provides a
+ *	deallocator for aligned memory for portability.
  */
 #define csnip_mem_AlignedFree(ptr) \
 	do { \
