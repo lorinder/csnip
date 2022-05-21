@@ -264,6 +264,8 @@ int csnip_clopts_flagparser_bool(const csnip_clopts* opts,
  *   This macro adds an option to the array of options, deducing the
  *   parser to use from the type of the variable to be assigned.
  *
+ *   Requires: _Generic (C11)
+ *
  *   @param[in,out]	opts
  *			the csnip_clopts to add the option to
  *
@@ -329,6 +331,8 @@ int csnip_clopts_flagparser_bool(const csnip_clopts* opts,
  *   This macro adds a flag (i.e., an option without value) to the array
  *   of options, deducing the parser to use from the type of the
  *   variable to be assigned.
+ *
+ *   Requires: _Generic (C11)
  *
  *   @param[in,out]	opts
  *			the csnip_clopts to add the option to

@@ -1,11 +1,11 @@
 #include <errno.h>
+#include <limits.h>
 #include <stdbool.h>
 
 #define CSNIP_SHORT_NAMES
 #include "clopts.h"
 
 #include <csnip/arr.h>
-#include <csnip/limits.h>
 #include <csnip/podtypes.h>
 #include <csnip/preproc.h>
 #include <csnip/util.h>
@@ -243,7 +243,7 @@ int csnip_clopts_parser_uchar(const csnip_clopts* opts,
 	return 0;
 }
 
-#define DEF_INT_PARSER(type) \
+#define DEF_INT_PARSER(type, maxval) \
 	int csnip_clopts_parser_##type( \
 		const csnip_clopts* opts, \
 		const csnip_clopts_optinfo* optinfo, \
@@ -261,7 +261,7 @@ int csnip_clopts_parser_uchar(const csnip_clopts* opts,
 		ullong v = strtoull(argval, &endptr, 0); \
 		if (errno != 0 && errno != ERANGE) \
 			return err_ERRNO; \
-		if (errno == ERANGE || limit_Maxi(*ret) < v) { \
+		if (errno == ERANGE || maxval < v) { \
 			fprintf(stderr, "Error:  Argument value " \
 			 "\"%s\" out of range for storage type.\n", \
 			 argval); \
@@ -282,9 +282,9 @@ int csnip_clopts_parser_uchar(const csnip_clopts* opts,
 		return 0; \
 	}
 
-DEF_INT_PARSER(uint)
-DEF_INT_PARSER(ulong)
-DEF_INT_PARSER(ullong)
+DEF_INT_PARSER(uint, UINT_MAX)
+DEF_INT_PARSER(ulong, ULONG_MAX)
+DEF_INT_PARSER(ullong, ULLONG_MAX)
 
 #undef DEF_INT_PARSER
 
