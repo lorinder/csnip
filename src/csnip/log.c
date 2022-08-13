@@ -161,7 +161,7 @@ static void proc_add_filters(csnip_log_processor* P, char* filters_expr)
 					REG_EXTENDED|REG_NOSUB);
 #else
 			ent->substr = strdup(expr);
-			int err = (ent->substr != NULL);
+			int err = (ent->substr == NULL);
 #endif
 			if (err == 0) {
 				slist_PushTail(P->rules_head,// head
