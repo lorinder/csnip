@@ -32,6 +32,8 @@
  *	direct validation of user input.
  */
 
+#include <stdint.h>
+
 #ifndef csnip_err_Unhandled
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,8 +81,7 @@
 	do { \
 		int _, error_ignore; \
 		(void)_; (void)error_ignore; \
-		_Pragma("GCC diagnostic ignored \"-Waddress\""); \
-		if (0 == &(err_expr) || &_ == &(err_expr)) { \
+		if (0 == (intptr_t)&(err_expr) || &_ == &(err_expr)) { \
 			csnip_err_Unhandled(value); \
 		} \
 		(err_expr) = (value); \
