@@ -252,30 +252,40 @@ template<> struct csnip_meanvar_cxx_typeinfo<csnip_meanvarl> {
 
 template<typename T> void csnip_meanvar__cxx_add(T*, CSNIP__SCALAR(T));
 
-#define CSNIP__DEF_ADD(suffix) \
+/* Instantiate the template for adding.
+ *
+ * The @a dummy argument here is to avoid warnings about missing macro
+ * arguments on some compilers:  When the suffix is empty, it looks like
+ * we're missing a macro argument when in actuality, we supply an empty
+ * one.  To make this more explicit, the dummy parameter will make the
+ * macro invocation look like this: MACRO(dummy,).  This makes it clear
+ * for the reader and the compiler, that there are two arguments, the
+ * second one of which is empty.
+ */
+#define CSNIP__DEF_ADD(dummy, suffix) \
 	template<> void csnip_meanvar__cxx_add(csnip_meanvar##suffix* accum, \
 			CSNIP__SCALAR(csnip_meanvar##suffix) val) \
 	{ \
 		csnip_meanvar##suffix##_add(accum, val); \
 	}
-CSNIP__DEF_ADD(f)
-CSNIP__DEF_ADD()
-CSNIP__DEF_ADD(l)
+CSNIP__DEF_ADD(dummy,f)
+CSNIP__DEF_ADD(dummy,)
+CSNIP__DEF_ADD(dummy,l)
 #undef CSNIP__DEF_ADD
 
 #define csnip_meanvar_Add(accum, val) csnip_meanvar__cxx_add(accum, val)
 
 template<typename T> CSNIP__SCALAR(T) csnip_meanvar__cxx_mean(const T*);
 
-#define CSNIP__DEF_MEAN(suffix) \
+#define CSNIP__DEF_MEAN(dummy,suffix) \
 	template<> CSNIP__SCALAR(csnip_meanvar##suffix) \
 		csnip_meanvar__cxx_mean(const csnip_meanvar##suffix* accum) \
 	{ \
 		return csnip_meanvar##suffix##_mean(accum); \
 	}
-CSNIP__DEF_MEAN(f)
-CSNIP__DEF_MEAN()
-CSNIP__DEF_MEAN(l)
+CSNIP__DEF_MEAN(dummy,f)
+CSNIP__DEF_MEAN(dummy,)
+CSNIP__DEF_MEAN(dummy,l)
 #undef CSNIP__DEF_MEAN
 
 #define csnip_meanvar_Mean(accum) csnip_meanvar__cxx_mean(accum)
@@ -283,16 +293,16 @@ CSNIP__DEF_MEAN(l)
 template<typename T> \
 	CSNIP__SCALAR(T) csnip_meanvar__cxx_var(const T*, CSNIP__SCALAR(T));
 
-#define CSNIP__DEF_VAR(suffix) \
+#define CSNIP__DEF_VAR(dummy,suffix) \
 	template<> CSNIP__SCALAR(csnip_meanvar##suffix) \
 		csnip_meanvar__cxx_var(const csnip_meanvar##suffix* accum, \
 			CSNIP__SCALAR(csnip_meanvar##suffix) ddof) \
 	{ \
 		return csnip_meanvar##suffix##_var(accum, ddof); \
 	}
-CSNIP__DEF_VAR(f)
-CSNIP__DEF_VAR()
-CSNIP__DEF_VAR(l)
+CSNIP__DEF_VAR(dummy,f)
+CSNIP__DEF_VAR(dummy,)
+CSNIP__DEF_VAR(dummy,l)
 #undef CSNIP__DEF_VAR
 #undef CSNIP__SCALAR
 
