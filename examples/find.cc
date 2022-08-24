@@ -18,7 +18,7 @@ int main()
 
 	/* Search for intermediate values */
 	for (int i = -1; i < N + 1; ++i) {
-		const float target = i + 0.5;
+		const float target = i + 0.5f;
 		int ret;
 		Bsearch(int, u, a[u] < target, N, ret);
 		printf("search for %g: index %d with value %d\n", target, ret,

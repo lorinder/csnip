@@ -91,7 +91,7 @@ static bool args_tester1(Outcome* work, void* args_)
 		++nargs;
 
 	/* Create and process clopts */
-	clopts opts = { };
+	clopts opts = { 0 };
 	clopts_Addvar(&opts, 'i', "int", "int arg", &work->iarg, _);
 	clopts_Addvar(&opts, 'f', "float", "float arg", &work->farg, _);
 	clopts_Addvar(&opts, 'd', "double", "double arg", &work->darg, _);
@@ -111,9 +111,9 @@ static bool args_tester1(Outcome* work, void* args_)
 
 Testcase testcases[] = {
 { .descr = "Check parsers for -i, -f, -d, -s, and positional arguments",
-  .work = { },
+  .work = { 0 },
   .expected = { .iarg = 5,
-		.farg = 2.0,
+		.farg = 2.0f,
 		.darg = -3.1,
 		.strarg = "hi there",
 		.npargs = 2,
@@ -124,9 +124,9 @@ Testcase testcases[] = {
 			"pos1", "pos2", NULL },
 },
 { .descr = "Check that the second argument counts if duplicates given",
-  .work = { },
+  .work = { 0 },
   .expected = {	.iarg = 27,
-		.farg = 3.141,
+		.farg = 3.141f,
 		.darg = 2.71,
 		.strarg = "second string",
   },
@@ -136,7 +136,7 @@ Testcase testcases[] = {
 		    "-s", "second string", NULL },
 },
 { .descr = "Check arguments directly adjoined to the flags",
-  .work = { },
+  .work = { 0 },
   .expected = {	.iarg = 19,
 		.strarg = "Yo",
   },
@@ -144,7 +144,7 @@ Testcase testcases[] = {
   .arg = (char*[]) { "-i19", "-sYo", NULL },
 },
 { .descr = "Check that -- starts positional args",
-  .work = { },
+  .work = { 0 },
   .expected = { .farg = 7,
 		.npargs = 2,
 		.pargs = (char*[]){ "-d", "12" }
@@ -153,7 +153,7 @@ Testcase testcases[] = {
   .arg = (char*[]) { "-f7", "--", "-d", "12", NULL }
 },
 { .descr = "Check long form args, = syntax",
-  .work = { },
+  .work = { 0 },
   .expected = { .iarg = 1,
 		.farg = 2,
 		.darg = 3,
@@ -163,7 +163,7 @@ Testcase testcases[] = {
   .arg = (char*[]) { "--int=1", "--float=2", "--double=3", "--str=4", NULL },
 },
 { .descr = "Check long form args, space syntax",
-  .work = { },
+  .work = { 0 },
   .expected = {	.iarg = 72,
 		.farg = 71,
 		.darg = 70,
@@ -176,7 +176,7 @@ Testcase testcases[] = {
 		"--str", "Jonathan", "Horse", NULL },
 },
 { .descr = "Check that - alone counts as positional arg",
-  .work = { },
+  .work = { 0 },
   .expected = {	.npargs = 1,
 		.pargs = (char*[]) { "-" },
   },

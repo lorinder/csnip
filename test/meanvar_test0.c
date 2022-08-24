@@ -13,8 +13,8 @@ typedef struct {
 	float var1;
 } resultf;
 
-const float v1[] = { 1, 2, 3, 4, 3.2 };
-const resultf exp1 = { .mean = 2.64, .var0 = 1.0784, .var1 = 1.348 };
+const float v1[] = { 1, 2, 3, 4, 3.2f };
+const resultf exp1 = { .mean = 2.64f, .var0 = 1.0784f, .var1 = 1.348f };
 
 static _Bool check_got_vs_exp(const resultf* got,
 				const resultf* exp,
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 	if (csnip_clopts_process(&opts, argc - 1, argv + 1, NULL, true) < 0)
 		return EXIT_FAILURE;
 
-	check_testcase(v1, csnip_Static_len(v1), &exp1, 0.001);
+	check_testcase(v1, csnip_Static_len(v1), &exp1, 0.001f);
 
 	return EXIT_SUCCESS;
 }

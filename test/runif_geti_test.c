@@ -101,7 +101,7 @@ void test_rand100(const rng* R)
 
 	const int N = 1000000;
 #define Ncat 100
-	int nhit[Ncat] = {};
+	int nhit[Ncat] = { 0 };
 	for (int i = 0; i < N; ++i) {
 		int v = runif_Geti(R, Ncat - 1);
 		if (v < 0 || v >= Ncat) {
