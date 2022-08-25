@@ -25,3 +25,6 @@ foreach(fn
 	add_executable(${tgt} ${fn})
 	target_link_libraries(${tgt} csnip)
 endforeach()
+
+set_property(TARGET clopts PROPERTY C_STANDARD 11)
+set_property(TARGET sort_perf PROPERTY CXX_STANDARD 11)

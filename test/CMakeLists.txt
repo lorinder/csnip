@@ -48,3 +48,11 @@ foreach(fn
 		COMMAND $<TARGET_FILE:${tgt}>
 	)
 endforeach()
+
+set_property(TARGET clopts_test0 PROPERTY C_STANDARD 11)
+set_property(TARGET limits_test PROPERTY C_STANDARD 11)
+set_property(TARGET runif_getf_test PROPERTY C_STANDARD 11)
+set_property(TARGET runif_geti_test PROPERTY C_STANDARD 11)
+set_property(TARGET meanvar_test0 PROPERTY C_STANDARD 11)
+set_property(TARGET log_test0 PROPERTY C_STANDARD 11)  # XXX: Maybe avoidable.
+set_property(TARGET time_test1 PROPERTY C_STANDARD 11)
