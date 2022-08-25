@@ -130,11 +130,19 @@ set(c_sources
 	x/writev.c
 )
 
+set(csnip_link_libs
+	Threads::Threads
+	${LINK_LIBM}
+)
+
 add_library(csnip SHARED
 	${public_headers}
 	${c_sources}
 )
-target_link_libraries(csnip -lm Threads::Threads)
+set_property(TARGET csnip PROPERTY
+	WINDOWS_EXPORT_ALL_SYMBOLS ON
+)
+target_link_libraries(csnip ${csnip_link_libs})
 target_include_directories(csnip PUBLIC ..)
 target_include_directories(csnip PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
 
@@ -142,7 +150,7 @@ add_library(csnip-static STATIC
 	${public_headers}
 	${c_sources}
 )
-target_link_libraries(csnip-static -lm Threads::Threads)
+target_link_libraries(csnip-static ${csnip_link_libs})
 target_include_directories(csnip-static PUBLIC ..)
 target_include_directories(csnip-static PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/..)
 set_target_properties(csnip-static PROPERTIES

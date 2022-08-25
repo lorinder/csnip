@@ -16,6 +16,16 @@ include(DoxySetup)
 include(InstallSetup)
 include(BuildDirSetup)
 
+# Disable MSVC secure/nonstdc warnings.
+if (MSVC)
+	add_compile_definitions(
+		_CRT_NONSTDC_NO_WARNINGS
+		_CRT_SECURE_NO_WARNINGS
+	)
+else ()
+	set(LINK_LIBM m)
+endif ()
+
 enable_testing()
 
 #set(CMAKE_C_VISIBILITY_PRESET hidden)

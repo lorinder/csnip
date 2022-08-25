@@ -41,7 +41,7 @@ foreach(fn
 )
 	get_filename_component(tgt "${fn}" NAME_WE)
 	add_executable(${tgt} ${fn})
-	target_link_libraries(${tgt} csnip m)
+	target_link_libraries(${tgt} csnip)
 
 	add_test(
 		NAME ${tgt}
