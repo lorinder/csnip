@@ -21,6 +21,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 
 /** Verbose debugging priority.
  *
@@ -89,23 +90,98 @@ extern "C" {
  *	@param	log_out
  *		output file.
  */
-void csnip_log_config0(const char* filters_expr,
+int csnip_log_config0(const char* filters_expr,
 		FILE* log_out);
+
+typedef struct {
+	/** Log filters. */
+	const char* filter_expr;
+
+	/** Format expressions, indexed by style.
+	 *
+	 *  Understood format keywords:
+	 *
+	 *  `msg`
+	 *  : the log message (printf-style formatted)
+	 *
+	 *  `comp`
+	 *  : the logging component responsible for the message
+	 *
+	 *  `file`
+	 *  : the name of the source file, without its path
+	 *
+	 *  `filepath`
+	 *  : the name of the source file, potentially including the
+	 *  : path
+	 *
+	 *  `func`
+	 *  : the function which is logging.
+	 *
+	 *  `line`
+	 *  : the line number which is logging.
+	 *
+	 *  `prio`
+	 *  : the log message priority as a number.
+	 *
+	 *  `prioname`
+	 *  : the log message priority.
+	 *
+	 *  `strerror`
+	 *  : the error message as if taken from strerror(errno...)
+	 *
+	 *  `utctime`
+	 *  : the UTC time of the log message, format
+	 *  : "YYYY/MM/DD hh:mm:ss.ssssss"
+	 *
+	 *  `localtime`
+	 *  : the Local time, same format as `utctime`.
+	 *
+	 *  `monotime`
+	 *  : monotonic time, displayed as a floating point value.
+	 */
+	const char* logfmt[2];
+
+	/** Output destination */
+	FILE* out_fp;
+} csnip_log_configuration;
+
+int csnip_log_config(const csnip_log_configuration* cfg);
 
 /**	Free the logger. */
 void csnip_log_free(void);
 
 /** @cond */
-void csnip_log__mesg_trailer(FILE* fp);
-void csnip_log__perror_trailer(FILE* fp);
+
+/* Find the filename without the path component of a source file;
+ * since filepath is __FILE__, compilers can hopefully inline this
+ * into a pointer value computed at compile time.
+ */
+inline const char* csnip_log__file(const char* filepath)
+{
+	char* p = strrchr(filepath, '/');
+	char* q = NULL;
+#ifdef WIN32
+	q = strrchr(filepath, '\\');
+#endif
+	if (p == NULL) {
+		if (q == NULL)
+			return filepath;
+		return q + 1;
+	}
+	if (q == NULL || p > q)
+		return p + 1;
+	return q + 1;
+}
+
 void csnip_log__print(
-		void (*print_trailer)(FILE*),
+		int style,
 		int prio,
-		const char* src_file,
-		int src_line,
-		const char* src_func,
 		const char* component,
-		const char* format,
+		const char* src_filepath,
+		const char* src_file,
+		const char* src_func,
+		int src_line,
+		const char* msgformat,
 		...);
 /** @endcond */
 
@@ -157,10 +233,14 @@ void csnip_log__print(
 	do { \
 		if ((prio) >= CSNIP_LOG_PRIO_MIN) { \
 			csnip_log__print( \
-			  csnip_log__mesg_trailer, \
-			  (prio), \
-			  __FILE__, __LINE__, __func__, \
-			  (comp), __VA_ARGS__); \
+				0, /* generic style */ \
+				(prio), \
+				(comp), \
+				__FILE__, \
+				csnip_log__file(__FILE__), \
+				__func__, \
+				__LINE__, \
+				__VA_ARGS__); \
 		} \
 	} while (0)
 #endif
@@ -202,10 +282,14 @@ void csnip_log__print(
 	do { \
 		if ((prio) >= CSNIP_LOG_PRIO_MIN) { \
 			csnip_log__print( \
-			  csnip_log__perror_trailer, \
-			  (prio), \
-			  __FILE__, __LINE__, __func__, \
-			  (comp), __VA_ARGS__); \
+				1, /* perror style */ \
+				(prio), \
+				(comp), \
+				__FILE__, \
+				csnip_log__file(__FILE__), \
+				__func__, \
+				__LINE__, \
+				__VA_ARGS__); \
 		} \
 	} while (0)
 #endif
@@ -222,7 +306,9 @@ void csnip_log__print(
 #define LOG_PRIO_NOTICE		CSNIP_LOG_PRIO_NOTICE
 #define LOG_PRIO_WARN		CSNIP_LOG_PRIO_WARN
 #define LOG_PRIO_ERR		CSNIP_LOG_PRIO_ERR
+#define log_config		csnip_log_config
 #define log_config0		csnip_log_config0
+#define log_configuration	csnip_log_configuration
 #define log_free		csnip_log_free
 #define log_Mesg		csnip_log_Mesg
 #define log_MesgForComp		csnip_log_MesgForComp
