@@ -133,10 +133,14 @@ typedef struct {
 	 *  : the UTC time of the log message, format
 	 *  : "YYYY/MM/DD hh:mm:ss.ssssss"
 	 *
+	 *  `utctimenum`
+	 *  : the amount of time elapsed since the epoch in seconds,
+	 *  : displayed as a floating point number.
+	 *
 	 *  `localtime`
 	 *  : the Local time, same format as `utctime`.
 	 *
-	 *  `monotime`
+	 *  `monotimenum`
 	 *  : monotonic time, displayed as a floating point value.
 	 */
 	const char* logfmt[2];

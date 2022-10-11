@@ -266,18 +266,24 @@ void csnip_log_free(void)
 
 extern inline const char* csnip_log__file(const char* filepath);
 
-static const char* put_timestamp(char* buf, size_t bufSz, int local)
+typedef enum {
+	TS_UTC,
+	TS_LOCAL,
+	TS_MONO,
+} TsType;
+
+static const char* put_timestamp(char* buf, size_t bufSz, TsType tsType)
 {
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
 	struct tm broken_down;
-	if (local) {
+	if (tsType == TS_LOCAL) {
 #ifdef WIN32
 		localtime_s(&broken_down, &ts.tv_sec);
 #else
 		localtime_r(&ts.tv_sec, &broken_down);
 #endif
-	} else {
+	} else if (tsType == TS_UTC) {
 #ifdef WIN32
 		gmtime_s(&broken_down, &ts.tv_sec);
 #else
@@ -292,6 +298,17 @@ static const char* put_timestamp(char* buf, size_t bufSz, int local)
 			".%06ld",
 			ts.tv_nsec/1000);
 	}
+	return buf;
+}
+
+static const char* put_timestampnum(char* buf, size_t bufSz, TsType tsType)
+{
+	struct timespec ts;
+	clock_gettime(tsType == TS_MONO ? CLOCK_MONOTONIC : CLOCK_REALTIME,
+		&ts);
+	double ts_sec;
+	time_Convert(ts, ts_sec);
+	snprintf(buf, bufSz, "%.17g", ts_sec);
 	return buf;
 }
 
@@ -360,13 +377,6 @@ static const char* value_for_key(const char* keyStart,
 		} else if (strncmp(keyStart, "strerror", 8) == 0) {
 			x_strerror_r(errno, buf, bufSz);
 			return buf;
-		} else if (strncmp(keyStart, "monotime", 8) == 0) {
-			struct timespec ts;
-			clock_gettime(CLOCK_MONOTONIC, &ts);
-			double ts_sec;
-			time_Convert(ts, ts_sec);
-			snprintf(buf, bufSz, "%.17g", ts_sec);
-			return buf;
 		}
 
 		break;
@@ -374,6 +384,15 @@ static const char* value_for_key(const char* keyStart,
 		if (strncmp(keyStart, "localtime", 7) == 0)
 			return put_timestamp(buf, bufSz, 1);
 
+		break;
+	case 10:
+		if (strncmp(keyStart, "utctimenum", 10) == 0)
+			return put_timestampnum(buf, bufSz, 0);
+		break;
+	case 11:
+		if (strncmp(keyStart, "monotimenum", 11) == 0) {
+			return put_timestampnum(buf, bufSz, 2);
+		}
 		break;
 	};
 
