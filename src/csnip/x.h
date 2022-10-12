@@ -64,19 +64,32 @@ extern "C" {
  */
 int csnip_x_strerror_r(int errnum, char* buf, size_t buflen);
 
-/**	Portable asprintf().
- *
- *	csnip's asprintf() wrapper, known from GNU libc.  In the
- *	error case, -1 is returned and *strp is set to NULL just like
- *	the FreeBSD version of asprintf() does.
- */
-int csnip_x_asprintf(char** strp, const char* format, ...);
+/**	Wrapper for asprintf() or csnip_x_asprintf_imp().  */
+#define csnip_x_asprintf asprintf
+#ifndef CSNIP_CONF__HAVE_ASPRINTF
+#undef csnip_x_asprintf
+#define csnip_x_asprintf csnip_x_asprintf_imp
+#else
+int asprintf(char** strp, const char* fmt, ...);
+#endif
+
+/**	Portable asprintf().  */
+int csnip_x_asprintf_imp(char** strp, const char* format, ...);
+
+/**	Wrapper for vasprintf() or csnip_x_vasprintf() */
+#define csnip_x_vasprintf vasprintf
+#ifndef CSNIP_CONF__HAVE_VASPRINTF
+#undef csnip_x_vasprintf
+#define csnip_x_vasprintf csnip_x_vasprintf_imp
+#else
+int vasprintf(char** strp, const char* fmt, va_list ap);
+#endif
 
 /**	Portable vasprintf().
  *
- *	@sa csnip_x_asprintf().
+ *	@sa csnip_x_asprintf_imp().
  */
-int csnip_x_vasprintf(char** strp, const char* format, va_list ap);
+int csnip_x_vasprintf_imp(char** strp, const char* format, va_list ap);
 
 /**	Portable strdup(). */
 char* csnip_x_strdup(const char* s);
@@ -236,7 +249,9 @@ char* csnip_x_strtok_r_imp(char* str, const char* delim, char** saveptr);
 #define x_iovec				csnip_x_iovec
 #define x_strerror_r			csnip_x_strerror_r
 #define x_asprintf			csnip_x_asprintf
+#define x_asprintf_imp			csnip_x_asprintf_imp
 #define x_vasprintf			csnip_x_vasprintf
+#define x_vasprintf_imp			csnip_x_vasprintf_imp
 #define x_strdup			csnip_x_strdup
 #define x_writev			csnip_x_writev
 #define x_writev_imp			csnip_x_writev_imp

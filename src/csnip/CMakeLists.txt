@@ -30,6 +30,10 @@ check_symbol_exists(aligned_alloc "stdlib.h"
 	CSNIP_CONF__HAVE_ALIGNED_ALLOC)
 check_symbol_exists(_aligned_malloc "malloc.h"
 	CSNIP_CONF__HAVE__ALIGNED_MALLOC)
+set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
+check_symbol_exists(asprintf "stdio.h"
+	CSNIP_CONF__HAVE_ASPRINTF)
+unset(CMAKE_REQUIRED_DEFINITIONS)
 check_symbol_exists(flockfile "stdio.h"
 	CSNIP_CONF__HAVE_FLOCKFILE)
 check_symbol_exists(funlockfile "stdio.h"
@@ -65,6 +69,11 @@ check_symbol_exists(writev "sys/uio.h"
 	CSNIP_CONF__HAVE_WRITEV)
 check_symbol_exists(strtok_r "string.h"
 	CSNIP_CONF__HAVE_STRTOK_R)
+set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
+check_symbol_exists(vasprintf "stdio.h"
+	CSNIP_CONF__HAVE_VASPRINTF)
+unset(CMAKE_REQUIRED_DEFINITIONS)
+
 set(CSNIP_CONF__HAVE_UNLOCKED_STDIO 0)
 if (${CSNIP_CONF__HAVE_FLOCKFILE}
   AND ${CSNIP_CONF__HAVE_FUNLOCKFILE}

@@ -69,6 +69,7 @@
 
 #cmakedefine CSNIP_CONF__HAVE_ALIGNED_ALLOC
 #cmakedefine CSNIP_CONF__HAVE__ALIGNED_MALLOC
+#cmakedefine CSNIP_CONF__HAVE_ASPRINTF
 #cmakedefine CSNIP_CONF__HAVE_FLOCKFILE
 #cmakedefine CSNIP_CONF__HAVE_FUNLOCKFILE
 #cmakedefine CSNIP_CONF__HAVE_GETC_UNLOCKED
@@ -86,6 +87,7 @@
 #cmakedefine CSNIP_CONF__HAVE_TIMEVAL
 #cmakedefine CSNIP_CONF__HAVE_WRITEV
 #cmakedefine CSNIP_CONF__HAVE_STRTOK_R
+#cmakedefine CSNIP_CONF__HAVE_VASPRINTF
 
 /** Macros for groups */
 
