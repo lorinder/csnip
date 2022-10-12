@@ -58,6 +58,14 @@
 #define csnip_Max(a, b) \
 		((a) > (b) ? (a) : (b))
 
+/** Clamp val between lb and ub.
+ *
+ *  If val is smaller than lb, return lb, if it is larger then ub,
+ *  return ub.  Otherwise, return val.
+ */
+#define csnip_Clamp(lb, val, ub) \
+		((val) < (lb) ? (lb) : ((val) > (ub) ? (ub) : (val)))
+
 /** Length of a C static array. */
 #define csnip_Static_len(a) (sizeof(a) / sizeof(*(a)))
 
@@ -139,6 +147,7 @@ inline size_t csnip_next_pow_of_2(size_t a)
 #define Cswap			csnip_Cswap
 #define Min			csnip_Min
 #define Max			csnip_Max
+#define Clamp			csnip_Clamp
 #define Static_len		csnip_Static_len
 #define next_pow_of_2		csnip_next_pow_of_2
 #define Fill_n			csnip_Fill_n
