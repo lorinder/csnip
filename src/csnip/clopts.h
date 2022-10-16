@@ -82,6 +82,10 @@ typedef struct csnip_clopts_s csnip_clopts;
  *		< 0	if there was a failure.  In the failure case,
  *			csnip_clopts_process() will stop processing and
  *			report the error code back to the caller.
+ *			csnip_clopts_process() will not print any error
+ *			message related to parsing errors; therefore it
+ *			is suggested that the parser print such a
+ *			message.
  */
 typedef int (*csnip_clopts_parser)(const csnip_clopts* opts,
 					const csnip_clopts_optinfo* optinfo,
@@ -89,16 +93,48 @@ typedef int (*csnip_clopts_parser)(const csnip_clopts* opts,
 
 /** Descriptor for a single command line option. */
 struct csnip_clopts_optinfo_s {
-	char short_name;		/**< Short (single character) form */
-	const char* long_name;		/**< Long option form */
-	const char* description;	/**< Option description */
+	/** Short (single character) form.
+	 *
+	 *  Use '\0' if there is to be no short form.
+	 */
+	char short_name;
 
-	bool takes_val;			/**< True if option takes a value,
-					     false if it's a flag */
-	csnip_clopts_parser parser;	/**< The parser function callback */
+	/** Long option form
+	 *
+	 *  Use NULL if there is to be no long form.
+	 */
+	const char* long_name;
 
-	void* usr;			/**< User data pointer for the
-					     callback */
+	/** Option help description.
+	 *
+	 *  This is used e.g. to implement the --help option provided by
+	 *  csnip_clopts_add_defaults().
+	 */
+	const char* description;
+
+	/** Whether the option takes an argument.
+	 *
+	 *  If true, the option is a argument option, if false it's a
+	 *  simple flag.
+	 */
+	bool takes_val;
+
+	/** Parser callback.
+	 *
+	 *  The argument parser to use when this option is encountered.
+	 *  The parser typically converts the argument into a suitable
+	 *  form and stores it at the location indicated by the usr
+	 *  pointer (however it could do something entirely different).
+	 */
+	csnip_clopts_parser parser;
+
+	/** User data pointer.
+	 *
+	 *  This field is for use by the parser.  It is typically used
+	 *  to indicate to the parser where or how the parsed value is
+	 *  to be stored.
+	 */
+	void* usr;
 };
 
 /** Set of descriptors for all command line options. */
