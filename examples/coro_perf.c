@@ -7,6 +7,7 @@
 #include <csnip/podtypes.h>
 #include <csnip/coro.h>
 #include <csnip/time.h>
+#include <csnip/x.h>
 
 /* direct */
 
@@ -73,17 +74,17 @@ int main(int argc, char** argv)
 	double d;
 
 	/* Direct */
-	clock_gettime(CLOCK_MONOTONIC, &t0);
+	x_clock_gettime(X_CLOCK_MAYBE_MONOTONIC, &t0);
 	llong r = comp_direct(nIter);
-	clock_gettime(CLOCK_MONOTONIC, &t1);
+	x_clock_gettime(X_CLOCK_MAYBE_MONOTONIC, &t1);
 	time_Convert(time_Sub(t1, t0), d);
 	printf("Direct computation (no coroutines): %g s\n", d);
 	printf("  Check: value obtained was %lld\n", r);
 
 	/* Refun */
-	clock_gettime(CLOCK_MONOTONIC, &t0);
+	x_clock_gettime(X_CLOCK_MAYBE_MONOTONIC, &t0);
 	r = comp_coro(nIter);
-	clock_gettime(CLOCK_MONOTONIC, &t1);
+	x_clock_gettime(X_CLOCK_MAYBE_MONOTONIC, &t1);
 	time_Convert(time_Sub(t1, t0), d);
 	printf("Refun computation (stackless coroutines): %g s\n", d);
 	printf("  Check: value obtained was %lld\n", r);

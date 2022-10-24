@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <csnip/time.h>
+#include <csnip/x.h>
 
 static void check_ts(struct timespec ts,
 			time_t secs,
@@ -48,11 +49,11 @@ void func_tests()
 {
 	/* Smoke test for the sleep function */
 	{
-		struct timespec t0;
-		clock_gettime(CLOCK_MONOTONIC, &t0);
+		struct csnip_x_timespec t0;
+		csnip_x_clock_gettime(CSNIP_X_CLOCK_REALTIME, &t0);
 		csnip_time_Sleep(0.1, _);
 		struct timespec t1;
-		clock_gettime(CLOCK_MONOTONIC, &t1);
+		csnip_x_clock_gettime(CSNIP_X_CLOCK_REALTIME, &t1);
 		double diff;
 		csnip_time_Convert(csnip_time_Sub(t1, t0), diff);
 		printf("After sleeping 0.1s, got delta of %gs. ", diff);

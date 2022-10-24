@@ -3,9 +3,6 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <unistd.h>
-#include <time.h>
-
 #include <algorithm>
 
 #define CSNIP_SHORT_NAMES
@@ -361,7 +358,7 @@ void sort_test(int nItem,
 
 		/* Test sort */
 		struct timespec t_start, t_end;
-		clock_gettime(CLOCK_MONOTONIC, &t_start);
+		x_clock_gettime(X_CLOCK_MAYBE_MONOTONIC, &t_start);
 		switch(key_type) {
 		case K_INT:
 			sort_int_instance(intarr, nItem, meth);
@@ -370,7 +367,7 @@ void sort_test(int nItem,
 			sort_cstr_instance(strarr, nItem, meth);
 			break;
 		};
-		clock_gettime(CLOCK_MONOTONIC, &t_end);
+		x_clock_gettime(X_CLOCK_MAYBE_MONOTONIC, &t_end);
 
 		/* Check */
 		switch(key_type) {
