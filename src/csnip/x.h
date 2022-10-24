@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include <csnip/csnip_conf.h>
 
@@ -242,6 +243,50 @@ csnip_x_ssize_t csnip_x_writev_imp(int fd,
 
 /** @} */
 
+/**	Wrapper for clock_gettime() or csnip_x_clock_gettime() */
+#define csnip_x_clock_gettime clock_gettime
+#if !defined(CSNIP_CONF__HAVE_CLOCK_GETTIME)
+#undef csnip_x_clock_gettime
+#define csnip_x_clock_gettime csnip_x_clock_gettime_imp
+#endif
+
+/**	Csnip's  CLOCK_* constants.
+ *
+ */
+#if defined(CLOCK_REALTIME)
+#  define CSNIP_X_CLOCK_REALTIME		CLOCK_REALTIME
+#  ifdef CLOCK_MONOTONIC
+#    define CSNIP_X_CLOCK_MONOTONIC		CLOCK_MONOTONIC
+#    define CSNIP_X_CLOCK_MAYBE_MONOTONIC	CLOCK_MONOTONIC
+#  else
+#    define CSNIP_X_CLOCK_MAYBE_MONOTONIC	CLOCK_REALTIME
+#  endif
+#else
+#  define CSNIP_X_CLOCK_REALTIME		1
+#  define CSNIP_X_CLOCK_MAYBE_MONOTONIC		1
+#endif
+
+/**	clock_id_t */
+#define csnip_x_clockid_t clockid_t
+#if !defined(CSNIP_CONF__HAVE_CLOCK_GETTIME)
+#  undef csnip_x_clockid_t
+#  define csnip_x_clockid_t			int
+#endif
+
+/**	struct timespec */
+#define csnip_x_timespec timespec
+#if !defined(CSNIP_CONF__HAVE_TIMESPEC)
+#  undef csnip_x_timespec
+struct csnip_x_timespec {
+	time_t tv_sec;
+	long tv_nsec;
+};
+#endif
+
+/**	Csnip's own clock_gettime() */
+int x_csnip_clock_gettime_imp(csnip_x_clockid_t clk_id,
+			struct csnip_x_timespec* ts);
+
 #ifdef __cplusplus
 }
 #endif
@@ -256,6 +301,14 @@ csnip_x_ssize_t csnip_x_writev_imp(int fd,
 /* API calls */
 #define x_asprintf			csnip_x_asprintf
 #define x_asprintf_imp			csnip_x_asprintf_imp
+#define x_clock_gettime			csnip_x_clock_gettime
+#define x_clock_gettime_imp		csnip_x_clock_gettime_imp
+#define x_clock_id			csnip_x_clock_id
+#define X_CLOCK_MAYBE_MONOTONIC		CSNIP_X_CLOCK_MAYBE_MONOTONIC
+#ifdef CSNIP_X_CLOCK_MONOTONIC
+#define X_CLOCK_MONOTONIC		CSNIP_X_CLOCK_MONOTONIC
+#endif
+#define X_CLOCK_REALTIME		CSNIP_X_CLOCK_REALTIME
 #define x_getdelim			csnip_x_getdelim
 #define x_getdelim_imp			csnip_x_getdelim_imp
 #define x_getline			csnip_x_getline
@@ -277,6 +330,7 @@ csnip_x_ssize_t csnip_x_writev_imp(int fd,
 #define x_strerror_r			csnip_x_strerror_r
 #define x_strtok_r			csnip_x_strtok_r
 #define x_strtok_r_imp			csnip_x_strtok_r_imp
+#define x_timespec			csnip_x_timespec
 #define x_vasprintf			csnip_x_vasprintf
 #define x_vasprintf_imp			csnip_x_vasprintf_imp
 #define x_writev			csnip_x_writev

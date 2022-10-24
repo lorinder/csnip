@@ -34,6 +34,8 @@ set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
 check_symbol_exists(asprintf "stdio.h"
 	CSNIP_CONF__HAVE_ASPRINTF)
 unset(CMAKE_REQUIRED_DEFINITIONS)
+check_symbol_exists(clock_gettime "time.h"
+	CSNIP_CONF__HAVE_CLOCK_GETTIME)
 check_symbol_exists(flockfile "stdio.h"
 	CSNIP_CONF__HAVE_FLOCKFILE)
 check_symbol_exists(funlockfile "stdio.h"
@@ -65,6 +67,10 @@ check_symbol_exists(strerror_s "sec_api/string_s.h"
 	CSNIP_CONF__HAVE_STRERROR_S)
 check_symbol_exists(strtok_r "string.h"
 	CSNIP_CONF__HAVE_STRTOK_R)
+check_struct_has_member("struct timespec" tv_sec "time.h"
+	CSNIP_CONF__HAVE_TIMESPEC)
+check_symbol_exists(timespec_get "time.h"
+	CSNIP_CONF__HAVE_TIMESPEC_GET)
 check_struct_has_member("struct timeval" tv_sec "sys/time.h"
 	CSNIP_CONF__HAVE_TIMEVAL)
 check_symbol_exists(writev "sys/uio.h"
@@ -129,6 +135,7 @@ set(c_sources
 	time.c
 	util.c
 	x/asprintf.c
+	x/clock_gettime.c
 	x/getdelim.c
 	x/getline.c
 	x/getopt.c
