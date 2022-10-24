@@ -63,12 +63,12 @@ check_symbol_exists(strerror_r "string.h"
 unset(CMAKE_REQUIRED_DEFINITIONS)
 check_symbol_exists(strerror_s "sec_api/string_s.h"
 	CSNIP_CONF__HAVE_STRERROR_S)
+check_symbol_exists(strtok_r "string.h"
+	CSNIP_CONF__HAVE_STRTOK_R)
 check_struct_has_member("struct timeval" tv_sec "sys/time.h"
 	CSNIP_CONF__HAVE_TIMEVAL)
 check_symbol_exists(writev "sys/uio.h"
 	CSNIP_CONF__HAVE_WRITEV)
-check_symbol_exists(strtok_r "string.h"
-	CSNIP_CONF__HAVE_STRTOK_R)
 set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
 check_symbol_exists(vasprintf "stdio.h"
 	CSNIP_CONF__HAVE_VASPRINTF)
