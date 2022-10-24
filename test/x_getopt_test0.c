@@ -7,15 +7,27 @@
 #define CSNIP_SHORT_NAMES
 #include <csnip/x.h>
 
-#define FL_OPTIND	0x1
-#define FL_OPTOPT	0x2
-#define FL_OPTARG	0x4
+/* Macros to set the actual version of getopt used */
+#if 1
+#  define my_getopt	csnip_x_getopt_imp
+#  define my_optarg	csnip_x_optarg_imp
+#  define my_optind	csnip_x_optind_imp
+#  define my_optopt	csnip_x_optopt_imp
+#else
+#  define my_getopt	csnip_x_getopt
+#  define my_optarg	csnip_x_optarg
+#  define my_optind	csnip_x_optind
+#  define my_optopt	csnip_x_optopt
+#endif
+
+#define FL_OPTOPT	0x1
+#define FL_OPTARG	0x2
 
 typedef struct {
 	int retval;
-
-	unsigned flags;
 	int optind;
+	unsigned flags;
+
 	int optopt;
 	char* optarg;
 } getopt_result_s;
@@ -32,10 +44,83 @@ typedef struct {
 } getopt_instance_s;
 
 getopt_instance_s iarr[] = {
+  /* Simple hand coded example */
   { .stim = { 2, (char*[]){ "./test", "-x", NULL }, "x" },
     .results = (getopt_result_s[]){
-      { .retval = 'x', .flags = 0 },
-      { .retval = -1 },
+      { 'x', 2 },
+      { -1, 2 },
+    },
+  },
+
+  /* A few samples */
+  { .stim = { 5, (char*[]){ "hey", "-d", "-c", "-b", "-a", NULL, }, "abcd" },
+    .results = (getopt_result_s[]){
+		{ 'd', 2},
+		{ 'c', 3},
+		{ 'b', 4},
+		{ 'a', 5},
+		{ -1, 5},
+    },
+  },
+  { .stim = { 5, (char*[]){ "hey", "-d", "-c", "-b", "-a", NULL, }, "abc:d" },
+    .results = (getopt_result_s[]){
+		{ 'd', 2},
+		{ 'c', 4, FL_OPTARG, .optarg="-b", },
+		{ 'a', 5},
+		{ -1, 5},
+    },
+  },
+  { .stim = { 3, (char*[]){ "jesus", "-b", "-a", NULL, }, ":a" },
+    .results = (getopt_result_s[]){
+		{ '?', 2, FL_OPTOPT, .optopt='b', },
+		{ 'a', 3},
+		{ -1, 3},
+    },
+  },
+  { .stim = { 2, (char*[]){ "joe", "-x", NULL, }, ":x:" },
+    .results = (getopt_result_s[]){
+		{ ':', 2, FL_OPTOPT, .optopt='x', },
+		{ -1, 2},
+    },
+  },
+  { .stim = { 5, (char*[]){ "joe", "-x", "something", "--", "args", NULL, }, ":x:" },
+    .results = (getopt_result_s[]){
+		{ 'x', 3, FL_OPTARG, .optarg="something", },
+		{ -1, 4},
+    },
+  },
+  { .stim = { 6, (char*[]){ "joe", "-b", "something", "-a", "else", "cmdargs", NULL, }, ":a:b:" },
+    .results = (getopt_result_s[]){
+		{ 'b', 3, FL_OPTARG, .optarg="something", },
+		{ 'a', 5, FL_OPTARG, .optarg="else", },
+		{ -1, 5},
+    },
+  },
+  { .stim = { 2, (char*[]){ "multiple_unknown", "-abc", NULL, }, "z" },
+    .results = (getopt_result_s[]){
+		{ '?', 1, FL_OPTOPT, .optopt='a', },
+		{ '?', 1, FL_OPTOPT, .optopt='b', },
+		{ '?', 2, FL_OPTOPT, .optopt='c', },
+		{ -1, 2},
+    },
+  },
+  { .stim = { 5, (char*[]){ "multiple_unknown2", "-a", "-b", "-cde", "-f", NULL, }, ":z" },
+    .results = (getopt_result_s[]){
+		{ '?', 2, FL_OPTOPT, .optopt='a', },
+		{ '?', 3, FL_OPTOPT, .optopt='b', },
+		{ '?', 3, FL_OPTOPT, .optopt='c', },
+		{ '?', 3, FL_OPTOPT, .optopt='d', },
+		{ '?', 4, FL_OPTOPT, .optopt='e', },
+		{ '?', 5, FL_OPTOPT, .optopt='f', },
+		{ -1, 5},
+    },
+  },
+
+  /* More curious cases */
+  { .stim = { 3, (char*[]){ "joe", "-x", "--", NULL, }, ":x:" },
+    .results = (getopt_result_s[]){
+		{ 'x', 3, FL_OPTARG, .optarg="--", },
+		{ -1, 3},
     },
   },
 
@@ -46,7 +131,7 @@ getopt_instance_s iarr[] = {
 static bool check_instance(const getopt_instance_s* inst)
 {
 	/* Reset */
-	optind = 1;
+	my_optind = 1;
 
 	/* Describe stimulus */
 	printf("Testcase, argv:\n");
@@ -59,7 +144,7 @@ static bool check_instance(const getopt_instance_s* inst)
 	int i = 0;
 	do {
 		/* getopt() */
-		const int retval = getopt(inst->stim.argc,
+		const int retval = my_getopt(inst->stim.argc,
 				inst->stim.argv,
 				inst->stim.optstring);
 
@@ -77,27 +162,27 @@ static bool check_instance(const getopt_instance_s* inst)
 			  (isprint(retval) ? retval : '?'));
 			return false;
 		}
-		if ((rexp->flags & FL_OPTIND) && rexp->optind != optind) {
+		if (rexp->optind != my_optind) {
 			printf("  [%d] mismatched optind, "
 			  "expected %d, got %d\n",
 			  i,
-			  rexp->optind, optind);
+			  rexp->optind, my_optind);
 			return false;
 		}
-		if ((rexp->flags & FL_OPTOPT) && rexp->optopt != optopt) {
+		if ((rexp->flags & FL_OPTOPT) && rexp->optopt != my_optopt) {
 			printf("  [%d] mismatched optopt, "
 			  "expected '%c', got '%c'\n",
 			  i,
-			  rexp->optopt, optopt);
+			  rexp->optopt, my_optopt);
 			return false;
 		}
 		if ((rexp->flags & FL_OPTARG)
-			&& strcmp(rexp->optarg, optarg) != 0)
+			&& strcmp(rexp->optarg, my_optarg) != 0)
 		{
 			printf("  [%d] mismatched optarg, "
 			  "expected \"%s\", got \"%s\"\n",
 			  i,
-			  rexp->optarg, optarg);
+			  rexp->optarg, my_optarg);
 			return false;
 		}
 
@@ -167,20 +252,48 @@ static void build_example(int argc, char** argv, char* optstr)
 	for (int i = 0; i <= argc; ++i) {
 		printf("%s, ", cquote(argv[i]));
 	}
-	printf("}, %s }\n", cquote(optstr));
+	printf("}, %s },\n", cquote(optstr));
 
 	/* Create results, one by one */
 	printf("    .results = (getopt_result_s[]){\n");
 	int c;
 	do {
-		c = getopt(argc, argv, optstr);
-		printf("\t\t{ %s, %s, %d, ",
+		c = my_getopt(argc, argv, optstr);
+
+		/* Print the return value and resulting optind value */
+		printf("\t\t{ %s, %d",
 		  cquotechar(c),
-		  "FL_OPTIND|FL_OPTOPT|FL_OPTARG",
-		  optind);
-		printf("%s, %s },\n",
-		  cquotechar(optopt),
-		  cquote(optarg));
+		  my_optind);
+
+		/* Figure out the flags */
+		int flags = 0;
+		char flagstr[32] = { 0 };
+		if (c == '?' || c == ':') {
+			flags |= FL_OPTOPT;
+			strcpy(flagstr, "FL_OPTOPT");
+		}
+
+		char* p = strchr(optstr, c);
+		if (p && p[1] == ':') {
+			flags |= FL_OPTARG;
+			if (*flagstr)
+				strcat(flagstr, "|");
+			strcat(flagstr, "FL_OPTARG");
+		}
+
+		/* Print the flags & optional global return values */
+		if (flags) {
+			printf(", %s, ", flagstr);
+			if (flags & FL_OPTOPT) {
+				printf(".optopt=%s, ",
+				  cquotechar(my_optopt));
+			}
+			if (flags & FL_OPTARG) {
+				printf(".optarg=%s, ",
+				  cquote(my_optarg));
+			}
+		}
+		printf("},\n");
 	} while(c != -1);
 	puts("    },\n  },");
 }
