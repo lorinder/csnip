@@ -43,10 +43,17 @@ int csnip_x_getopt_imp(int argc, char* argv[], const char* optstring)
 
 	/* Option not found -> error */
 	if (*pos == '\0') {
-		if (opterr != 0)
-			fprintf(stderr, "Error:  Unknown option -%c\n", key);
+		if (opterr != 0) {
+			fprintf(stderr, "%s:  Unknown option -%c\n",
+			  argv[0], key);
+		}
 		optopt = key;
-		idx_in_opt = 1; /* Reset for future calls */
+		if (argv[optind][idx_in_opt + 1] != '\0') {
+			++idx_in_opt;
+		} else {
+			++optind;
+			idx_in_opt = 1;
+		}
 		return '?';
 	}
 
@@ -62,8 +69,9 @@ int csnip_x_getopt_imp(int argc, char* argv[], const char* optstring)
 				if (colon_first)
 					return ':';
 				else if (opterr != 0) {
-					fprintf(stderr, "Error:  Option -%c "
-					  "requires an argument.\n", key);
+					fprintf(stderr, "%s:  Option -%c "
+					  "requires an argument.\n",
+					  argv[0], key);
 				}
 				return '?';
 			}
