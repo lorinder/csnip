@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	};
 	clopts_add_defaults(&opts);
 
-	/* Do the command line parsing */
+	/* Parse the command line args */
 	int i = 0;
 	long l = 1;
 	unsigned long ul = 2;

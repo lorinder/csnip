@@ -64,6 +64,8 @@
 #cmakedefine CSNIP_CONF__HAVE_SSIZE_T
 #cmakedefine CSNIP_CONF__HAVE_STDINT_H
 #cmakedefine CSNIP_CONF__HAVE_SYS_TYPES_H
+#cmakedefine CSNIP_CONF__HAVE_UNISTD_H
+#cmakedefine CSNIP_CONF__HAVE_IO_H
 
 /** Macros for individual libc functions */
 

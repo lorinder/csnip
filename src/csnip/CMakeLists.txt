@@ -26,6 +26,13 @@ if (HAVE_SSIZE_T)
 	set(CSNIP_CONF__HAVE_SSIZE_T 1)
 endif ()
 
+# Check for include files
+
+check_include_file("io.h" CSNIP_CONF__HAVE_IO_H)
+check_include_file("unistd.h" CSNIP_CONF__HAVE_UNISTD_H)
+
+# Check for symbols
+
 check_symbol_exists(aligned_alloc "stdlib.h"
 	CSNIP_CONF__HAVE_ALIGNED_ALLOC)
 check_symbol_exists(_aligned_malloc "malloc.h"
@@ -121,6 +128,7 @@ set(public_headers
 	time.h
 	util.h
 	x.h
+	x_unistd.h
 )
 set(c_sources
 	clopts.c
