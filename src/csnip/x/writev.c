@@ -1,10 +1,9 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <errno.h>
-#include <unistd.h>
-
 #include <csnip/x.h>
+#include <csnip/x_unistd.h>
 
 csnip_x_ssize_t csnip_x_writev_imp(int fd,
 			const struct csnip_x_iovec* iov,

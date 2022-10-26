@@ -2,11 +2,11 @@
 #include <stdlib.h>
 
 #include <fcntl.h>
-#include <unistd.h>
 
 #define CSNIP_SHORT_NAMES
-#include <csnip/x.h>
 #include <csnip/util.h>
+#include <csnip/x.h>
+#include <csnip/x_unistd.h>
 
 typedef x_ssize_t (*writev_funcptr)(int, const struct x_iovec*, int);
 

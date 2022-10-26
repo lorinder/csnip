@@ -2,10 +2,10 @@
 #include <stdlib.h>
 
 #include <fcntl.h>
-#include <unistd.h>
 
 #define CSNIP_SHORT_NAMES
 #include <csnip/x.h>
+#include <csnip/x_unistd.h>
 #include <csnip/util.h>
 
 typedef x_ssize_t (*readv_funcptr)(int, const struct x_iovec*, int);

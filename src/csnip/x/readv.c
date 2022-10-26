@@ -1,11 +1,11 @@
 #include <stdlib.h>
-#include <unistd.h>
 #include <errno.h>
 
 #include <csnip/csnip_conf.h>
 
 #include <csnip/util.h>
 #include <csnip/x.h>
+#include <csnip/x_unistd.h>
 
 csnip_x_ssize_t csnip_x_readv_imp(int fd,
 			const struct csnip_x_iovec* iov,

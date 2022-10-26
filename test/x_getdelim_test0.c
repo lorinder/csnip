@@ -1,14 +1,12 @@
 #include <ctype.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <errno.h>
-#include <unistd.h>
-
 #define CSNIP_SHORT_NAMES
-#include <csnip/x.h>
 #include <csnip/util.h>
+#include <csnip/x.h>
 
 const char* file_content = "line 1\n"
 	"\n"
@@ -108,7 +106,6 @@ static bool check_getdelim(bool verbose,
 int main(int argc, char** argv)
 {
 	bool verbose = true;
-
 
 	/* Run tests */
 	create_temp_file();
