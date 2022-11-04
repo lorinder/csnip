@@ -138,22 +138,27 @@
  *		list description.
  *
  *	@param	loc
- *		point after which to insert (pointer to a list element).
+ *		pointer to list element after which to insert.
+ *		If NULL, insert at the very beginning of the list.
  *
  *	@param	el
  *		element to insert.
  */
 #define csnip_dlist_InsertAfter(head, tail, mprev, mnext, loc, el) \
 	do { \
-		(el)->mprev = (loc); \
-		(el)->mnext = (loc)->mnext; \
-		if ((loc)->mnext != NULL) { \
-			(loc)->mnext->mprev = (el); \
+		if ((loc) != NULL) { \
+			(el)->mnext = (loc)->mnext; \
+			if ((loc)->mnext != NULL) { \
+				(loc)->mnext->mprev = (el); \
+			} else { \
+				assert((loc) == (tail)); \
+				(tail) = (el); \
+			} \
+			(loc)->mnext = (el); \
+			(el)->mprev = (loc); \
 		} else { \
-			assert((loc) == (tail)); \
-			(tail) = (el); \
+			csnip_dlist_PushHead(head, tail, mprev, mnext, el); \
 		} \
-		(loc)->mnext = (el); \
 	} while (0)
 
 /**	Insert an element before @a loc.
@@ -162,23 +167,27 @@
  *		list description
  *
  *	@param	loc
- *		point before which to insert (pointer to a list
- *		element).
+ *		pointer to list element after which to insert.
+ *		If NULL, insert at the very end of the list.
  *
  *	@param	el
  *		element to insert (pointer to element to add).
  */
 #define csnip_dlist_InsertBefore(head, tail, mprev, mnext, loc, el) \
 	do { \
-		(el)->mnext = (loc); \
-		(el)->mprev = (loc)->mprev; \
-		if ((loc)->mprev != NULL) { \
-			(loc)->mprev->mnext = (el); \
+		if ((loc) != NULL) { \
+			(el)->mprev = (loc)->mprev; \
+			if ((loc)->mprev != NULL) { \
+				(loc)->mprev->mnext = (el); \
+			} else { \
+				assert((loc) == (head)); \
+				(head) = (el); \
+			} \
+			(loc)->mprev = (el); \
+			(el)->mnext = (loc); \
 		} else { \
-			assert((loc) == (head)); \
-			(head) = (el); \
+			csnip_dlist_PushTail(head, tail, mprev, mnext, el); \
 		} \
-		(loc)->mprev = (el); \
 	} while (0)
 
 /**	Remove an element from the list.
@@ -395,17 +404,22 @@
  *		list description.
  *
  *	@param	loc
- *		point after which to insert (pointer to a list element).
+ *		point to the list element after which to insert.  If
+ *		NULL, insert at the very beginning of the list.
  *
  *	@param	el
  *		element to insert.
  */
 #define csnip_slist_InsertAfter(head, tail, mnext, loc, el) \
 	do { \
-		(el)->mnext = (loc)->mnext; \
-		(loc)->mnext = (el); \
-		if ((el)->mnext == NULL) { \
-			(tail) = (el); \
+		if ((loc) != NULL) { \
+			(el)->mnext = (loc)->mnext; \
+			(loc)->mnext = (el); \
+			if ((el)->mnext == NULL) { \
+				(tail) = (el); \
+			} \
+		} else { \
+			csnip_slist_PushHead(head, tail, mnext, el); \
 		} \
 	} while (0)
 
