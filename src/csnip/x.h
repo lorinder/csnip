@@ -13,6 +13,7 @@
  *	csnip's wrapper.
  */
 
+#include <limits.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <stdarg.h>

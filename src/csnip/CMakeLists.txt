@@ -9,6 +9,7 @@ set(CSNIP_CONF__SUPPORT_THREADING ${SUPPORT_THREADING})
 # Check for various types & APIs in libc and provided
 # libraries.
 
+include(CheckIncludeFiles)
 include(CheckSymbolExists)
 include(CheckStructHasMember)
 include(CheckTypeSize)
@@ -34,6 +35,8 @@ endif ()
 
 check_include_file("io.h" CSNIP_CONF__HAVE_IO_H)
 check_include_file("unistd.h" CSNIP_CONF__HAVE_UNISTD_H)
+check_include_file("sys/select.h" CSNIP_CONF__HAVE_SYS_SELECT_H)
+check_include_file("WinSock2.h" CSNIP_CONF__HAVE_WINSOCK2_H)
 
 # Check for symbols
 
@@ -82,7 +85,7 @@ set(CMAKE_REQUIRED_DEFINITIONS
 check_symbol_exists(strerror_r "string.h"
 	CSNIP_CONF__HAVE_STRERROR_R)
 unset(CMAKE_REQUIRED_DEFINITIONS)
-check_symbol_exists(strerror_s "sec_api/string_s.h"
+check_symbol_exists(strerror_s "string.h"
 	CSNIP_CONF__HAVE_STRERROR_S)
 check_symbol_exists(strtok_r "string.h"
 	CSNIP_CONF__HAVE_STRTOK_R)
@@ -91,14 +94,21 @@ check_struct_has_member("struct timespec" tv_sec "time.h"
 check_symbol_exists(timespec_get "time.h"
 	CSNIP_CONF__HAVE_TIMESPEC_GET)
 check_struct_has_member("struct timeval" tv_sec "sys/time.h"
-	CSNIP_CONF__HAVE_TIMEVAL)
+	timeval_in_sys_time)
+check_struct_has_member("struct timeval" tv_sec
+	"WinSock2.h" timeval_in_winsock2)
+if (timeval_in_sys_time OR timeval_in_winsock2)
+	set(CSNIP_CONF__HAVE_TIMEVAL 1)
+endif ()
 check_symbol_exists(writev "sys/uio.h"
 	CSNIP_CONF__HAVE_WRITEV)
 set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
 check_symbol_exists(vasprintf "stdio.h"
 	CSNIP_CONF__HAVE_VASPRINTF)
 unset(CMAKE_REQUIRED_DEFINITIONS)
-
+check_symbol_exists(Sleep "windows.h"
+	CSNIP_CONF__HAVE_WIN32_SLEEP)
+ 
 set(CSNIP_CONF__HAVE_UNLOCKED_STDIO 0)
 if (${CSNIP_CONF__HAVE_FLOCKFILE}
   AND ${CSNIP_CONF__HAVE_FUNLOCKFILE}

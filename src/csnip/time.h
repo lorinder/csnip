@@ -51,8 +51,12 @@
 #include <csnip/csnip_conf.h>
 
 #include <time.h>
-#ifdef CSNIP_CONF__HAVE_TIMEVAL
+
+#ifdef CSNIP_CONF__HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
+#if defined(CSNIP_CONF__HAVE_WINSOCK2_H)
+#include <WinSock2.h>
 #endif
 
 #include <csnip/err.h>

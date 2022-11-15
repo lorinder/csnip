@@ -43,8 +43,11 @@
 
 #cmakedefine CSNIP_CONF__HAVE_SSIZE_T
 #cmakedefine CSNIP_CONF__HAVE_STDINT_H
+#cmakedefine CSNIP_CONF__HAVE_SYS_SELECT_H
 #cmakedefine CSNIP_CONF__HAVE_SYS_TYPES_H
+#cmakedefine CSNIP_CONF__HAVE_SYS_TIME_H
 #cmakedefine CSNIP_CONF__HAVE_UNISTD_H
+#cmakedefine CSNIP_CONF__HAVE_WINSOCK2_H
 #cmakedefine CSNIP_CONF__HAVE_IO_H
 
 /** Macros for individual libc functions */
@@ -62,6 +65,7 @@
 #cmakedefine CSNIP_CONF__HAVE_GETLINE
 #cmakedefine CSNIP_CONF__HAVE_GETOPT
 #cmakedefine CSNIP_CONF__HAVE_MEMALIGN
+#cmakedefine CSNIP_CONF__HAVE_NANOSLEEP
 #cmakedefine CSNIP_CONF__HAVE_POSIX_MEMALIGN
 #cmakedefine CSNIP_CONF__HAVE_PUTC_UNLOCKED
 #cmakedefine CSNIP_CONF__HAVE_READV
@@ -74,6 +78,7 @@
 #cmakedefine CSNIP_CONF__HAVE_TIMESPEC_GET
 #cmakedefine CSNIP_CONF__HAVE_TIMEVAL
 #cmakedefine CSNIP_CONF__HAVE_VASPRINTF
+#cmakedefine CSNIP_CONF__HAVE_WIN32_SLEEP
 #cmakedefine CSNIP_CONF__HAVE_WRITEV
 
 /** Macros for groups */

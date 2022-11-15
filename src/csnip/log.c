@@ -1,5 +1,3 @@
-#include <csnip/csnip_conf.h>
-
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -7,7 +5,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include <csnip/csnip_conf.h>
+#ifdef CSNIP_CONF__HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 #ifdef CSNIP_CONF__HAVE_REGCOMP
 #include <regex.h>
 #endif

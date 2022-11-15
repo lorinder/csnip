@@ -1,4 +1,21 @@
-#include <sys/time.h>
+#include <time.h>
+
+#include <csnip/csnip_conf.h>
+#ifndef CSNIP_CONF__HAVE_NANOSLEEP
+   /* Access Win32's Sleep() */
+#  ifdef CSNIP_CONF__HAVE_WIN32_SLEEP
+#    define WIN32_LEAN_AND_MEAN
+#    include <windows.h>
+#  endif
+
+   /* Get select() for UNIX platforms that don't have nanosleep.
+    * Note that we can't use WinSock's select() since that requires
+    * library initialization, which the app may not have performed.
+    */
+#  ifdef CSNIP_CONF__HAVE_SYS_SELECT_H
+#    include <sys/select.h>
+#  endif
+#endif
 
 #include "time.h"
 
@@ -53,7 +70,17 @@ struct timeval csnip_time_timespec_as_timeval(struct timespec ts)
 
 int csnip_time_sleep(struct timespec ts)
 {
-	int err = nanosleep(&ts, NULL);
+	int err = 0;
+#if defined(CSNIP_CONF__HAVE_NANOSLEEP)
+	err = nanosleep(&ts, NULL);
+#elif defined(CSNIP_CONF__HAVE_WIN32_SLEEP)
+	DWORD msec = ts.tv_nsec / 1000000;
+	msec += (DWORD)(ts.tv_sec * 1000);
+	Sleep(msec);
+#else
+	struct timeval tv = csnip_time_timespec_as_timeval(ts);
+	err = select(0, NULL, NULL, NULL, &tv);
+#endif
 	if (err != 0) {
 		return csnip_err_ERRNO;
 	}

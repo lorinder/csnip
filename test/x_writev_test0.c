@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <csnip/csnip_conf.h>
+
 #include <fcntl.h>
 
 #define CSNIP_SHORT_NAMES

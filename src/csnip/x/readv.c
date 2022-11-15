@@ -2,6 +2,9 @@
 #include <errno.h>
 
 #include <csnip/csnip_conf.h>
+#ifdef CSNIP_CONF__HAVE_IO_H
+#include <io.h>
+#endif
 
 #include <csnip/util.h>
 #include <csnip/x.h>

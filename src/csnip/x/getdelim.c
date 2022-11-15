@@ -10,9 +10,7 @@
 #include <csnip/csnip_conf.h>
 
 /* Check if we can use unlocked stdio, and define macros accordingly. */
-#if defined(CSNIP_CONF__HAVE_FLOCKFILE) \
-    && defined(CSNIP_CONF__HAVE_FUNLOCKFILE) \
-    && defined(CSNIP_CONF__HAVE_UNLOCKED_STDIO)
+#if defined(CSNIP_CONF__HAVE_UNLOCKED_STDIO)
 	#define my_flockfile(fp)	flockfile(fp)
 	#define my_getc(fp)		getc_unlocked(fp)
 	#define my_funlockfile(fp)	funlockfile(fp)

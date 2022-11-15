@@ -2,8 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <csnip/csnip_conf.h>
 #include <csnip/time.h>
 #include <csnip/x.h>
+
+#ifndef CSNIP_CONF__HAVE_CLOCK_GETTIME
+#  undef clock_gettime
+#  define clock_gettime(id, ts) timespec_get((ts), TIME_UTC)
+#endif
+
 
 static void check_ts(struct timespec ts,
 			time_t secs,
