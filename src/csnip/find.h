@@ -36,7 +36,8 @@
  *		used for indexing.
  *
  *  @param	u
- *		dummy variable for the comparison expression.
+ *		dummy variable for the comparison expression; this
+ *		variable will be an index of type itype.
  *
  *  @param	au_lessthan_key
  *		expression in u that evaluates to true if the u-th entry
@@ -55,13 +56,19 @@
  *		less-than-or-equal expression.
  */
 #define csnip_Bsearch(itype, u, au_lessthan_key, N, ret) \
+	csnip__Bsearch(itype, u, au_lessthan_key, (N), (ret), \
+		csnip__Bsearch_lo, csnip__Bsearch_hi)
+
+/** @cond */
+#define csnip__Bsearch(itype, u, au_lessthan_key, N, ret, \
+		lo, hi) \
 	do { \
 		/* loop invariants:
 		 * a[0], ..., a[lo - 1] < key;
 		 * a[hi], ..., a[N - 1] >= key;
 		 */ \
 		itype lo = 0; \
-		itype hi = (N); \
+		itype hi = N; \
 		while (hi != lo) { \
 			itype u = lo + (hi - lo)/2; \
 			if (au_lessthan_key) { \
@@ -71,8 +78,9 @@
 			} \
 		} \
 		\
-		(ret) = hi; \
+		ret = hi; \
 	} while(0)
+/** @endcond */
 
 /** @} */
 
