@@ -24,9 +24,9 @@
 		assert(u < (N)); \
 		while (u > 0) { \
 			size_t v = (u - 1) / (K); \
-			if (au_lessthan_av) { \
-				swap_au_av; \
-			} \
+			if (!(au_lessthan_av)) \
+				break; \
+			swap_au_av; \
 			u = v; \
 		} \
 	} while(0)
@@ -35,9 +35,15 @@
 #define csnip_heap_SiftDown(u, v, au_lessthan_av, swap_au_av, K, N, i) \
 	do { \
 		size_t u, v; \
+		/* invariant: csnip_heap_i is always the parent
+		 */ \
 		size_t csnip_heap_i = (size_t)(i); \
 		v = csnip_heap_i * (K) + 1; \
 		while (v < (size_t)(N)) { \
+			/* Find the smallest among children
+			 * v will be the relevant child after
+			 * this step.
+			 */ \
 			size_t csnip_heap_nu = \
 				csnip_Min(v + (K), (size_t)(N)); \
 			u = v + 1; \
@@ -46,6 +52,7 @@
 					v = u; \
 				++u; \
 			} \
+			/* Swap parent w/ smallest child? */ \
 			u = csnip_heap_i; \
 			if (au_lessthan_av) \
 				break; \
