@@ -355,6 +355,7 @@ static const char* value_for_key(const char* keyStart,
 			clock_gettime(CLOCK_MONOTONIC, &ts);
 			snprintf(buf, bufSz, "%.16g",
 			  ts.tv_sec + ts.tv_nsec/1e9);
+			return buf;
 		} else if (strncmp(keyStart, "utctime", 7) == 0) {
 			return put_timestamp(buf, bufSz, 0);
 		}
