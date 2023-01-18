@@ -99,6 +99,15 @@ typedef struct {
 
 	/** Format expressions, indexed by style.
 	 *
+	 *  The format expression is a string containing keywords interspersed with
+	 *  literal text.  The keywords are surrounded by '{' and '}'.
+	 *  When log messages are written, the keywords are (including
+	 *  the surrounding {}) are replaced by their value.
+	 *
+	 *  Example format string: "[{comp}] {msg}".  If the message is
+	 *  "My message" and the component "SampleComp", that example
+	 *  string will render to "[SampleComp] My message".
+	 *
 	 *  Understood format keywords:
 	 *
 	 *  `msg`
