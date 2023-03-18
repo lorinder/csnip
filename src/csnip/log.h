@@ -195,7 +195,11 @@ void csnip_log__print(
 		const char* src_func,
 		int src_line,
 		const char* msgformat,
-		...);
+		...)
+#if defined(__GNUC__)
+		__attribute__((format (printf, 8, 9)))
+#endif
+		;
 /** @endcond */
 
 #ifdef __cplusplus
