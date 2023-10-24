@@ -27,4 +27,6 @@ foreach(fn
 endforeach()
 
 set_property(TARGET clopts PROPERTY C_STANDARD 11)
-set_property(TARGET sort_perf PROPERTY CXX_STANDARD 11)
+if (BUILD_CXX_PIECES)
+	set_property(TARGET sort_perf PROPERTY CXX_STANDARD 11)
+endif()
