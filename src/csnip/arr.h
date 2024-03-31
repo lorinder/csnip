@@ -39,14 +39,14 @@
  *	memory is allocated if the initial_cap value provided is 0.
  */
 #define csnip_arr_Init(a, n, cap, initial_cap, err) \
-		do { \
-			(n) = 0; \
-			if (((cap) = (initial_cap)) > 0) { \
-				csnip_mem_Alloc(initial_cap, a, err); \
-			} else { \
-				(a) = NULL; \
-			} \
-		} while(0)
+	do { \
+		(n) = 0; \
+		if (((cap) = (initial_cap)) > 0) { \
+			csnip_mem_Alloc(initial_cap, a, err); \
+		} else { \
+			(a) = NULL; \
+		} \
+	} while(0)
 
 /**	Reserve space for members to be added.
  *
@@ -87,15 +87,15 @@
  *	Complexity: amortized O(1).
  */
 #define csnip_arr_Push(a, n, cap, value, err) \
-		do { \
-			int csnip_err = 0; \
-			csnip_arr_Reserve(a, n, cap, (n) + 1, csnip_err); \
-			if (csnip_err) { \
-				csnip_err_Raise(csnip_err, err); \
-				break; \
-			} \
-			(a)[(n)++] = (value); \
-		} while(0)
+	do { \
+		int csnip_err = 0; \
+		csnip_arr_Reserve(a, n, cap, (n) + 1, csnip_err); \
+		if (csnip_err) { \
+			csnip_err_Raise(csnip_err, err); \
+			break; \
+		} \
+		(a)[(n)++] = (value); \
+	} while(0)
 
 /**	Delete the value at the end of the array.
  *
@@ -105,13 +105,13 @@
  *	Complexity: O(1)
  */
 #define csnip_arr_Pop(a, n, cap, err) \
-		do { \
-			if ((n) <= 0) { \
-				csnip_err_Raise(csnip_err_UNDERFLOW, err); \
-				break; \
-			} \
-			--(n); \
-		} while(0);
+	do { \
+		if ((n) <= 0) { \
+			csnip_err_Raise(csnip_err_UNDERFLOW, err); \
+			break; \
+		} \
+		--(n); \
+	} while(0);
 
 
 /**	Insert a new member at a given position in the array.
@@ -122,20 +122,20 @@
  *	Complexity:  n - index element moves.
  */
 #define csnip_arr_InsertAt(a, n, cap, index, val, err) \
-		do { \
-			int csnip_err = 0; \
-			csnip_arr_Reserve(a, n, cap, (n) + 1, csnip_err); \
-			if (csnip_err) { \
-				csnip_err_Raise(csnip_err, err); \
-				break; \
-			} \
-			for (int csnip_i = (n); csnip_i > (index); --csnip_i)\
-			{ \
-				(a)[csnip_i] = (a)[csnip_i - 1]; \
-			} \
-			(a)[(index)] = (val); \
-			++(n); \
-		} while(0)
+	do { \
+		int csnip_err = 0; \
+		csnip_arr_Reserve(a, n, cap, (n) + 1, csnip_err); \
+		if (csnip_err) { \
+			csnip_err_Raise(csnip_err, err); \
+			break; \
+		} \
+		for (int csnip_i = (n); csnip_i > (index); --csnip_i)\
+		{ \
+			(a)[csnip_i] = (a)[csnip_i - 1]; \
+		} \
+		(a)[(index)] = (val); \
+		++(n); \
+	} while(0)
 
 /**	Remove an array member at a given index.
  *
@@ -145,14 +145,14 @@
  *	Complexity:	n - index element moves.
  */
 #define csnip_arr_DeleteAt(a, n, cap, index, err) \
-		do { \
-			int csnip_i; \
-			--(n); \
-			for (csnip_i = (index); csnip_i < (n); ++csnip_i) \
-			{ \
-				(a)[csnip_i] = (a)[csnip_i + 1]; \
-			} \
-		} while(0)
+	do { \
+		int csnip_i; \
+		--(n); \
+		for (csnip_i = (index); csnip_i < (n); ++csnip_i) \
+		{ \
+			(a)[csnip_i] = (a)[csnip_i + 1]; \
+		} \
+	} while(0)
 
 /**	Delete an array.
  *
@@ -162,11 +162,11 @@
  *	capacity 0.
  */
 #define csnip_arr_Free(a, n, cap) \
-		do { \
-			csnip_mem_Free(a); \
-			(n) = 0; \
-			(cap) = 0; \
-		} while(0)
+	do { \
+		csnip_mem_Free(a); \
+		(n) = 0; \
+		(cap) = 0; \
+	} while(0)
 
 /**	Declare array managment functions.
  *
@@ -190,18 +190,16 @@
  *		are to be used.
  */
 #define CSNIP_ARR_DECL_FUNCS(scope, prefix, val_type, gen_args) \
-		scope void prefix ## init(csnip_pp_prepend_##gen_args \
-					size_t cs); \
-		scope void prefix ## reserve(csnip_pp_prepend_##gen_args \
-					size_t least_cap); \
-		scope void prefix ## push(csnip_pp_prepend_##gen_args \
-					val_type v); \
-		scope void prefix ## pop(csnip_pp_list_##gen_args); \
-		scope void prefix ## insert_at(csnip_pp_prepend_##gen_args \
-					size_t i, val_type v); \
-		scope void prefix ## delete_at(csnip_pp_prepend_##gen_args \
-					size_t i); \
-		scope void prefix ## free(csnip_pp_list_##gen_args);
+	scope void prefix ## init(csnip_pp_prepend_##gen_args size_t cs); \
+	scope void prefix ## reserve(csnip_pp_prepend_##gen_args \
+				size_t least_cap); \
+	scope void prefix ## push(csnip_pp_prepend_##gen_args val_type v); \
+	scope void prefix ## pop(csnip_pp_list_##gen_args); \
+	scope void prefix ## insert_at(csnip_pp_prepend_##gen_args \
+				size_t i, val_type v); \
+	scope void prefix ## delete_at(csnip_pp_prepend_##gen_args \
+				size_t i); \
+	scope void prefix ## free(csnip_pp_list_##gen_args);
 
 /**	Define dynamic array managment functions.
  *
@@ -226,44 +224,44 @@
  *		functions of the arguments as specified with @a gen_args .
  */
 #define CSNIP_ARR_DEF_FUNCS(scope, prefix, val_type, gen_args, a, n, cap, err) \
-		scope void prefix ## init(csnip_pp_prepend_##gen_args \
-					size_t cs) \
-		{ \
-			csnip_arr_Init(a, n, cap, cs, err); \
-		} \
-		\
-		scope void prefix ## reserve(csnip_pp_prepend_##gen_args \
-					size_t least_cap) \
-		{ \
-			csnip_arr_Reserve(a, n, cap, least_cap, err); \
-		} \
-		\
-		scope void prefix ## push(csnip_pp_prepend_##gen_args \
-					val_type v) \
-		{ \
-			csnip_arr_Push(a, n, cap, v, err); \
-		} \
-		\
-		scope void prefix ## pop(csnip_pp_list_##gen_args) \
-		{ \
-			csnip_arr_Pop(a, n, cap, err); \
-		} \
-		\
-		scope void prefix ## insert_at(csnip_pp_prepend_##gen_args \
-			size_t i, val_type v) \
-		{ \
-			csnip_arr_InsertAt(a, n, cap, i, v, err); \
-		} \
-		\
-		scope void prefix ## delete_at(csnip_pp_prepend_##gen_args \
-			size_t i) \
-		{ \
-			csnip_arr_DeleteAt(a, n, cap, i, err); \
-		} \
-		scope void prefix ## free(csnip_pp_list_##gen_args) \
-		{ \
-			csnip_arr_Free(a, n, cap); \
-		}
+	scope void prefix ## init(csnip_pp_prepend_##gen_args \
+				size_t cs) \
+	{ \
+		csnip_arr_Init(a, n, cap, cs, err); \
+	} \
+	\
+	scope void prefix ## reserve(csnip_pp_prepend_##gen_args \
+				size_t least_cap) \
+	{ \
+		csnip_arr_Reserve(a, n, cap, least_cap, err); \
+	} \
+	\
+	scope void prefix ## push(csnip_pp_prepend_##gen_args \
+				val_type v) \
+	{ \
+		csnip_arr_Push(a, n, cap, v, err); \
+	} \
+	\
+	scope void prefix ## pop(csnip_pp_list_##gen_args) \
+	{ \
+		csnip_arr_Pop(a, n, cap, err); \
+	} \
+	\
+	scope void prefix ## insert_at(csnip_pp_prepend_##gen_args \
+		size_t i, val_type v) \
+	{ \
+		csnip_arr_InsertAt(a, n, cap, i, v, err); \
+	} \
+	\
+	scope void prefix ## delete_at(csnip_pp_prepend_##gen_args \
+		size_t i) \
+	{ \
+		csnip_arr_DeleteAt(a, n, cap, i, err); \
+	} \
+	scope void prefix ## free(csnip_pp_list_##gen_args) \
+	{ \
+		csnip_arr_Free(a, n, cap); \
+	}
 /** @} */
 
 #endif /* CSNIP_ARR_H */

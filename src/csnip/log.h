@@ -187,15 +187,15 @@ inline const char* csnip_log__file(const char* filepath)
 }
 
 void csnip_log__print(
-		int style,
-		int prio,
-		const char* component,
-		const char* src_filepath,
-		const char* src_file,
-		const char* src_func,
-		int src_line,
-		const char* msgformat,
-		...)
+	int style,
+	int prio,
+	const char* component,
+	const char* src_filepath,
+	const char* src_file,
+	const char* src_func,
+	int src_line,
+	const char* msgformat,
+	...)
 #if defined(__GNUC__)
 		__attribute__((format (printf, 8, 9)))
 #endif

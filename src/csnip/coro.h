@@ -82,9 +82,9 @@
  *
  */
 #define CSNIP_CORO_START(pc) \
-		assert(pc != -1); \
-		switch(pc) { \
-		case 0: ;
+	assert(pc != -1); \
+	switch(pc) { \
+	case 0: ;
 
 /** Epilogue of a coroutine.
  *
@@ -92,11 +92,11 @@
  *  CSNIP_CORO_START(), there must be exactly one CSNIP_CORO_END().
  */
 #define CSNIP_CORO_END(pc) \
-		break; \
-		default: \
-			assert(0); \
-		} \
-		pc = -1; \
+	break; \
+	default: \
+		assert(0); \
+	} \
+	pc = -1; \
 
 /** Yield control to the caller.
  *
@@ -124,11 +124,11 @@
  *		e.g., \/\* void \*\/.
  */
 #define csnip_coro_Yield(pc, label, r) \
-		do { \
-			pc = label; \
-			return r; \
-			case label: ; \
-		} while(0)
+	do { \
+		pc = label; \
+		return r; \
+		case label: ; \
+	} while(0)
 
 /** Terminate the coroutine.
  *
@@ -142,10 +142,10 @@
  *		the value to return.
  */
 #define csnip_coro_Return(pc, r) \
-		do { \
-			pc = -1; \
-			return r; \
-		} while(0)
+	do { \
+		pc = -1; \
+		return r; \
+	} while(0)
 
 /** @} */
 

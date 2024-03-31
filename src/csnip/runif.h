@@ -23,21 +23,22 @@ unsigned long csnip_runif_getul(const csnip_rng* R,
 unsigned int csnip_runif_getu(const csnip_rng* R, unsigned int max);
 
 #define csnip_runif_Geti(R, max) \
-		_Generic((max), \
-			unsigned long long int: \
-			  csnip_runif_getull((R), (unsigned long long int)(max)), \
-			long long int: \
-			  (long long int)csnip_runif_getull((R), (long long int)(max)), \
-			unsigned long int: \
-			  csnip_runif_getul((R), (unsigned long int)(max)), \
-			long int: \
-			  (long int)csnip_runif_getul((R), (long int)(max)), \
-			unsigned int: \
-			  csnip_runif_getu((R), (unsigned int)(max)), \
-			int: \
-			  (int)csnip_runif_getu((R), (int)(max)), \
-			default: \
-			  csnip_runif_getu((R), (unsigned int)(max)))
+	_Generic((max), \
+		unsigned long long int: \
+		  csnip_runif_getull((R), (unsigned long long int)(max)), \
+		long long int: \
+		  (long long int)csnip_runif_getull((R), \
+			(long long int)(max)), \
+		unsigned long int: \
+		  csnip_runif_getul((R), (unsigned long int)(max)), \
+		long int: \
+		  (long int)csnip_runif_getul((R), (long int)(max)), \
+		unsigned int: \
+		  csnip_runif_getu((R), (unsigned int)(max)), \
+		int: \
+		  (int)csnip_runif_getu((R), (int)(max)), \
+		default: \
+		  csnip_runif_getu((R), (unsigned int)(max)))
 
 /* Generation of floating point uniform random variables */
 long double csnip_runif_getld(const csnip_rng* R, long double lim);
@@ -45,10 +46,10 @@ double csnip_runif_getd(const csnip_rng* R, double lim);
 float csnip_runif_getf(const csnip_rng* R, float lim);
 
 #define csnip_runif_Getf(R, lim) \
-		_Generic((lim), \
-			long double: csnip_runif_getld((R), (lim)), \
-			double: csnip_runif_getd((R), (lim)), \
-			float: csnip_runif_getf((R), (lim)))
+	_Generic((lim), \
+		long double: csnip_runif_getld((R), (lim)), \
+		double: csnip_runif_getd((R), (lim)), \
+		float: csnip_runif_getf((R), (lim)))
 
 #endif /* CSNIP_RUNIF_H */
 

@@ -59,42 +59,42 @@
  */
 #define csnip_Qsort_median3_pivot(u, v, au_lessthan_av, swap_au_av, beg, end) \
 	do { \
-	/* Median 3 pivot selection. \
-	 * The following steps will place the pivot at \
-	 * the beginning. \
-	 */ \
-	const size_t csnip_qs_mid = beg + (end - beg)/2; \
-	size_t u, v; \
-	u = end - 1; \
-	v = csnip_qs_mid; \
-	if (au_lessthan_av) { \
-		swap_au_av; \
-	} \
-	/* At this point, we have middle <= end. */ \
-	u = beg; \
-	if (au_lessthan_av) { \
-		/* beg < middle <= end  \
-		 * ==> Use middle as pivot. \
+		/* Median 3 pivot selection. \
+		 * The following steps will place the pivot at \
+		 * the beginning. \
 		 */ \
-		swap_au_av; \
-	} else { \
-		/* middle <= beg. \
-		 * might have middle <= beg <= end, or \
-		 * middle <= end <= beg. \
-		 */ \
-		v = end - 1; \
+		const size_t csnip_qs_mid = beg + (end - beg)/2; \
+		size_t u, v; \
+		u = end - 1; \
+		v = csnip_qs_mid; \
 		if (au_lessthan_av) { \
-			/* middle <= beg <= end. \
-			 * Median is already correctly \
-			 * placed. \
-			 */ \
-		} else { \
-			/* middle <= end <= beg. \
-			 * => Use end as pivot. \
-			 */ \
 			swap_au_av; \
 		} \
-	} \
+		/* At this point, we have middle <= end. */ \
+		u = beg; \
+		if (au_lessthan_av) { \
+			/* beg < middle <= end  \
+			 * ==> Use middle as pivot. \
+			 */ \
+			swap_au_av; \
+		} else { \
+			/* middle <= beg. \
+			 * might have middle <= beg <= end, or \
+			 * middle <= end <= beg. \
+			 */ \
+			v = end - 1; \
+			if (au_lessthan_av) { \
+				/* middle <= beg <= end. \
+				 * Median is already correctly \
+				 * placed. \
+				 */ \
+			} else { \
+				/* middle <= end <= beg. \
+				 * => Use end as pivot. \
+				 */ \
+				swap_au_av; \
+			} \
+		} \
 	} while (0)
 
 /**  Quicksort's partition algorithm.
@@ -129,44 +129,44 @@
  */
 #define csnip_Qsort_partition(u, v, au_lessthan_av, swap_au_av, beg, end, result) \
 	do { \
-	\
-	/* Separate */ \
-	size_t u, v; \
-	size_t csnip__qs_lo = beg; \
-	size_t csnip__qs_hi = end; \
-	do { \
-		/* Ascend in lower partition */ \
-		u = csnip__qs_lo; \
-		v = beg; \
-		do { \
-			++u; \
-		} while (au_lessthan_av); \
-		csnip__qs_lo = u; \
 		\
-		/* Descend in higher partition */ \
+		/* Separate */ \
+		size_t u, v; \
+		size_t csnip__qs_lo = beg; \
+		size_t csnip__qs_hi = end; \
+		do { \
+			/* Ascend in lower partition */ \
+			u = csnip__qs_lo; \
+			v = beg; \
+			do { \
+				++u; \
+			} while (au_lessthan_av); \
+			csnip__qs_lo = u; \
+			\
+			/* Descend in higher partition */ \
+			u = beg; \
+			v = csnip__qs_hi; \
+			do { \
+				--v; \
+			} while (au_lessthan_av); \
+			csnip__qs_hi = v; \
+			\
+			/* Terminate if ends meet */ \
+			if (csnip__qs_hi <= csnip__qs_lo) \
+				break; \
+			\
+			/* Exchange */ \
+			u = csnip__qs_lo; \
+			/* v = csnip__qs_hi; */ \
+			swap_au_av; \
+		} while(1); \
+		\
+		/* Move pivot in place */ \
 		u = beg; \
 		v = csnip__qs_hi; \
-		do { \
-			--v; \
-		} while (au_lessthan_av); \
-		csnip__qs_hi = v; \
-		\
-		/* Terminate if ends meet */ \
-		if (csnip__qs_hi <= csnip__qs_lo) \
-			break; \
-		\
-		/* Exchange */ \
-		u = csnip__qs_lo; \
-		/* v = csnip__qs_hi; */ \
 		swap_au_av; \
-	} while(1); \
-	\
-	/* Move pivot in place */ \
-	u = beg; \
-	v = csnip__qs_hi; \
-	swap_au_av; \
-	\
-	(result) = csnip__qs_hi; \
+		\
+		(result) = csnip__qs_hi; \
 	} while(0)
 
 /**  Quicksort algorithm.
@@ -189,73 +189,77 @@
  */
 #define csnip_Qsort(u, v, au_lessthan_av, swap_au_av, N) \
 	do { \
-	\
-	int csnip_qs_n = 0; \
-	size_t csnip_qs_sbeg[CSNIP_QSORT_STACKSZ]; \
-	size_t csnip_qs_send[CSNIP_QSORT_STACKSZ]; \
-	if ((N) > CSNIP_QSORT_SLIMIT) { \
-		++csnip_qs_n; \
-		csnip_qs_sbeg[0] = 0; \
-		csnip_qs_send[0] = (N); \
-	} \
-	\
-	/* Partitioning iteration */ \
-	while(csnip_qs_n > 0) { \
-		--csnip_qs_n; \
-		const size_t csnip_qs_beg = csnip_qs_sbeg[csnip_qs_n]; \
-		const size_t csnip_qs_end = csnip_qs_send[csnip_qs_n]; \
 		\
-		/* Put the median to the start */ \
-		csnip_Qsort_median3_pivot(u, v, au_lessthan_av, swap_au_av, \
-			csnip_qs_beg, csnip_qs_end); \
+		int csnip_qs_n = 0; \
+		size_t csnip_qs_sbeg[CSNIP_QSORT_STACKSZ]; \
+		size_t csnip_qs_send[CSNIP_QSORT_STACKSZ]; \
+		if ((N) > CSNIP_QSORT_SLIMIT) { \
+			++csnip_qs_n; \
+			csnip_qs_sbeg[0] = 0; \
+			csnip_qs_send[0] = (N); \
+		} \
 		\
-		/* Partition */ \
-		size_t csnip_p; \
-		csnip_Qsort_partition(u, v, au_lessthan_av, swap_au_av, \
-			csnip_qs_beg, csnip_qs_end, csnip_p); \
-		\
-		/* Put search subregions on stack */ \
-		const size_t csnip_d1 = csnip_p - 1 - csnip_qs_beg; \
-		const size_t csnip_d2 = csnip_qs_end - csnip_p - 1; \
-		if (csnip_d1 > csnip_d2) { \
-			if (csnip_d1 > CSNIP_QSORT_SLIMIT) { \
-				csnip_qs_sbeg[csnip_qs_n] = csnip_qs_beg; \
-				csnip_qs_send[csnip_qs_n++] = csnip_p; \
+		/* Partitioning iteration */ \
+		while(csnip_qs_n > 0) { \
+			--csnip_qs_n; \
+			const size_t csnip_qs_beg = csnip_qs_sbeg[csnip_qs_n]; \
+			const size_t csnip_qs_end = csnip_qs_send[csnip_qs_n]; \
+			\
+			/* Put the median to the start */ \
+			csnip_Qsort_median3_pivot(u, v, au_lessthan_av, \
+				swap_au_av, csnip_qs_beg, csnip_qs_end); \
+			\
+			/* Partition */ \
+			size_t csnip_p; \
+			csnip_Qsort_partition(u, v, au_lessthan_av, \
+				swap_au_av, csnip_qs_beg, csnip_qs_end, \
+				csnip_p); \
+			\
+			/* Put search subregions on stack */ \
+			const size_t csnip_d1 = csnip_p - 1 - csnip_qs_beg; \
+			const size_t csnip_d2 = csnip_qs_end - csnip_p - 1; \
+			if (csnip_d1 > csnip_d2) { \
+				if (csnip_d1 > CSNIP_QSORT_SLIMIT) { \
+					csnip_qs_sbeg[csnip_qs_n] = \
+						csnip_qs_beg; \
+					csnip_qs_send[csnip_qs_n++] = \
+						csnip_p; \
+					if (csnip_d2 > CSNIP_QSORT_SLIMIT) \
+					{ \
+						csnip_qs_sbeg[csnip_qs_n] \
+						  = csnip_p + 1; \
+						csnip_qs_send[csnip_qs_n++] \
+						  = csnip_qs_end; \
+					} \
+				} \
+			} else { \
 				if (csnip_d2 > CSNIP_QSORT_SLIMIT) { \
 					csnip_qs_sbeg[csnip_qs_n] = \
 					  csnip_p + 1; \
 					csnip_qs_send[csnip_qs_n++] = \
 					  csnip_qs_end; \
-				} \
-			} \
-		} else { \
-			if (csnip_d2 > CSNIP_QSORT_SLIMIT) { \
-				csnip_qs_sbeg[csnip_qs_n] = \
-				  csnip_p + 1; \
-				csnip_qs_send[csnip_qs_n++] = \
-				  csnip_qs_end; \
-				if  (csnip_d1 > CSNIP_QSORT_SLIMIT) { \
-					csnip_qs_sbeg[csnip_qs_n] = \
-					  csnip_qs_beg; \
-					csnip_qs_send[csnip_qs_n++] = \
-					  csnip_p; \
+					if  (csnip_d1 > CSNIP_QSORT_SLIMIT) { \
+						csnip_qs_sbeg[csnip_qs_n] = \
+						  csnip_qs_beg; \
+						csnip_qs_send[csnip_qs_n++] = \
+						  csnip_p; \
+					} \
 				} \
 			} \
 		} \
-	} \
-	\
-	/* Clean up remaining disorder */ \
-	/* At this point, the data is close to sorted, but partitions of size \
-	 * CSNIP_QSORT_SLIMIT or smaller have not been put into their \
-	 * correct order.  We use Shellsort to finish up. \
-	 */ \
-	if (CSNIP_QSORT_SLIMIT > 1) { \
-		static const size_t csnip_gs[] = {1}; \
-		csnip_ShellsortGS(u, v, au_lessthan_av, \
-		  swap_au_av, N, csnip_Static_len(csnip_gs), \
-		  csnip_gs); \
-	} \
-	\
+		\
+		/* Clean up remaining disorder */ \
+		/* At this point, the data is close to sorted, but partitions
+		 * of size CSNIP_QSORT_SLIMIT or smaller have not been put
+		 * into their correct order.  We use Shellsort to finish up.
+		 */ \
+		if (CSNIP_QSORT_SLIMIT > 1) { \
+			static const size_t csnip_gs[] = {1}; \
+			csnip_ShellsortGS(u, v, au_lessthan_av, \
+			  swap_au_av, N, csnip_Static_len(csnip_gs), \
+			  csnip_gs); \
+		} \
+		\
 	} while(0)
 
 #ifndef CSNIP_HEAPSORT_K
@@ -326,7 +330,8 @@
 		int csnip_gap = ((N) > 4 ? (N) / 4 : 1); \
 		while (csnip_gap > 0) { \
 			int csnip_j; \
-			for (csnip_j = csnip_gap; csnip_j < (N); ++csnip_j) { \
+			for (csnip_j = csnip_gap; csnip_j < (N); ++csnip_j) \
+			{ \
 				int u = csnip_j, v = csnip_j - csnip_gap; \
 				while (v >= 0 && (au_lessthan_av)) { \
 					swap_au_av; \
@@ -354,7 +359,8 @@
 		while (csnip_gi < (int)(nGaps)) { \
 			const int csnip_gap = (gapSeq)[csnip_gi]; \
 			int csnip_j; \
-			for (csnip_j = csnip_gap; csnip_j < (N); ++csnip_j) { \
+			for (csnip_j = csnip_gap; csnip_j < (N); ++csnip_j) \
+			{ \
 				int u = csnip_j, v = csnip_j - csnip_gap; \
 				while (v >= 0 && (au_lessthan_av)) { \
 					swap_au_av; \

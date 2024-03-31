@@ -18,11 +18,11 @@
 
 /**  Swap two variables, type explicitly specified. */
 #define csnip_Tswap(type, a, b) \
-		do { \
-			type csnip_tmp =(a); \
-			(a) = (b); \
-			(b) = csnip_tmp; \
-		} while(0)
+	do { \
+		type csnip_tmp =(a); \
+		(a) = (b); \
+		(b) = csnip_tmp; \
+	} while(0)
 
 /** Swap two variables.
  *
@@ -30,11 +30,11 @@
  *	  of the C standards but known by many, but not all, compilers.
  */
 #define csnip_Swap(a, b) \
-		do { \
-			typeof(a) csnip_tmp = (a); \
-			(a) = (b); \
-			(b) = csnip_tmp; \
-		} while(0)
+	do { \
+		typeof(a) csnip_tmp = (a); \
+		(a) = (b); \
+		(b) = csnip_tmp; \
+	} while(0)
 
 /** Swap two variables using memcpy().
  *
@@ -42,13 +42,13 @@
  *  variables.
  */
 #define csnip_Cswap(a, b) \
-		do { \
-			_Static_assert(sizeof(a) == sizeof(b)); \
-			char csnip_tmp[sizeof(a)]; \
-			memcpy(csnip_tmp, &(a), sizeof(csnip_tmp)); \
-			(a) = (b); \
-			memcpy(&(b), csnip_tmp, sizeof(csnip_tmp)); \
-		} while(0)
+	do { \
+		_Static_assert(sizeof(a) == sizeof(b)); \
+		char csnip_tmp[sizeof(a)]; \
+		memcpy(csnip_tmp, &(a), sizeof(csnip_tmp)); \
+		(a) = (b); \
+		memcpy(&(b), csnip_tmp, sizeof(csnip_tmp)); \
+	} while(0)
 
 /** Minimum of 2 values. */
 #define csnip_Min(a, b) \
