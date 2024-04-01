@@ -170,6 +170,12 @@ static void mod_downprio(int* a, int n, int k, int rlim, int u, int delta)
 	IntHeap_sift_down(a, n, k, u);
 }
 
+static void mod_chgprio(int* a, int n, int k, int rlim, int u, int delta)
+{
+	a[u] += delta - (rlim / 2);
+	IntHeap_sift(a, n, k, u);
+}
+
 typedef void (*ModFunc)(int* a, int n, int k, int rlim, int u, int delta);
 
 static bool check_sift(int n, int k, int rlim, uint32_t seed,
@@ -226,9 +232,12 @@ int main(int argc, char** argv)
 				if (!check_heapsort(n, k, rlim, seed++)
 				  || !check_siftup(n, k, rlim, seed++)
 				  || !check_heapcheck(n, k, rlim, seed++)
-				  || !check_sift(n, k, rlim, seed++, 'a', mod_upprio)
-				  || !check_sift(n, k, rlim, seed++, 'b', mod_downprio)
-				  ) // || !check_chgprio(n, k, rlim, seed++))
+				  || !check_sift(n, k, rlim, seed++,
+					'a', mod_upprio)
+				  || !check_sift(n, k, rlim, seed++,
+					'b', mod_downprio)
+				  || !check_sift(n, k, rlim, seed++,
+					'c', mod_chgprio))
 				{
 					fprintf(stderr, "==> FAILURE\n");
 					return 1;

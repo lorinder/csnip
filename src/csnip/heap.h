@@ -62,6 +62,29 @@
 		} \
 	} while(0)
 
+/** Sift an element.
+ *
+ *  Sifts the chosen element up if it's less than its parent, or down
+ *  otherwise.
+ *
+ *  This macro is useful, for example, to restore the heap property when
+ *  the priority of a single element is changed up or down, or more
+ *  generally when a heap entry at the given index is replaced by an
+ *  entirely new one.
+ */
+#define csnip_heap_Sift(u, v, au_lessthan_av, swap_au_av, K, N, i) \
+	do { \
+		size_t u = i; \
+		size_t v; \
+		if (u == 0 || ((v = (u - 1) / K), !(au_lessthan_av))) { \
+			csnip_heap_SiftDown(u, v, au_lessthan_av, \
+				swap_au_av, K, N, i); \
+		} else { \
+			csnip_heap_SiftUp(u, v, au_lessthan_av, \
+				swap_au_av, K, N, i); \
+		} \
+	} while(0)
+
 /** Transform an array into a heap. */
 #define csnip_heap_Heapify(u, v, au_lessthan_av, swap_au_av, K, N) \
 	do { \
@@ -164,6 +187,14 @@
 			K, N, i); \
 	} \
 	\
+	scope void prefix ## sift(csnip_pp_prepend_##gen_args \
+				size_t i) \
+	{ \
+		csnip_heap_Sift(u, v, \
+			au_lessthan_av, swap_au_av, \
+			K, N, i); \
+	} \
+	\
 	scope void prefix ## heapify(csnip_pp_list_##gen_args) \
 	{ \
 		csnip_heap_Heapify(u, v, \
@@ -186,6 +217,7 @@
 #if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_HEAP_HAVE_SHORT_NAMES)
 #define heap_SiftUp		csnip_heap_SiftUp
 #define heap_SiftDown		csnip_heap_SiftDown
+#define heap_Sift		csnip_heap_Sift
 #define heap_Heapify		csnip_heap_Heapify
 #define heap_Check		csnip_heap_Check
 #define CSNIP_HEAP_HAVE_SHORT_NAMES
