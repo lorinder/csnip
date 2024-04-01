@@ -71,6 +71,30 @@
 		} \
 	} while(0)
 
+/** Check whether a given array is a heap.
+ *
+ *  @param[out]	ret
+ *		Return value; set to "true" if the given array is a heap
+ *		and to "false" if not.  In the failure case, u and v are
+ *		indices to failing entries: u is the child, and v the
+ *		parent such that a[u] < a[v].
+ */
+#define csnip_heap_Check(u, v, au_lessthan_av, swap_au_av, K, N, ret) \
+	do { \
+		(ret) = true; \
+		if ((N) <= 1) \
+			break; \
+		size_t u = ((N) - 1); \
+		while (u >= 1) { \
+			size_t v = (u - 1) / (K); \
+			if (au_lessthan_av) { \
+				(ret) = false; \
+				break; \
+			} \
+			--(u); \
+		} \
+	} while(0)
+
 /** Generator macro to declare heap functions.
  *
  *  @param	scope
@@ -85,7 +109,8 @@
 #define CSNIP_HEAP_DECL_FUNCS(scope, prefix, gen_args) \
 	scope void prefix ## sift_up(csnip_pp_prepend_##gen_args size_t i); \
 	scope void prefix ## sift_down(csnip_pp_prepend_##gen_args size_t i); \
-	scope void prefix ## heapify(csnip_pp_list_##gen_args);
+	scope void prefix ## heapify(csnip_pp_list_##gen_args); \
+	scope bool prefix ## check(csnip_pp_list_##gen_args);
 
 /** Generator macro to define heap functions.
  *
@@ -137,7 +162,15 @@
 		csnip_heap_Heapify(u, v, \
 			au_lessthan_av, swap_au_av, \
 			K, N); \
-	}
+	} \
+	scope bool prefix ## check(csnip_pp_list_##gen_args) \
+	{ \
+		bool csnip_heap_ret; \
+		csnip_heap_Check(u, v, \
+			au_lessthan_av, swap_au_av, \
+			K, N, csnip_heap_ret); \
+		return csnip_heap_ret; \
+	} \
 
 /** @} */
 
@@ -147,5 +180,6 @@
 #define heap_SiftUp		csnip_heap_SiftUp
 #define heap_SiftDown		csnip_heap_SiftDown
 #define heap_Heapify		csnip_heap_Heapify
+#define heap_Check		csnip_heap_Check
 #define CSNIP_HEAP_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_HEAP_HAVE_SHORT_NAMES */
