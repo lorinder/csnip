@@ -8,6 +8,7 @@ set(tests_c
 	fnv_hash_test.c
 	hashtable_test0.c
 	hashtable_test1.c
+	heap_test.c
 	limits_test.c
 	list_test0.c
 	log_test0.c
