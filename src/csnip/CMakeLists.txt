@@ -121,6 +121,7 @@ set(public_headers
 	podtypes.h
 	preproc.h
 	ringbuf.h
+	ringbuf2.h
 	rng.h
 	rng_mt.h
 	runif.h
@@ -137,6 +138,7 @@ set(c_sources
 	log.c
 	meanvar.c
 	mem.c
+	ringbuf2.c
 	rng.c
 	rng_mt.c
 	runif.c
