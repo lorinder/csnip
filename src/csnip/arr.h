@@ -119,7 +119,10 @@
  *	The members currently at the given position and after are moved
  *	back one index.
  *
- *	Complexity:  n - index element moves.
+ *	Note that for an array of size n, there are n + 1 valid
+ *	insertion positions p: 0 <= p <= n.
+ *
+ *	Complexity:  (n - p) moves + amortized O(n) resize cost.
  */
 #define csnip_arr_InsertAt(a, n, cap, index, val, err) \
 	do { \
