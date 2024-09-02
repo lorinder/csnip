@@ -57,23 +57,35 @@ size_t csnip_ringbuf2_free_size(const csnip_ringbuf2* rb);
 
 size_t csnip_ringbuf2_get_write_idx(const csnip_ringbuf2* rb,
 				size_t* ret_contig_write_max);
+int csnip_ringbuf2_get_write_areas(const csnip_ringbuf2* rb,
+				size_t* ret_idx_0,
+				size_t* ret_len_0,
+				size_t* ret_idx_1,
+				size_t* ret_len_1);
 bool csnip_ringbuf2_add_written(csnip_ringbuf2* rb, size_t n_written);
 
 size_t csnip_ringbuf2_get_read_idx(const csnip_ringbuf2* rb,
 				size_t* ret_contig_read_max);
+int csnip_ringbuf2_get_read_areas(const csnip_ringbuf2* rb,
+				size_t* ret_idx_0,
+				size_t* ret_len_0,
+				size_t* ret_idx_1,
+				size_t* ret_len_1);
 bool csnip_ringbuf2_add_read(csnip_ringbuf2* rb, size_t n_read);
 
 #endif /* CSNIP_RINGBUF2_H */
 
 #if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_RINGBUF2_HAVE_SHORT_NAMES)
-#define ringbuf2		csnip_ringbuf2
-#define ringbuf2_init		csnip_ringbuf2_init
-#define ringbuf2_make		csnip_ringbuf2_make
-#define ringbuf2_used_size	csnip_ringbuf2_used_size
-#define ringbuf2_free_size	csnip_ringbuf2_free_size
-#define ringbuf2_get_write_idx	csnip_ringbuf2_get_write_idx
-#define ringbuf2_add_written	csnip_ringbuf2_add_written
-#define ringbuf2_get_read_idx	csnip_ringbuf2_get_read_idx
-#define ringbuf2_add_read	csnip_ringbuf2_add_read
+#define ringbuf2			csnip_ringbuf2
+#define ringbuf2_init			csnip_ringbuf2_init
+#define ringbuf2_make			csnip_ringbuf2_make
+#define ringbuf2_used_size		csnip_ringbuf2_used_size
+#define ringbuf2_free_size		csnip_ringbuf2_free_size
+#define ringbuf2_get_write_idx		csnip_ringbuf2_get_write_idx
+#define ringbuf2_get_write_areas	csnip_ringbuf2_get_write_areas
+#define ringbuf2_add_written		csnip_ringbuf2_add_written
+#define ringbuf2_get_read_idx		csnip_ringbuf2_get_read_idx
+#define ringbuf2_get_read_areas		csnip_ringbuf2_get_read_areas
+#define ringbuf2_add_read		csnip_ringbuf2_add_read
 #define CSNIP_RINGBUF2_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_RINGBUF2_HAVE_SHORT_NAMES */

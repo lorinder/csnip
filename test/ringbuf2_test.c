@@ -108,6 +108,55 @@ void straighttwisted_checks(void)
 		CHECK(n_contig == rb.cap - widx);
 		CHECK(ringbuf2_get_read_idx(&rb, &n_contig) == ridx);
 		CHECK(n_contig == widx - ridx);
+		{
+			/* Test ringbuf2_get_read_areas() */
+			size_t pos[2], len[2];
+			int n = ringbuf2_get_read_areas(&rb,
+					&pos[0], &len[0],
+					&pos[1], &len[1]);
+			CHECK(n == 0 || n == 1);
+			size_t used_sz = ringbuf2_used_size(&rb);
+			if (n == 0) {
+				CHECK(used_sz == 0);
+			} else {
+				CHECK(len[0] > 0);
+				CHECK(len[0] == used_sz);
+				size_t cspc;
+				size_t ri = ringbuf2_get_read_idx(&rb, &cspc);
+				CHECK(cspc == len[0]);
+				CHECK(ri == pos[0]);
+			}
+		}
+		{
+			/* Test ringbuf2_get_write_areas() */
+			size_t pos[2], len[2];
+			int n = ringbuf2_get_write_areas(&rb,
+					&pos[0], &len[0],
+					&pos[1], &len[1]);
+			size_t free_sz = ringbuf2_free_size(&rb);
+			size_t cspc;
+			size_t wi = ringbuf2_get_write_idx(&rb, &cspc);
+			switch (n) {
+			case 0:
+				CHECK(free_sz == 0);
+				break;
+			case 1:
+				CHECK(len[0] > 0);
+				CHECK(len[0] == free_sz);
+				CHECK(cspc == len[0]);
+				CHECK(wi == pos[0]);
+				break;
+			case 2:
+				CHECK(len[0] > 0);
+				CHECK(len[1] > 0);
+				CHECK(len[0] + len[1] == free_sz);
+				CHECK(cspc == len[0]);
+				CHECK(cspc <= free_sz);
+				CHECK(wi == pos[0]);
+				CHECK(pos[1] == 0);
+				break;
+			};
+		}
 		if (ringbuf2_free_size(&rb) > 0) {
 			CHECK(ringbuf2_add_written(&rb, 1));
 			CHECK(ringbuf2_get_write_idx(&rb, NULL)
@@ -130,6 +179,55 @@ void straighttwisted_checks(void)
 		CHECK(n_contig == ridx - widx);
 		CHECK(ringbuf2_get_read_idx(&rb, &n_contig) == ridx);
 		CHECK(n_contig == rb.cap - ridx);
+		{
+			/* Test ringbuf2_get_read_areas() */
+			size_t pos[2], len[2];
+			int n = ringbuf2_get_read_areas(&rb,
+					&pos[0], &len[0],
+					&pos[1], &len[1]);
+			size_t used_sz = ringbuf2_used_size(&rb);
+			size_t cspc;
+			size_t ri = ringbuf2_get_read_idx(&rb, &cspc);
+			switch (n) {
+			case 0:
+				CHECK(used_sz == 0);
+				break;
+			case 1:
+				CHECK(len[0] > 0);
+				CHECK(len[0] == used_sz);
+				CHECK(cspc == len[0]);
+				CHECK(ri == pos[0]);
+				break;
+			case 2:
+				CHECK(len[0] > 0);
+				CHECK(len[1] > 0);
+				CHECK(len[0] + len[1] == used_sz);
+				CHECK(cspc == len[0]);
+				CHECK(cspc <= used_sz);
+				CHECK(ri == pos[0]);
+				CHECK(pos[1] == 0);
+				break;
+			};
+		}
+		{
+			/* Test ringbuf2_get_write_areas() */
+			size_t pos[2], len[2];
+			int n = ringbuf2_get_write_areas(&rb,
+					&pos[0], &len[0],
+					&pos[1], &len[1]);
+			CHECK(n == 0 || n == 1);
+			size_t free_sz = ringbuf2_free_size(&rb);
+			if (n == 0) {
+				CHECK(free_sz == 0);
+			} else {
+				CHECK(len[0] > 0);
+				CHECK(len[0] == free_sz);
+				size_t cspc;
+				size_t wi = ringbuf2_get_write_idx(&rb, &cspc);
+				CHECK(cspc == len[0]);
+				CHECK(wi == pos[0]);
+			}
+		}
 		if (ringbuf2_free_size(&rb) > 0) {
 			CHECK(ringbuf2_add_written(&rb, 1));
 			CHECK(ringbuf2_get_write_idx(&rb, NULL)

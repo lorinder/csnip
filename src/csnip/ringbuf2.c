@@ -51,6 +51,48 @@ size_t ringbuf2_get_write_idx(const ringbuf2* rb, size_t* ret_contig_write_max)
 	return write_idx;
 }
 
+int csnip_ringbuf2_get_write_areas(const ringbuf2* rb,
+				size_t* ret_idx_0,
+				size_t* ret_len_0,
+				size_t* ret_idx_1,
+				size_t* ret_len_1)
+{
+	/* Buffer full? */
+	if (rb->n_written - rb->n_read >= rb->cap)
+		return 0;
+
+	/* Figure out geometry.
+	 *
+	 * If rdi <= wri, then there is free space wrap around,
+	 * i.e., there will be two contiguous write sections.
+	 *
+	 * Otherwise, there is a single section.
+	 */
+	const size_t wri = rb->n_written & (rb->cap - 1);
+	const size_t rdi = rb->n_read & (rb->cap - 1);
+
+	if (ret_idx_0)
+		*ret_idx_0 = wri;
+
+	if (rdi <= wri) {
+		if (ret_len_0)
+			*ret_len_0 = rb->cap - wri;
+		if (rdi > 0) {
+			if (ret_idx_1)
+				*ret_idx_1 = 0;
+			if (ret_len_1)
+				*ret_len_1 = rdi;
+			return 2;
+		} else {
+			return 1;
+		}
+	} else {
+		if (ret_len_0)
+			*ret_len_0 = rdi - wri;
+		return 1;
+	}
+}
+
 bool ringbuf2_add_written(ringbuf2* rb, size_t n_written)
 {
 	rb->n_written += n_written;
@@ -66,6 +108,48 @@ size_t ringbuf2_get_read_idx(const ringbuf2* rb, size_t* ret_contig_read_max)
 		*ret_contig_read_max = Min(n_used, n_to_end);
 	}
 	return read_idx;
+}
+
+int csnip_ringbuf2_get_read_areas(const ringbuf2* rb,
+				size_t* ret_idx_0,
+				size_t* ret_len_0,
+				size_t* ret_idx_1,
+				size_t* ret_len_1)
+{
+	/* Buffer empty? */
+	if (rb->n_written - rb->n_read == 0)
+		return 0;
+
+	/* Figure out geometry.
+	 *
+	 * If wri <= rdi, then there is read space wrap around,
+	 * i.e., there will be two contiguous read sections.
+	 *
+	 * Otherwise, there is a single section.
+	 */
+	const size_t wri = rb->n_written & (rb->cap - 1);
+	const size_t rdi = rb->n_read & (rb->cap - 1);
+
+	if (ret_idx_0)
+		*ret_idx_0 = rdi;
+
+	if (wri <= rdi) {
+		if (ret_len_0)
+			*ret_len_0 = rb->cap - rdi;
+		if (wri > 0) {
+			if (ret_idx_1)
+				*ret_idx_1 = 0;
+			if (ret_len_1)
+				*ret_len_1 = wri;
+			return 2;
+		} else {
+			return 1;
+		}
+	} else {
+		if (ret_len_0)
+			*ret_len_0 = wri - rdi;
+		return 1;
+	}
 }
 
 bool ringbuf2_add_read(ringbuf2* rb, size_t n_read)
