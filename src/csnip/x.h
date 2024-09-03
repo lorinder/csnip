@@ -78,6 +78,39 @@ int asprintf(char** strp, const char* fmt, ...);
 /**	Portable asprintf().  */
 int csnip_x_asprintf_imp(char** strp, const char* format, ...);
 
+/**	Wrapper for system fopencookie() or funopen(). */
+#if defined(CSNIP_CONF__HAVE_FOPENCOOKIE)
+typedef cookie_io_functions_t csnip_x_cookie_io_functions_t;
+
+FILE* csnip_x_fopencookie(void* __restrict__ cookie,
+			const char* __restrict__ mode,
+			csnip_x_cookie_io_functions_t funcs);
+#elif defined(CSNIP_CONF__HAVE_FUNOPEN)
+typedef csnip_x_ssize_t csnip_x_cookie_read_function_t(
+			void* cookie,
+			char* buf,
+			size_t size);
+typedef csnip_x_ssize_t csnip_x_cookie_write_function_t(
+			void* cookie,
+			const char* buf,
+			size_t size);
+typedef int csnip_x_cookie_seek_function_t(
+			void* cookie,
+			off_t* offset,
+			int whence);
+typedef int csnip_x_cookie_close_function_t(void* cookie);
+typedef struct {
+	csnip_x_cookie_read_function_t* read;
+	csnip_x_cookie_write_function_t* write;
+	csnip_x_cookie_seek_function_t* seek;
+	csnip_x_cookie_close_function_t* close;
+} csnip_x_cookie_io_functions_t;
+
+FILE* csnip_x_fopencookie(void* __restrict__ cookie,
+			const char* __restrict__ mode,
+			csnip_x_cookie_io_functions_t funcs);
+#endif
+
 /**	Wrapper for getdelim or csnip_x_getdelim_imp() */
 #define csnip_x_getdelim getdelim
 #if !defined(CSNIP_CONF__HAVE_GETDELIM)
@@ -308,6 +341,11 @@ int x_csnip_clock_gettime_imp(csnip_x_clockid_t clk_id,
 #ifdef CSNIP_X_CLOCK_MONOTONIC
 #define X_CLOCK_MONOTONIC		CSNIP_X_CLOCK_MONOTONIC
 #endif
+#define x_cookie_close_function_t	csnip_x_cookie_close_function_t
+#define x_cookie_io_functions_t		csnip_x_cookie_io_functions_t
+#define x_cookie_seek_function_t	csnip_x_cookie_seek_function_t
+#define x_cookie_read_function_t	csnip_x_cookie_read_function_t
+#define x_cookie_write_function_t	csnip_x_cookie_write_function_t
 #define X_CLOCK_REALTIME		CSNIP_X_CLOCK_REALTIME
 #define x_getdelim			csnip_x_getdelim
 #define x_getdelim_imp			csnip_x_getdelim_imp
@@ -315,6 +353,7 @@ int x_csnip_clock_gettime_imp(csnip_x_clockid_t clk_id,
 #define x_getline_imp			csnip_x_getline_imp
 #define x_getopt			csnip_x_getopt
 #define x_getopt_imp			csnip_x_getopt_imp
+#define x_fopencookie			csnip_x_fopencookie
 #define x_iovec				csnip_x_iovec
 #define x_optarg			csnip_x_optarg
 #define x_optarg_imp			csnip_x_optarg_imp

@@ -45,8 +45,16 @@ check_symbol_exists(clock_gettime "time.h"
 	CSNIP_CONF__HAVE_CLOCK_GETTIME)
 check_symbol_exists(flockfile "stdio.h"
 	CSNIP_CONF__HAVE_FLOCKFILE)
+set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
+check_symbol_exists(fopencookie "stdio.h"
+	CSNIP_CONF__HAVE_FOPENCOOKIE)
+unset(CMAKE_REQUIRED_DEFINITIONS)
 check_symbol_exists(funlockfile "stdio.h"
 	CSNIP_CONF__HAVE_FUNLOCKFILE)
+set(CMAKE_REQUIRED_DEFINITIONS "-D_BSD_SOURCE")
+check_symbol_exists(funopen "stdio.h"
+	CSNIP_CONF__HAVE_FUNOPEN)
+unset(CMAKE_REQUIRED_DEFINITIONS)
 check_symbol_exists(getc_unlocked "stdio.h"
 	CSNIP_CONF__HAVE_GETC_UNLOCKED)
 check_symbol_exists(getdelim "stdio.h"
@@ -146,6 +154,7 @@ set(c_sources
 	util.c
 	x/asprintf.c
 	x/clock_gettime.c
+	x/fopencookie.c
 	x/getdelim.c
 	x/getline.c
 	x/getopt.c
