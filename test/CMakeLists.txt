@@ -25,6 +25,7 @@ set(tests_c
 	time_test1.c
 	util_test0.c
 	x_asprintf_test.c
+	x_fopencookie_test.c
 	x_getdelim_test0.c
 	x_getopt_test0.c
 	x_readv_test0.c
