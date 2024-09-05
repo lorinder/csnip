@@ -12,7 +12,13 @@ FILE* x_fopencookie(void* restrict cookie,
 			const char* restrict mode,
 			x_cookie_io_functions_t io_funcs)
 {
-	return fopencookie(cookie, mode, io_funcs);
+	cookie_io_functions_t io_funcs2 = {
+		.read = io_funcs.read,
+		.write = io_funcs.write,
+		.seek = io_funcs.seek,
+		.close = io_funcs.close,
+	};
+	return fopencookie(cookie, mode, io_funcs2);
 }
 
 #elif defined(CSNIP_CONF__HAVE_FUNOPEN)

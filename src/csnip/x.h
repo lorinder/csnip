@@ -79,13 +79,7 @@ int asprintf(char** strp, const char* fmt, ...);
 int csnip_x_asprintf_imp(char** strp, const char* format, ...);
 
 /**	Wrapper for system fopencookie() or funopen(). */
-#if defined(CSNIP_CONF__HAVE_FOPENCOOKIE)
-typedef cookie_io_functions_t csnip_x_cookie_io_functions_t;
-
-FILE* csnip_x_fopencookie(void* __restrict__ cookie,
-			const char* __restrict__ mode,
-			csnip_x_cookie_io_functions_t funcs);
-#elif defined(CSNIP_CONF__HAVE_FUNOPEN)
+#if defined(CSNIP_CONF__HAVE_FOPENCOOKIE) || defined(CSNIP_CONF__HAVE_FUNOPEN)
 typedef csnip_x_ssize_t csnip_x_cookie_read_function_t(
 			void* cookie,
 			char* buf,
