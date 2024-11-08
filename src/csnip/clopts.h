@@ -483,7 +483,9 @@ csnip_clopts__tspec(char const*, pchar)
 
 #if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_CLOPTS_HAVE_SHORT_NAMES)
 #define clopts			csnip_clopts
+#define clopts_s		csnip_clopts_s
 #define clopts_optinfo		csnip_clopts_optinfo
+#define clopts_optinfo_s	csnip_clopts_optinfo_s
 #define clopts_parser		csnip_clopts_parser
 #define clopts_init		csnip_clopts_init
 #define clopts_clear		csnip_clopts_clear
