@@ -10,7 +10,7 @@ set(samples_c
 )
 if (BUILD_CXX_PIECES)
 	set(samples_cxx
-		find.cc
+		search.cc
 		sort_perf.cc
 	)
 else()

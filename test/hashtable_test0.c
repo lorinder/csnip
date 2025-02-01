@@ -3,9 +3,9 @@
 #include <inttypes.h>
 
 #include <csnip/cext.h>
-#include <csnip/find.h>
 #include <csnip/hash.h>
 #include <csnip/lphash_table.h>
+#include <csnip/search.h>
 #include <csnip/sort.h>
 #include <csnip/util.h>
 

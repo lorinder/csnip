@@ -115,7 +115,6 @@ set(public_headers
 	clopts.h
 	coro.h
 	err.h
-	find.h
 	fmt.h
 	hash.h
 	heap.h
@@ -133,6 +132,7 @@ set(public_headers
 	rng.h
 	rng_mt.h
 	runif.h
+	search.h
 	sort.h
 	time.h
 	util.h

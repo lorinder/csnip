@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #define CSNIP_SHORT_NAMES
-#include <csnip/find.h>
+#include <csnip/search.h>
 #include <csnip/util.h>
 
 int main()

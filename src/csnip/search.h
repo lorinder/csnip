@@ -1,9 +1,9 @@
-#ifndef CSNIP_FIND_H
-#define CSNIP_FIND_H
+#ifndef CSNIP_SEARCH_H
+#define CSNIP_SEARCH_H
 
-/** @file find.h
+/** @file search.h
  *  @brief			Search functions
- *  @defgroup	find		Search functions
+ *  @defgroup	search		Search functions
  *  @{
  *
  *  Binary search algorithm.
@@ -84,9 +84,9 @@
 
 /** @} */
 
-#endif /* CSNIP_FIND_H */
+#endif /* CSNIP_SEARCH_H */
 
-#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_FIND_HAVE_SHORT_NAMES)
+#if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_SEARCH_HAVE_SHORT_NAMES)
 #define Bsearch		csnip_Bsearch
-#define CSNIP_FIND_HAVE_SHORT_NAMES
-#endif /* CSNIP_SHORT_NAMES && ! CSNIP_FIND_HAVE_SHORT_NAMES */
+#define CSNIP_SEARCH_HAVE_SHORT_NAMES
+#endif /* CSNIP_SHORT_NAMES && ! CSNIP_SEARCH_HAVE_SHORT_NAMES */
