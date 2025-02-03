@@ -1,6 +1,10 @@
 ### Configure csnip
 
-## Step 1: Feature/Environment checks
+## Step 1: User preferences
+
+set(CSNIP_CONF__SUPPORT_THREADING ${SUPPORT_THREADING})
+
+## Step 2: Feature/Environment checks
 
 # Check for various types & APIs in libc and provided
 # libraries.
@@ -166,7 +170,7 @@ set(c_sources
 )
 
 set(csnip_link_libs
-	Threads::Threads
+	$<$<BOOL:${SUPPORT_THREADING}>:Threads::Threads>
 	${LINK_LIBM}
 )
 

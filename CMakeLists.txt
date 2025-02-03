@@ -8,7 +8,16 @@ project(csnip
 # Add module path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
-find_package(Threads REQUIRED)
+# Find threading library and enable thread safety if applicable
+find_package(Threads)
+if (Threads_FOUND)
+	set(_dflt_support_threading ON)
+else()
+	set(_dflt_support_threading OFF)
+endif()
+option(SUPPORT_THREADING
+	"Make some modules multithreading safe"
+	${_dflt_support_threading})
 
 include(EnableWarnings)
 include(CxxSetup)

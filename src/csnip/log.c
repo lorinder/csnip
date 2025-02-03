@@ -11,7 +11,9 @@
 #ifdef CSNIP_CONF__HAVE_REGCOMP
 #include <regex.h>
 #endif
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 #include <pthread.h>
+#endif
 
 #define CSNIP_SHORT_NAMES
 #include <csnip/cext.h>
@@ -72,7 +74,9 @@ typedef struct {
 	 *
 	 *  This access lock protects access to ptbl.
 	 */
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 	pthread_rwlock_t lock;
+#endif
 
 	/** Priorities cache */
 	struct priotbl* ptbl;
@@ -109,7 +113,9 @@ static void proc_init(csnip_log_processor* P)
 	P->rules_head = P->rules_tail = NULL;
 	P->min_prio = 100;
 	int err = 0;
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 	pthread_rwlock_init(&P->lock, NULL);
+#endif
 	P->ptbl = ptbl_make(&err); // error handling
 	for (int i = 0; i < Static_len(P->logfmt); ++i)
 		P->logfmt[i] = NULL;
@@ -134,7 +140,9 @@ static void proc_free(csnip_log_processor* P)
 	}
 
 	/* Free lock */
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 	pthread_rwlock_destroy(&P->lock);
+#endif
 
 	/* Free the hashing table */
 	ptbl_free(P->ptbl);
@@ -419,9 +427,13 @@ void csnip_log__print(
 	csnip_log_processor* P = proc;
 
 	/* Check whether to display */
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 	pthread_rwlock_rdlock(&P->lock);
+#endif
 	comp_prio* cp = ptbl_find(proc->ptbl, component);
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 	pthread_rwlock_unlock(&P->lock);
+#endif
 	if (cp != NULL) {
 		if (prio < cp->min_prio)
 			return;
@@ -451,9 +463,13 @@ void csnip_log__print(
 			.component = component,
 			.min_prio = comp_min_prio
 		};
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 		pthread_rwlock_wrlock(&P->lock);
+#endif
 		ptbl_insert(P->ptbl, NULL, Pent);
+#ifdef CSNIP_CONF__SUPPORT_THREADING
 		pthread_rwlock_unlock(&P->lock);
+#endif
 
 		/* Check if we should display */
 		if (prio < Pent.min_prio)

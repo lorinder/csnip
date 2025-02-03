@@ -20,29 +20,9 @@
  *  will be provided.
  */
 
-/** Use csnip's emulated readv() implementation.
- *
- *  If this option is disabled, csnip will use the system readv()
- *  for the implementation of csnip_x_readv(); if there is no system
- *  readv(), then the function will not be available in this case.
- *
- *  If the option is enabled, csnip's own implementation based on read()
- *  is used.  (That implementation is typically less efficient than the
- *  system one.)
- *
- *  By default this option is disabled if readv() is available, and
- *  enabled if it isn't.
- */
-#cmakedefine CSNIP_CONF__EMULATE_READV
+#cmakedefine CSNIP_CONF__SUPPORT_THREADING
 
-/** Use csnip's emulated writev() implementation.
- *
- *  Anologuous to the similar setting for readv().
- *  @sa CSNIP_CONF__EMULATE_READV
- */
-#cmakedefine CSNIP_CONF__EMULATE_WRITEV
-
-/** @}
+/** @def
  */
 
 /** @defgroup conf_env		Environment properties
