@@ -45,7 +45,7 @@ static bool check_getdelim(bool verbose,
 
 	/* Read one by one */
 	int i = 0;
-	ssize_t m;
+	x_ssize_t m;
 	const char* p = file_content;
 	do {
 		/* Read */

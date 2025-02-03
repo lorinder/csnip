@@ -159,11 +159,11 @@ void csnip_mem_aligned_free(void* mem);
 #define csnip_mem__Realloc(nMember, ptr, err,		p) \
 	do { \
 		if (nMember < 0 || \
-		    SIZE_MAX / sizeof(*ptr) < nMember) { \
+		    SIZE_MAX / sizeof(*ptr) < (size_t)nMember) { \
 			csnip_err_Raise(csnip_err_RANGE, err); \
 			break; \
 		} \
-		void* p = realloc(ptr, sizeof(*ptr) * nMember); \
+		void* p = realloc(ptr, sizeof(*ptr) * (size_t)nMember); \
 		if (p == NULL) { \
 			csnip_err_Raise(csnip_err_NOMEM, err); \
 			break; \

@@ -132,7 +132,7 @@
 			csnip_err_Raise(csnip_err, err); \
 			break; \
 		} \
-		for (int csnip_i = (n); csnip_i > (index); --csnip_i)\
+		for (size_t csnip_i = (n); csnip_i > (index); --csnip_i) \
 		{ \
 			(a)[csnip_i] = (a)[csnip_i - 1]; \
 		} \
@@ -149,9 +149,9 @@
  */
 #define csnip_arr_DeleteAt(a, n, cap, index, err) \
 	do { \
-		int csnip_i; \
+		size_t csnip_i; \
 		--(n); \
-		for (csnip_i = (index); csnip_i < (n); ++csnip_i) \
+		for (csnip_i = (index); csnip_i < (size_t)(n); ++csnip_i) \
 		{ \
 			(a)[csnip_i] = (a)[csnip_i + 1]; \
 		} \

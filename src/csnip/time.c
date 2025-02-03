@@ -9,8 +9,8 @@ typedef long double ldouble;
 			scalar_type f) \
 	{ \
 		struct timespec ret; \
-		ret.tv_sec = f; \
-		ret.tv_nsec = (f - ret.tv_sec) * 1e9; \
+		ret.tv_sec = (time_t)f; \
+		ret.tv_nsec = (long)((f - ret.tv_sec) * 1e9); \
 		return ret; \
 	}
 
@@ -33,7 +33,7 @@ struct timespec csnip_time_timeval_as_timespec(struct timeval tv)
 	scalar_type csnip_time_timespec_as_ ## scalar_type( \
 			const struct timespec ts) \
 	{ \
-		return ts.tv_sec + (ts.tv_nsec / 1e9); \
+		return (scalar_type)(ts.tv_sec + (ts.tv_nsec / 1e9)); \
 	}
 
 DEF_TS2SCALAR_FUNC(time_t)
@@ -46,7 +46,7 @@ DEF_TS2SCALAR_FUNC(ldouble)
 struct timeval csnip_time_timespec_as_timeval(struct timespec ts)
 {
 	struct timeval ret;
-	ret.tv_sec = ts.tv_sec;
+	ret.tv_sec = (long)ts.tv_sec;
 	ret.tv_usec = ts.tv_nsec / 1000;
 	return ret;
 }

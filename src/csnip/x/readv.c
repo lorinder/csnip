@@ -32,7 +32,7 @@ csnip_x_ssize_t csnip_x_readv_imp(int fd,
 	char* q = p;
 	const char* end = p + r;
 	for (int i = 0; i < iovcnt && q < end; ++i) {
-		size_t ncp = csnip_Min(iov[i].iov_len, end - q);
+		size_t ncp = csnip_Min(iov[i].iov_len, (size_t)(end - q));
 		memcpy(iov[i].iov_base, q, ncp);
 		q += ncp;
 	}

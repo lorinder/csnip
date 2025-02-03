@@ -506,7 +506,7 @@ int main(int argc, char** argv)
 	}
 
 	/* seed rng */
-	std::srand(time(NULL));
+	std::srand((unsigned int)time(NULL));
 
 	/* Run test */
 	sort_test(nItem, meth, task, key_type);
