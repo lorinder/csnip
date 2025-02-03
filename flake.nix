@@ -22,6 +22,8 @@
           ];
 
           buildInputs = with pkgs; [ ];
+
+          WORDLIST = "${pkgs.scowl}/share/dict/words.txt";
         };
       };
     });

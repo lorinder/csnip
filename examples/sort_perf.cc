@@ -164,11 +164,14 @@ static void load_dict()
 	/* Load dictionary into memory */
 	size_t dict_cap;
 	csnip_arr_Init(dict, dict_nbytes, dict_cap, 4096, _);
-	FILE* fp = fopen("/usr/share/dict/words", "r");
+	const char* wordlist = getenv("WORDLIST");
+	if (wordlist == NULL)
+		wordlist = "/usr/share/dict/words";
+	FILE* fp = fopen(wordlist, "r");
 	if (fp == 0) {
-		fprintf(stderr,
-		  "Cannot open /usr/share/dict/words\n");
-		abort();
+		fprintf(stderr, "Error:  Cannot open word list \"%s\"\n",
+			wordlist);
+		exit(1);
 	}
 	const size_t bsz = 4096;
 	size_t r = 0;
