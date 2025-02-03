@@ -1,6 +1,5 @@
 set(samples_c
 	clopts.c
-	coro.c
 	dlist.c
 	fmt.c
 	getopt.c

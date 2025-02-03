@@ -113,7 +113,6 @@ set(public_headers
 	arr.h
 	cext.h
 	clopts.h
-	coro.h
 	err.h
 	fmt.h
 	hash.h

@@ -10,8 +10,6 @@ datastructures for C.  Some highlights:
 * Often used things such as convenient command line options parser, or
   logging tools.
 
-* Coroutines
-
 * Many more things.
 
 Csnip comes with fairly extensive online documentation.  For further
