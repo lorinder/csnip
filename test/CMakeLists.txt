@@ -20,6 +20,7 @@ set(tests_c
 #	rng_mt_test.c
 	runif_getf_test.c
 	runif_geti_test.c
+	search_test.c
 	time_test1.c
 	util_test0.c
 	x_asprintf_test.c
