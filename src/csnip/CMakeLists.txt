@@ -124,6 +124,7 @@ set(public_headers
 	lphash_table.h
 	meanvar.h
 	mem.h
+	mempool.h
 	podtypes.h
 	preproc.h
 	ringbuf.h
