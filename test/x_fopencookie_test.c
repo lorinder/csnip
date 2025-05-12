@@ -10,7 +10,7 @@
 #include <csnip/x.h>
 
 /* Macros to set the actual fopencookie implementation */
-#if 0
+#if 1
 #  define my_fopencookie		csnip_x_fopencookie
 #  define my_cookie_io_functions_t	csnip_x_cookie_io_functions_t
 #else
