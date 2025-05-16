@@ -39,10 +39,23 @@ void test_clamp(void)
 	CHECK(Clamp(-3, 5, 3) == 3);
 }
 
+struct X {
+	int u;
+	double v;
+};
+
+void test_container_of(void)
+{
+	struct X c;
+	CHECK(Container_of(&c.v, struct X, v) == &c);
+	CHECK(Container_of(&c.u, struct X, u) == &c);
+}
+
 int main(void)
 {
 	test_min();
 	test_max();
 	test_clamp();
+	test_container_of();
 	return 0;
 }

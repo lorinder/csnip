@@ -13,6 +13,7 @@
  *  one.
  */
 
+#include <stddef.h>
 #include <string.h>
 #include <stdint.h>
 
@@ -68,6 +69,20 @@
 
 /** Length of a C static array. */
 #define csnip_Static_len(a) (sizeof(a) / sizeof(*(a)))
+
+/** Find the containing struct of a pointer to a member.
+ *
+ *  @param	ptr
+ *		pointer to a member variable.
+ *
+ *  @param	type
+ *		The type of the container.
+ *
+ *  @param	member
+ *		The name of the container member.
+ */
+#define csnip_Container_of(ptr, type, member) \
+	((type*)(((char*)ptr) - offsetof(type, member)))
 
 /** Compute the next power of 2 of a number. */
 inline size_t csnip_next_pow_of_2(size_t a)
@@ -149,6 +164,7 @@ inline size_t csnip_next_pow_of_2(size_t a)
 #define Max			csnip_Max
 #define Clamp			csnip_Clamp
 #define Static_len		csnip_Static_len
+#define Container_of		csnip_Container_of
 #define next_pow_of_2		csnip_next_pow_of_2
 #define Fill_n			csnip_Fill_n
 #define Fill			csnip_Fill
