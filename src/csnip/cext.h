@@ -22,10 +22,12 @@
  *	This silences possible compiler warnings related to unused
  *	functions.
  */
-#if defined(__GNUC__) || defined(__clang__)
-#define csnip_cext_unused		__attribute__((__unused__))
+#if __STDC_VERSION__ >= 202311L
+#  define csnip_cext_unused		[[maybe_unused]]
+#elif defined(__GNUC__) || defined(__clang__)
+#  define csnip_cext_unused		__attribute__((__unused__))
 #else
-#define csnip_cext_unused
+#  define csnip_cext_unused
 #endif
 
 /**	Mark a symbol as belonging to the public API.
