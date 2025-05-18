@@ -59,7 +59,10 @@ int main(int argc, char** argv)
 #define red(x) reduce_to_bits(b, (x))
 				uint32_t d = red(rnext(&rstate));
 
-				/* Variant 1: smallest i s.t. a[i] >= key */
+				/* Variants
+				 * 1a) smallest i s.t. a[i] >= key
+				 * 1b) largest i s.t. a[i] < key (satisfied by i - 1)
+				 */
 				Bsearch(int, u, red(a[u]) < d, N, idx);
 				printf("    d = %"PRIu32" -> V1_idx = %d ", d, idx);
 				if (idx < 0 || idx > N) {
@@ -78,7 +81,10 @@ int main(int argc, char** argv)
 					return 1;
 				}
 
-				/* Variant 2: lowest i s.t. a[i] > key */
+				/* Variants
+				 * 2a) smallest i s.t. a[i] > key
+				 * 2b) largest i s.t.  a[i] <= key (satisfied by i - 1)
+				 */
 				Bsearch(int, u, red(a[u]) <= d, N, idx);
 				printf("V2_idx = %d ", idx);
 				if (idx < 0 || idx > N) {
