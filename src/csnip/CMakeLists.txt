@@ -125,6 +125,7 @@ configure_file(csnip_conf.h.in csnip_conf.h)
 set(public_headers
 	${CMAKE_CURRENT_BINARY_DIR}/csnip_conf.h
 	arr.h
+	arrt.h
 	cext.h
 	clopts.h
 	err.h

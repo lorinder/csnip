@@ -1,6 +1,8 @@
 set(tests_c
 	arr_test0.c
 	arr_test1.c
+	arrt_test0.c
+	arrt_test1.c
 	clopts_test0.c
 	cext_test0.c
 	err_test0.c

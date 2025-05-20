@@ -2,8 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* If the USE_ARRT_INSTEAD macro is set, test the arrt interface instead
+ * of arr.  This is set in arrt_test1.c before including this file whole
+ * sale here.  Avoids duplicating this code.
+ */
+#ifndef USE_ARRT_INSTEAD
+
 #include <csnip/arr.h>
-#include <csnip/cext.h>
 
 typedef struct {
 	int* a;
@@ -19,7 +24,7 @@ CSNIP_ARR_DECL_FUNCS(
 )
 
 CSNIP_ARR_DEF_FUNCS(
-	static csnip_cext_unused,	// static
+	static,				// static
 	IntArr_,			// scope
 	int,				// value type
 	args(IntArr* A, int* err),	// gen_args
@@ -28,6 +33,25 @@ CSNIP_ARR_DEF_FUNCS(
 	A->cap,				// array capacity
 	*err				// error return
 )
+
+#else 
+
+#include <csnip/arrt.h>
+
+CSNIP_ARRT_DEF_TYPE(IntArr, int)
+CSNIP_ARRT_DECL_FUNCS(
+	static,				// scope
+	IntArr_,			// prefix
+	IntArr,				// array type
+	int)				// value type
+
+CSNIP_ARRT_DEF_FUNCS(
+	static,				// static
+	IntArr_,			// scope
+	IntArr,				// array type
+	int)				// value type
+
+#endif
 
 static bool test_reserve()
 {
