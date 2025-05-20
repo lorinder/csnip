@@ -228,7 +228,7 @@ int csnip_clopts_process(csnip_clopts* opts,
 
 void csnip_clopts_clear(csnip_clopts* opts)
 {
-	arr_Free(opts->optinfo, opts->n_optinfo, opts->n_optinfo_cap);
+	arr_Deinit(opts->optinfo, opts->n_optinfo, opts->n_optinfo_cap);
 }
 
 int csnip_clopts_parser_uchar(const csnip_clopts* opts,

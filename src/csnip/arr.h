@@ -161,10 +161,10 @@
  *
  *	This function deletes the memory associated with an array.  The
  *	result is an array of size 0 with no allocated memory
- *	associated, i.e., it is like a freshly allocated array of
+ *	associated, i.e., it is like a freshly initialized array of
  *	capacity 0.
  */
-#define csnip_arr_Free(a, n, cap) \
+#define csnip_arr_Deinit(a, n, cap) \
 	do { \
 		csnip_mem_Free(a); \
 		(n) = 0; \
@@ -202,7 +202,7 @@
 				size_t i, val_type v); \
 	scope void prefix ## delete_at(csnip_pp_prepend_##gen_args \
 				size_t i); \
-	scope void prefix ## free(csnip_pp_list_##gen_args);
+	scope void prefix ## deinit(csnip_pp_list_##gen_args);
 
 /**	Define dynamic array managment functions.
  *
@@ -261,9 +261,9 @@
 	{ \
 		csnip_arr_DeleteAt(a, n, cap, i, err); \
 	} \
-	scope void prefix ## free(csnip_pp_list_##gen_args) \
+	scope void prefix ## deinit(csnip_pp_list_##gen_args) \
 	{ \
-		csnip_arr_Free(a, n, cap); \
+		csnip_arr_Deinit(a, n, cap); \
 	}
 /** @} */
 
@@ -276,6 +276,6 @@
 #define arr_Pop			csnip_arr_Pop
 #define arr_InsertAt		csnip_arr_InsertAt
 #define arr_DeleteAt		csnip_arr_DeleteAt
-#define arr_Free		csnip_arr_Free
+#define arr_Deinit		csnip_arr_Deinit
 #define CSNIP_ARR_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_ARR_HAVE_SHORT_NAMES */

@@ -60,7 +60,7 @@ static bool test_reserve()
 	if (A.cap < 5)
 		return false;
 
-	IntArr_free(&A, &err);
+	IntArr_deinit(&A, &err);
 	return true;
 }
 
@@ -81,7 +81,7 @@ static bool test_push()
 			return false;
 	}
 
-	IntArr_free(&A, NULL);
+	IntArr_deinit(&A, NULL);
 	return true;
 }
 
@@ -108,7 +108,7 @@ static bool test_pop()
 		return false;
 	}
 
-	IntArr_free(&A, NULL);
+	IntArr_deinit(&A, NULL);
 	return true;
 }
 
@@ -145,7 +145,7 @@ static bool test_insert_at()
 		}
 	}
 
-	IntArr_free(&A, NULL);
+	IntArr_deinit(&A, NULL);
 	return true;
 }
 
@@ -175,20 +175,20 @@ static bool test_delete_at()
 		}
 	}
 
-	IntArr_free(&A, NULL);
+	IntArr_deinit(&A, NULL);
 	return true;
 }
 
-static bool test_free()
+static bool test_deinit()
 {
 	IntArr A;
 	IntArr_init(&A, NULL, 256);
 
-	IntArr_free(&A, NULL);
+	IntArr_deinit(&A, NULL);
 	if (A.cap != 0 || A.a != NULL)
 		return false;
 
-	IntArr_free(&A, NULL); // free a 2nd time is a no-op.
+	IntArr_deinit(&A, NULL); // deinit a 2nd time is a no-op.
 	return true;
 }
 
@@ -211,7 +211,7 @@ int main(int argc, char** argv)
 	TEST(pop);
 	TEST(insert_at);
 	TEST(delete_at);
-	TEST(free);
+	TEST(deinit);
 #undef TEST
 
 	printf("Overall result: %s\n", (success ? "pass" : "FAIL"));

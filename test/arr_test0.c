@@ -31,6 +31,6 @@ int main()
 	for(int i = 0; i < N; ++i) {
 		printf("[%d] %d\n", Ax.n - i - 1, Ax.el[Ax.n - i - 1]);
 	}
-	IntArray_free(&Ax);
+	IntArray_deinit(&Ax);
 	return 0;
 }
