@@ -2,6 +2,7 @@ set(tests_c
 	arr_test0.c
 	arr_test1.c
 	clopts_test0.c
+	cext_test0.c
 	err_test0.c
 	err_test1.c
 	fmt_test0.c
@@ -54,6 +55,14 @@ foreach(fn
 		COMMAND $<TARGET_FILE:${tgt}>
 	)
 endforeach()
+
+add_executable(cext_test0_c23 cext_test0.c)
+target_link_libraries(cext_test0_c23 csnip)
+set_property(TARGET cext_test0_c23 PROPERTY C_STANDARD 23)
+add_test(
+	NAME cext_test0_c23
+	COMMAND $<TARGET_FILE:cext_test0_c23>
+)
 
 set_property(TARGET clopts_test0 PROPERTY C_STANDARD 11)
 set_property(TARGET limits_test PROPERTY C_STANDARD 11)
