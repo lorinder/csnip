@@ -16,11 +16,11 @@ typedef struct {
 const float v1[] = { 1, 2, 3, 4, 3.2f };
 const resultf exp1 = { .mean = 2.64f, .var0 = 1.0784f, .var1 = 1.348f };
 
-static _Bool check_got_vs_exp(const resultf* got,
+static bool check_got_vs_exp(const resultf* got,
 				const resultf* exp,
 				float epsilon)
 {
-	_Bool success = 1;
+	bool success = 1;
 	if (fabsf(exp->mean - got->mean) > epsilon) {
 		fprintf(stderr, "  Mismatch in mean, got %g, expected %g\n",
 			got->mean, exp->mean);
@@ -39,7 +39,7 @@ static _Bool check_got_vs_exp(const resultf* got,
 	return success;
 }
 
-static _Bool check_testcase(const float* f, int N,
+static bool check_testcase(const float* f, int N,
 				const resultf* exp,
 				float epsilon)
 {
@@ -67,7 +67,7 @@ static _Bool check_testcase(const float* f, int N,
 	};
 	printf("  got:        mean %g  var0 %g  var1 %g\n",
 		got.mean, got.var0, got.var1);
-	_Bool result = check_got_vs_exp(&got, exp, epsilon);
+	bool result = check_got_vs_exp(&got, exp, epsilon);
 	if (result) {
 		printf("-> success\n");
 	} else {
@@ -75,6 +75,32 @@ static _Bool check_testcase(const float* f, int N,
 	}
 	return result;
 }
+
+static bool check_merge(const float* f, int N1, int N2,
+		const resultf* exp,
+		float epsilon)
+{
+	csnip_meanvarf A = { 0 };
+	csnip_meanvarf B = { 0 };
+	for (int i = 0; i < N1; ++i)
+		csnip_meanvar_Add(&A, f[i]);
+	for (int i = 0; i < N2; ++i)
+		csnip_meanvar_Add(&B, f[i + N1]);
+	csnip_meanvarf_merge(&A, &B);
+	const resultf got = {
+		.mean = csnip_meanvar_Mean(&A),
+		.var0 = csnip_meanvar_Var(&A, 0),
+		.var1 = csnip_meanvar_Var(&A, 1),
+	};
+	bool result = check_got_vs_exp(&got, exp, epsilon);
+	if (result) {
+		printf("-> success\n");
+	} else {
+		printf("-> FAIL\n");
+	}
+	return result;
+}
+		
 
 
 int main(int argc, char** argv)
@@ -87,7 +113,11 @@ int main(int argc, char** argv)
 	if (csnip_clopts_process(&opts, argc - 1, argv + 1, NULL, true) < 0)
 		return EXIT_FAILURE;
 
-	check_testcase(v1, csnip_Static_len(v1), &exp1, 0.001f);
+	const int l1 = (int)csnip_Static_len(v1);
+	if (!check_testcase(v1, l1, &exp1, 0.001f))
+		return EXIT_FAILURE;
+	if (!check_merge(v1, l1/2, l1 - l1/2, &exp1, 0.001f))
+		return EXIT_FAILURE;
 
 	return EXIT_SUCCESS;
 }

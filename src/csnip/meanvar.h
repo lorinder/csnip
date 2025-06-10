@@ -53,9 +53,22 @@ extern "C" {
  *	define an accumulator for _Decimal64.
  */
 typedef struct {
-	long int count;		/**< Number of samples */
-	double M;		/**< Running mean */
-	double S;		/**< Running square difference */
+	/**	Number of samples. */
+	long int count;	
+	
+	/**	Running mean.
+	 *
+	 *	Is equal to the mean of all the values added so far.
+	 */
+	double M;
+
+	/**	Running square difference.
+	 *
+	 *	If the values x[0], ..., x[count - 1] have been added so
+	 *	far, this is equal to sum_i (x[i] - M)^2, where M is the
+	 *	sample mean as above.
+	 */
+	double S;		
 } csnip_meanvar;
 
 /**	Define an accumulator type.
@@ -84,7 +97,8 @@ CSNIP_MEANVAR_DEF_TYPE(csnip_meanvarl, long double)
 #define CSNIP_MEANVAR_DECL_FUNCS(scope, prefix, accum_type, val_type) \
 	scope void prefix ## add(accum_type* A, val_type v); \
 	scope val_type prefix ## mean(const accum_type* A); \
-	scope val_type prefix ## var(const accum_type* A, val_type ddof);
+	scope val_type prefix ## var(const accum_type* A, val_type ddof); \
+	scope void prefix ## merge(accum_type* into, const accum_type* other);
 
 /**	Add sample to accumulator.
  *
@@ -122,6 +136,22 @@ double csnip_meanvar_mean(const csnip_meanvar* A);
  */
 double csnip_meanvar_var(const csnip_meanvar* A, double ddof);
 
+/**	Combine two meanvar instances into one.
+ *
+ *	This allows combining separately collected data.  Note that with
+ *	the present implementation, numerical stability is not
+ *	guaranteed as well as individual add steps do.
+ *
+ * 	@param	into
+ *		the merge destination.  The summary of the samples from
+ *		*other will be added into this accumulator, so it
+ *		represents all the sammles.
+ *
+ *	@param	other
+ *		the data to merge.
+ */
+void csnip_meanvar_merge(csnip_meanvar* into, const csnip_meanvar* other);
+
 CSNIP_MEANVAR_DECL_FUNCS(, csnip_meanvarf_, csnip_meanvarf, float)
 CSNIP_MEANVAR_DECL_FUNCS(, csnip_meanvarl_, csnip_meanvarl, long double)
 
@@ -137,7 +167,7 @@ CSNIP_MEANVAR_DECL_FUNCS(, csnip_meanvarl_, csnip_meanvarl, long double)
 		const val_type last_M = A->M; \
 		++A->count; \
 		A->M = last_M + (v - last_M) / A->count; \
-		A->S = A->S + (v - last_M) * (v - A->M); \
+		A->S += (v - last_M) * (v - A->M); \
 	} \
 	\
 	scope val_type prefix ## mean(const accum_type* A) \
@@ -150,6 +180,19 @@ CSNIP_MEANVAR_DECL_FUNCS(, csnip_meanvarl_, csnip_meanvarl, long double)
 	{ \
 		return A->S / (A->count - ddof); \
 	} \
+	\
+	scope void prefix ## merge(accum_type* into, const accum_type* other) \
+	{ \
+		const val_type last_M = into->M; \
+		const long int new_count = into->count + other->count; \
+		into->M = last_M + other->count * (other->M - last_M) / new_count; \
+		val_type into_S = into->S; \
+		into_S += into->count * (last_M - into->M) * (last_M - into->M); \
+		val_type other_S = other->S; \
+		other_S += other->count * (other->M - into->M) * (other->M - into->M); \
+		into->S = into_S + other_S; \
+		into->count = new_count; \
+	}
 
 #ifdef __cplusplus
 }
@@ -222,6 +265,30 @@ CSNIP_MEANVAR_DECL_FUNCS(, csnip_meanvarl_, csnip_meanvarl, long double)
 	    csnip_meanvar_var((csnip_meanvar*)(accumptr), (ddof)), \
 	  csnip_meanvarl: \
 	    csnip_meanvarl_var((csnip_meanvarl*)(accumptr), (ddof)))
+
+/**	Merge another accumulator into the current one.
+ *
+ * 	@param	into
+ * 		Pointer of destination accumulator.
+ *
+ * 	@param	other
+ * 		Pointer of source accumulator.
+ *
+ * 	*Requirements*: C11's _Generic or C++ templates. The
+ * 	corresponding typed functions csnip_meanvar_merge{f,,l} are not
+ * 	dependent on C11.
+ */
+#define csnip_meanvar_Merge(into, other) \
+	_Generic(*(into), \
+	  csnip_meanvarf: \
+	    csnip_meanvarf_merge((csnip_meanvarf*)into, \
+		    (const csnip_meanvarf*)other), \
+	  csnip_meanvar: \
+	    csnip_meanvar_merge((csnip_meanvar*)into, \
+		    (const csnip_meanvar*)other), \
+	  csnip_meanvarl: \
+	    csnip_meanvarl_merge((csnip_meanvarl*)into, \
+		    (const csnip_meanvarl*)other))
 
 #else /* __cplusplus */
 
@@ -304,9 +371,27 @@ CSNIP__DEF_VAR(dummy,f)
 CSNIP__DEF_VAR(dummy,)
 CSNIP__DEF_VAR(dummy,l)
 #undef CSNIP__DEF_VAR
-#undef CSNIP__SCALAR
 
 #define csnip_meanvar_Var(accum, ddof) csnip_meanvar__cxx_var(accum, ddof)
+
+template<typename T> \
+	void csnip_meanvar__cxx_merge(T*, const T*);
+
+#define CSNIP__DEF_MERGE(dummy,suffix) \
+	template<> void \
+		csnip_meanvar__cxx_merge(csnip_meanvar##suffix* into, \
+			const csnip_meanvar##suffix* other) \
+	{ \
+		csnip_meanvar##suffix##_merge(into, other); \
+	}
+CSNIP__DEF_MERGE(dummy,f)
+CSNIP__DEF_MERGE(dummy,)
+CSNIP__DEF_MERGE(dummy,l)
+#undef CSNIP__DEF_MERGE
+
+#define csnip_meanvar_Merge(into, other) csnip_meanvar__cxx_merge(into, other)
+
+#undef CSNIP__SCALAR
 
 #endif /* __cplusplus */
 
@@ -328,8 +413,12 @@ CSNIP__DEF_VAR(dummy,l)
 #define meanvarf_var		csnip_meanvarf_var
 #define meanvar_var		csnip_meanvar_var
 #define meanvarl_var		csnip_meanvarl_var
+#define meanvarf_merge		csnip_meanvarf_merge
+#define meanvar_merge		csnip_meanvar_merge
+#define meanvarl_merge		csnip_meanvarl_merge
 #define meanvar_Add		csnip_meanvar_Add
 #define meanvar_Mean		csnip_meanvar_Mean
 #define meanvar_Var		csnip_meanvar_Var
+#define meanvar_Merge		csnip_meanvar_Merge
 #define CSNIP_MEANVAR_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_MEANVAR_HAVE_SHORT_NAMES */
