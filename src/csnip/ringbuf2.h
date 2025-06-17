@@ -149,6 +149,10 @@ int csnip_ringbuf2_get_write_areas(const csnip_ringbuf2* rb,
 
 /**	Update ringbuffer after adding entries.
  *
+ *	This marks positions in the ring buffer as full.  In case that
+ *	the buffer was overflowed, the oldest entries in the buffer were
+ *	overwritten and they're silently discarded.
+ *
  *	@param	rb
  *		Ringbuffer
  *

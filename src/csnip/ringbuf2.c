@@ -96,7 +96,10 @@ int csnip_ringbuf2_get_write_areas(const ringbuf2* rb,
 bool ringbuf2_add_written(ringbuf2* rb, size_t n_written)
 {
 	rb->n_written += n_written;
-	return rb->n_written - rb->n_read <= rb->cap;
+	const bool overflow = rb->n_written - rb->n_read > rb->cap;
+	if (overflow)
+		rb->n_read = rb->n_written - rb->cap;
+	return !overflow;
 }
 
 size_t ringbuf2_get_read_idx(const ringbuf2* rb, size_t* ret_contig_read_max)
