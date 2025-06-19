@@ -1,6 +1,7 @@
 /* Tests for the Bsearch and Lsearch macros */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <inttypes.h>
 
@@ -25,8 +26,9 @@ static uint32_t reduce_to_bits(int n_bits, uint32_t v)
 	return v >> (32 - n_bits);
 }
 
-int main(int argc, char** argv)
+bool test1(void)
 {
+	printf("test1: Search pseudo-random lists with duplicates.\n");
 	uint64_t rstate = 1234;
 	const int Ns[] = { 0, 1, 2, 3, 10, 100, 1000 };
 	const int bs[] = { 0, 1, 2, 3, 4, 8, 16, 32 };
@@ -68,17 +70,17 @@ int main(int argc, char** argv)
 				if (idx < 0 || idx > N) {
 					fprintf(stderr, "Error:  Result out "
 					  "of range (N = %d): %d\n", N, idx);
-					return 1;
+					return false;
 				}
 				if (idx < N && red(a[idx]) < d) {
 					fprintf(stderr, "Error: V1 constraint "
 					  "not met.\n");
-					return 1;
+					return false;
 				}
 				if (idx > 0 && red(a[idx - 1]) >= d) {
 					fprintf(stderr, "Error: V1 minimality "
 					  "not satisfied.\n");
-					return 1;
+					return false;
 				}
 
 				/* Variants
@@ -90,17 +92,17 @@ int main(int argc, char** argv)
 				if (idx < 0 || idx > N) {
 					fprintf(stderr, "Error:  Result out "
 					  "of range (N = %d): %d\n", N, idx);
-					return 1;
+					return false;
 				}
 				if (idx < N && red(a[idx]) <= d) {
 					fprintf(stderr, "Error: V2 constraint "
 					  "not met.\n");
-					return 1;
+					return false;
 				}
 				if (idx > 0 && red(a[idx - 1]) > d) {
 					fprintf(stderr, "Error: V2 minimality "
 					  "not satisfied.\n");
-					return 1;
+					return false;
 				}
 #undef red
 
@@ -110,5 +112,31 @@ int main(int argc, char** argv)
 			printf("    All checks pass.\n");
 		}
 	}
-	return 0;
+	return true;
+}
+
+/* Test corner cases */
+bool test_corner(void)
+{
+	printf("test_corner:  Check corner case invariants.\n");
+
+	/* Searching an empty list always returns 0 */
+	int j = -999;
+	Bsearch(int, u, u < 10, 0, j);
+	if (j != 0) {
+		fprintf(stderr, "Error:  Searching an empty array must "
+				"return 0.\n");
+		return false;
+	}
+
+	return true;
+}
+
+int main(int argc, char** argv)
+{
+	if (!test1())
+		return EXIT_FAILURE;
+	if (!test_corner())
+		return EXIT_FAILURE;
+	return EXIT_SUCCESS;
 }
