@@ -72,7 +72,10 @@ void csnip_mem_aligned_free(void* mem);
  *
  *	@param	ptr
  *		The lvalue to assign to.  This must be a pointer type,
- *		and the per-object size allocated is sizeof(*ptr).
+ *		and the per-object size allocated is sizeof(*ptr).  If
+ *		the allocation fails, a NULL value will be written into
+ *		the, in addition to the error being returned or
+ *		processed according to the err argument.
  *
  *	@param	err
  *		Error return; accepts the special _ and error_ignore
