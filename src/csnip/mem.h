@@ -5,37 +5,65 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+#include <type_traits>
+#endif
+
 #include <csnip/err.h>
 
-/** @file mem.h
- *  @defgroup mem	Memory Managment
- *  @{
+/**	@file mem.h
+ *	@defgroup mem	Memory Managment
+ *	@{
  *
- *  Convenient and safe memory allocation macros.
+ *	Convenient and safe memory allocation macros.
  *
- *  These macros provide an improved interface to the malloc() / free()
- *  libc functions.  They can be intermixed with conventional malloc() /
- *  free() calls, e.g. memory allocated with csnip_mem_Alloc() can be
- *  freed with free(), etc.  Improvements over the conventional malloc
- *  interface include:
+ *	These macros provide an improved interface to the malloc() /
+ *	free() libc functions.
  *
- *     1. Automatic element size computation, the frequently used sizeof
- *        construct is builtin, including overflow checks.
- *     2. Works also in C++ without cast.
- *     3. Better error handling in particular for csnip_mem_Realloc().
+ *
+ *	The functions here can be intermixed with conventional malloc()
+ *	/ free() calls, e.g. memory allocated with csnip_mem_Alloc() can
+ *	be freed with free(), etc.  Improvements over the conventional
+ *	malloc interface include:
+ *
+ *	1. Automatic type generic element size computation:  For example,
+ *	   if the allocation is to an int*, then the element size is
+ *         automatically sizeof(int), not bytes as in malloc().
+ *	2. Better error handling.  Error returns are out-of-band with
+ *	   allocation returns, which in particular helps with reallocation,
+ *	   as a failure will not result in a lost pointer.
+ *	3. Numerous minor improvements, e.g. portable aligned allocation
+ *	   with simplified easier-to-use API contracts vs C11's
+ *	   aligned_alloc(), nulling of freed pointers in mem_Free to
+ *	   prevent accidental reuse, compatibility to C++ without the
+ *	   need to add extra casts.
+ *
+ *	A tradeoff to type-generic allocation and out-of-band error
+ *	signaling is that the allocated pointer is returned in a macro
+ *	argument.
  */
+
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/**	Allocate n items of given size.
+ *
+ *	Similar to malloc(n * size), except that overflow in the
+ *	multiplication is handled correctly.
+ */
+void* csnip_mem_alloc(size_t n, size_t size);
+
 /**	Allocate aligned memory.
  *
- *	The aligned allocator is similar to C11's aligned_alloc, but
- *	does not have the requirement that nSize be a multiple of
+ *	The aligned allocator allocating n * size bytes aligned to
+ *	nAlign.  It is similar to C11's aligned_alloc, but
+ *	does not have the requirement that n * nSize be a multiple of
  *	nAlign.
  */
-void* csnip_mem_aligned_alloc(size_t nAlign, size_t nSize, int* err);
+void* csnip_mem_aligned_alloc(size_t nAlign, size_t n, size_t size, int* err);
 
 /**	Free aligned memory.
  *
@@ -50,12 +78,16 @@ void csnip_mem_aligned_free(void* mem);
 }
 #endif
 
-#ifndef __cplusplus
-
-/* Memory macros, C version.
+/**	Allocate an array with n entries and assign ptr to it.
+ *
+ *	This is an expression version of mem_Alloc(), hence the -x
+ *	suffix.  It assigns the pointer and returns an error value, or 0
+ *	in the success case. Generally more convenient to use than
+ *	mem_Alloc.
  */
-
-#include <stdlib.h>
+#define csnip_mem_Allocx(n, ptr) \
+	(((ptr) = csnip_mem__cxxcast(ptr, csnip_mem_alloc((n), sizeof(*(ptr))))) \
+	 ? 0 : csnip_err_NOMEM)
 
 /**	Allocate a member or an array of members.
  *
@@ -83,16 +115,16 @@ void csnip_mem_aligned_free(void* mem);
  */
 #define csnip_mem_Alloc(nMember, ptr, err) \
 	do { \
-		if ((nMember) < 0 || \
-		    SIZE_MAX / sizeof(*(ptr)) < (nMember)) \
-		{ \
-			(ptr) = NULL; \
-			csnip_err_Raise(csnip_err_RANGE, err); \
-			break; \
-		} \
-		if (((ptr) = malloc(sizeof(*(ptr)) * (nMember))) == NULL) \
+		(ptr) = csnip_mem__cxxcast(ptr, \
+			csnip_mem_alloc((nMember), sizeof(*(ptr)))); \
+		if ((ptr) == NULL) \
 			csnip_err_Raise(csnip_err_NOMEM, err); \
 	} while(0)
+
+/**	Expression macro for zero-initialized allocation. */
+#define csnip_mem_Alloc0x(nMember, ptr) \
+	(((ptr) = csnip_mem__cxxcast(ptr, calloc(nMember, sizeof(*(ptr))))) \
+	 ? 0 : csnip_err_NOMEM)
 
 /**	Allocate and zero-initialize an array.
  *
@@ -101,14 +133,16 @@ void csnip_mem_aligned_free(void* mem);
  */
 #define csnip_mem_Alloc0(nMember, ptr, err) \
 	do { \
-		if ((nMember) < 0) { \
-			(ptr) = NULL; \
-			csnip_err_Raise(csnip_err_RANGE, err); \
-			break; \
-		} \
-		if (((ptr) = calloc((nMember), sizeof(*(ptr)))) == NULL) \
+		(ptr) = csnip_mem__cxxcast(ptr, \
+			calloc((nMember), sizeof(*(ptr)))); \
+		if ((ptr) == NULL) \
 			csnip_err_Raise(csnip_err_NOMEM, err); \
 	} while(0)
+
+#define csnip_mem_AlignedAllocx(nMember, nAlign, ptr) \
+	(((ptr) = csnip_mem__cxxcast(ptr, \
+		csnip_mem_aligned_alloc((nAlign), (nMember), sizeof(*(ptr))))) \
+	 	? 0 : csnip_err_NOMEM)
 
 /**	Aligned memory allocation.
  *
@@ -120,22 +154,16 @@ void csnip_mem_aligned_free(void* mem);
  *	to ensure this requirement is satisfied.
  */
 #define csnip_mem_AlignedAlloc(nMember, nAlign, ptr, err) \
-	csnip_mem__AlignedAlloc((nMember), (nAlign), (ptr), (err))
+	csnip_mem__AlignedAlloc((nMember), (nAlign), ptr, (err))
 
 /** @cond */
 #define csnip_mem__AlignedAlloc(nMember, nAlign, ptr, err) \
 	do { \
-		if (nAlign < 0 || nAlign > SIZE_MAX ||nMember < 0 || \
-		    SIZE_MAX / sizeof(*ptr) < nMember) \
-		{ \
-			ptr = NULL; \
-			csnip_err_Raise(csnip_err_RANGE, err); \
-			break; \
-		} \
 		int csnip__err; \
-		ptr = csnip_mem_aligned_alloc(nAlign, nMember * sizeof(*ptr), \
-			&csnip__err); \
-		if (ptr == NULL) \
+		(ptr) = csnip_mem__cxxcast(ptr, \
+			csnip_mem_aligned_alloc(nAlign, nMember, sizeof(*(ptr)), \
+			&csnip__err)); \
+		if ((ptr) == NULL) \
 			csnip_err_Raise(csnip__err, err); \
 	} while(0);
 /** @endcond */
@@ -162,16 +190,16 @@ void csnip_mem_aligned_free(void* mem);
 #define csnip_mem__Realloc(nMember, ptr, err,		p) \
 	do { \
 		if (nMember < 0 || \
-		    SIZE_MAX / sizeof(*ptr) < (size_t)nMember) { \
+		    SIZE_MAX / sizeof(*(ptr)) < (size_t)nMember) { \
 			csnip_err_Raise(csnip_err_RANGE, err); \
 			break; \
 		} \
-		void* p = realloc(ptr, sizeof(*ptr) * (size_t)nMember); \
+		void* p = realloc(ptr, sizeof(*(ptr)) * (size_t)nMember); \
 		if (p == NULL) { \
 			csnip_err_Raise(csnip_err_NOMEM, err); \
 			break; \
 		} \
-		ptr = p; \
+		(ptr) = csnip_mem__cxxcast(ptr, p); \
 	} while(0)
 /** @endcond */
 
@@ -215,129 +243,27 @@ void csnip_mem_aligned_free(void* mem);
 		(ptr) = NULL; \
 	} while (0)
 
-#else
-/** @cond
- *
- * Memory macros, C++ version.
- */
-
-#include <cstdlib>
-
-template<typename T>
-  inline T* csnip_mem_alloc_cxx(size_t nMemb, T* typeselect, int* err)
-{
-	(void)typeselect;
-	if (SIZE_MAX / sizeof(T) < nMemb) {
-		*err = csnip_err_RANGE;
-		return NULL;
-	}
-	return (T*)std::malloc(sizeof(T) * nMemb);
-}
-
-template<typename T>
-  inline T* csnip_mem_calloc_cxx(size_t nMemb, T* typeselect, int* err)
-{
-	(void)typeselect;
-	if (SIZE_MAX / sizeof(T) < nMemb) {
-		*err = csnip_err_RANGE;
-		return NULL;
-	}
-	return (T*)std::calloc(nMemb, sizeof(T));
-}
-
-template<typename T>
-  inline T* csnip_mem_aligned_alloc_cxx(size_t nMemb, size_t nAlign, T* typeselect, int* err)
-{
-	(void)typeselect;
-	if (SIZE_MAX / sizeof(T) < nMemb) {
-		*err = csnip_err_RANGE;
-		return NULL;
-	}
-	return (T*)csnip_mem_aligned_alloc(nAlign, nMemb * sizeof(T), err);
-}
-
-template<typename T>
-  inline void csnip_mem_realloc_cxx(size_t nMemb, T** orig, int* err)
-{
-	if (SIZE_MAX / sizeof(T) < nMemb) {
-		*err = csnip_err_RANGE;
-		return;
-	}
-	T* new_ptr = (T*)std::realloc(*orig, sizeof(T) * nMemb);
-	if (new_ptr) {
-		*orig = new_ptr;
-	} else {
-		*err = csnip_err_NOMEM;
-	}
-}
-
-#define csnip_mem_Alloc(nMember, ptr, err) \
-	do { \
-		int csnip__err = 0; \
-		(ptr) = NULL; \
-		(ptr) = csnip_mem_alloc_cxx((nMember), (ptr), &csnip__err); \
-		if ((ptr) == NULL) { \
-			csnip_err_Raise(csnip__err, err); \
-		} \
-	} while(0)
-
-#define csnip_mem_Alloc0(nMember, ptr, err) \
-	do { \
-		int csnip__err = 0; \
-		(ptr) = NULL; \
-		(ptr) = csnip_mem_calloc_cxx((nMember), (ptr), &csnip__err); \
-		if ((ptr) == NULL) { \
-			csnip_err_Raise(csnip__err, err); \
-		} \
-	} while(0)
-
-#define csnip_mem_AlignedAlloc(nMember, nAlign, ptr, err) \
-	do { \
-		int csnip__err = 0; \
-		(ptr) = NULL; \
-		(ptr) = csnip_mem_aligned_alloc_cxx((nMember), (nAlign), \
-		  (ptr), &csnip__err); \
-		if ((ptr) == NULL) { \
-			csnip_err_Raise(csnip__err, err); \
-		} \
-	} while(0)
-
-#define csnip_mem_Realloc(nMember, ptr, err) \
-	do { \
-		int csnip__err = 0; \
-		csnip_mem_realloc_cxx((nMember), &(ptr), &csnip__err);\
-		if (csnip__err) { \
-			csnip_err_Raise(csnip__err, err); \
-		} \
-	} while(0)
-
-
-#define csnip_mem_Free(ptr) \
-	do { \
-		std::free(ptr); \
-		(ptr) = NULL; \
-	} while(0)
-
-#define csnip_mem_AlignedFree(ptr) \
-	do { \
-		csnip_mem_aligned_free(ptr); \
-		(ptr) = NULL; \
-	} while (0)
-
-/** @endcond */
-
-#endif
-
 /** @} */
+
+#ifdef __cplusplus
+#define csnip_mem__cxxcast(p, v) \
+	static_cast<std::remove_reference<decltype(p)>::type>(v)
+#else
+#define csnip_mem__cxxcast(p, v)	v
+#endif
 
 #endif /* CSNIP_MEM_H */
 
 #if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_MEM_HAVE_SHORT_NAMES)
+#define mem_alloc		csnip_mem_alloc
 #define mem_aligned_alloc	csnip_mem_aligned_alloc
 #define mem_aligned_free	csnip_mem_aligned_free
 #define mem_Alloc		csnip_mem_Alloc
+#define mem_Allocx		csnip_mem_Allocx
 #define mem_Alloc0		csnip_mem_Alloc0
+#define mem_Alloc0x		csnip_mem_Alloc0x
 #define mem_AlignedAlloc	csnip_mem_AlignedAlloc
+#define mem_AlignedAllocx	csnip_mem_AlignedAllocx
 #define mem_Realloc		csnip_mem_Realloc
 #define mem_Free		csnip_mem_Free
 #define mem_AlignedFree		csnip_mem_AlignedFree

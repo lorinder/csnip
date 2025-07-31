@@ -11,26 +11,42 @@
 #include <csnip/err.h>
 #include <csnip/mem.h>
 
+void* csnip_mem_alloc(size_t n, size_t size)
+{
+	if (size != 0 && SIZE_MAX / size < n) {
+		/* Overflow */
+		return NULL;
+	}
+	return malloc(n * size);
+}
+
 /* For aligned allocation, we use posix_memalign() if possible, since
  * that function has the least restrictions, and best error reporting.
  * Failing that, we try aligned_alloc().  In the worst case, we fall
  * back to memalign().
  */
-
 #if defined(CSNIP_CONF__HAVE_POSIX_MEMALIGN) \
 	|| defined(CSNIP_CONF__HAVE_ALIGNED_ALLOC) \
 	|| defined(CSNIP_CONF__HAVE_MEMALIGN)
 
-void* csnip_mem_aligned_alloc(size_t nAlign, size_t nSize, int* err_ret)
+void* csnip_mem_aligned_alloc(size_t nAlign, size_t n, size_t size, int* err_ret)
 {
+	/* Compute the allocation size, taking care of possible overflow */
+	if (size != 0 && SIZE_MAX / size < n) {
+		if (err_ret)
+			*err_ret = csnip_err_RANGE;
+		return NULL;
+	}
+	size *= n;
+
 #if defined(CSNIP_CONF__HAVE_POSIX_MEMALIGN) \
 	|| !defined(CSNIP_CONF__HAVE_ALIGNED_ALLOC)
 	void* p_ret;
 #ifdef CSNIP_CONF__HAVE_POSIX_MEMALIGN
-	const int err = posix_memalign(&p_ret, nAlign, nSize);
+	const int err = posix_memalign(&p_ret, nAlign, size);
 #else
 	int err = 0;
-	p_ret = memalign(nAlign, nSize);
+	p_ret = memalign(nAlign, size);
 	if (p_ret == NULL)
 		err = errno;
 #endif
@@ -51,18 +67,18 @@ void* csnip_mem_aligned_alloc(size_t nAlign, size_t nSize, int* err_ret)
 	return p_ret;
 #else
 	/* use aligned_alloc() */
-	const size_t rem = nSize % nAlign;
+	const size_t rem = size % nAlign;
 	if (rem != 0) {
 		const size_t toadd = nAlign - rem;
 		/* Check for overflow */
-		if (SIZE_MAX - toadd < nSize) {
+		if (SIZE_MAX - toadd < size) {
 			if (err_ret)
 				*err_ret = csnip_err_RANGE;
 			return NULL;
 		}
-		nSize += toadd;
+		size += toadd;
 	}
-	void* p_ret = aligned_alloc(nAlign, nSize);
+	void* p_ret = aligned_alloc(nAlign, size);
 	if (p_ret == NULL && err_ret != 0) {
 		if (errno == ENOMEM) {
 			*err_ret = csnip_err_NOMEM;

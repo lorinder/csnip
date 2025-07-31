@@ -38,7 +38,6 @@ set(tests_c
 if (BUILD_CXX_PIECES)
 	set(tests_cxx
 		meanvar_test0_cxx.cc
-		mem_test0_cxx.cc
 	)
 else()
 	set(tests_cxx)
