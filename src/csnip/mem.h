@@ -81,8 +81,9 @@ void csnip_mem_aligned_free(void* mem);
 /**	Allocate an array with n entries and assign ptr to it.
  *
  *	This is an expression version of mem_Alloc(), hence the -x
- *	suffix.  It assigns the pointer and returns an error value, or 0
- *	in the success case. Generally more convenient to use than
+ *	suffix.  It assigns the pointer and returns 0 in the success
+ *	case.  In the error case, the pointer is set to NULL and an
+ *	error code is returned. Generally more convenient to use than
  *	mem_Alloc.
  */
 #define csnip_mem_Allocx(n, ptr) \
