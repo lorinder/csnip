@@ -52,6 +52,21 @@
 #  define csnip_cext_import
 #endif
 
+/**	More portable version of C23's [[nodiscard]].
+ *
+ *	For the common pre-C23 compilers, it uses a compiler-specific
+ *	alternative.
+ */
+#if __STDC_VERSION >= 202311L
+#  define csnip_cext_nodiscard		[[nodiscard]]
+#elif defined(__GNUC__) || defined(__clang__)
+#  define csnip_cext_nodiscard		__attribute__((warn_unused_result))
+#elif defined(_MSC_VER)
+#  define csnip_cext_nodiscard		_Check_return_
+#else
+#  define csnip_cext_nodiscard		/* nothing */
+#endif
+
 /**@}*/
 
 #endif /* CSNIP_CEXT_H */
@@ -60,5 +75,6 @@
 #define cext_unused		csnip_cext_unused
 #define cext_export		csnip_cext_export
 #define cext_import		csnip_cext_import
+#define cext_nodiscard		csnip_cext_nodiscard
 #define CSNIP_CEXT_HAVE_SHORT_NAMES
 #endif /* CSNIP_SHORT_NAMES && !CSNIP_CEXT_HAVE_SHORT_NAMES */
