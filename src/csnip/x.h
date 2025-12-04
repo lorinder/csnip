@@ -101,8 +101,14 @@ typedef struct {
 	csnip_x_cookie_close_function_t* close;
 } csnip_x_cookie_io_functions_t;
 
-FILE* csnip_x_fopencookie(void* __restrict__ cookie,
-			const char* __restrict__ mode,
+#if defined(_WIN32) && defined(__cplusplus)
+#define RESTRICT_CPP 
+#else
+#define RESTRICT_CPP __restrict__
+#endif
+
+FILE* csnip_x_fopencookie(void* RESTRICT_CPP cookie_arg,
+			const char* RESTRICT_CPP mode,
 			csnip_x_cookie_io_functions_t funcs);
 #endif
 
@@ -275,7 +281,7 @@ csnip_x_ssize_t csnip_x_writev_imp(int fd,
 #define csnip_x_clock_gettime clock_gettime
 #if !defined(CSNIP_CONF__HAVE_CLOCK_GETTIME)
 #undef csnip_x_clock_gettime
-#define csnip_x_clock_gettime csnip_x_clock_gettime_imp
+#define csnip_x_clock_gettime x_csnip_clock_gettime_imp
 #endif
 
 /**	Csnip's  CLOCK_* constants.
@@ -292,6 +298,13 @@ csnip_x_ssize_t csnip_x_writev_imp(int fd,
 #else
 #  define CSNIP_X_CLOCK_REALTIME		1
 #  define CSNIP_X_CLOCK_MAYBE_MONOTONIC		1
+#endif
+
+
+#if defined(_WIN32) && !defined(clockid_t)
+typedef int clockid_t;
+#define CLOCK_REALTIME 0
+#define CLOCK_MONOTONIC 1
 #endif
 
 /**	clock_id_t */
@@ -320,6 +333,8 @@ int x_csnip_clock_gettime_imp(csnip_x_clockid_t clk_id,
 #endif
 
 #endif /* CSNIP_X_H */
+
+
 
 #if defined(CSNIP_SHORT_NAMES) && !defined(CSNIP_X_HAVE_SHORT_NAMES)
 

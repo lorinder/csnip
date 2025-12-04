@@ -34,7 +34,7 @@ typedef struct {
 	size_t file_offs;
 } my_cookie_t;
 
-ssize_t my_read_func(void* cookie_, char* buf, size_t size)
+csnip_x_ssize_t my_read_func(void* cookie_, char* buf, size_t size)
 {
 	my_cookie_t* cookie = (my_cookie_t*)cookie_;
 
@@ -49,7 +49,7 @@ ssize_t my_read_func(void* cookie_, char* buf, size_t size)
 	return s;
 }
 
-ssize_t my_write_func(void* cookie_, const char* buf, size_t size)
+csnip_x_ssize_t my_write_func(void* cookie_, const char* buf, size_t size)
 {
 	my_cookie_t* cookie = cookie_;
 

@@ -8,8 +8,8 @@
 #include <csnip/x.h>
 
 #if defined(CSNIP_CONF__HAVE_FOPENCOOKIE)
-FILE* x_fopencookie(void* restrict cookie,
-			const char* restrict mode,
+FILE* x_fopencookie(void* RESTRICT_CPP cookie,
+			const char* RESTRICT_CPP mode,
 			x_cookie_io_functions_t io_funcs)
 {
 	cookie_io_functions_t io_funcs2 = {
@@ -73,8 +73,8 @@ static int fun_close(void* cw_)
 }
 
 
-FILE* x_fopencookie(void* restrict cookie,
-			const char* restrict mode,
+FILE* x_fopencookie(void* RESTRICT_CPP cookie,
+			const char* RESTRICT_CPP mode,
 			x_cookie_io_functions_t io_funcs)
 {
 	/* Create the cookie wrapper */
@@ -103,8 +103,8 @@ FILE* x_fopencookie(void* restrict cookie,
 
 #include <stdio.h>
 
-FILE* x_fopencookie(void* restrict cookie,
-			const char* restrict mode,
+FILE* x_fopencookie(void* RESTRICT_CPP cookie,
+			const char* RESTRICT_CPP mode,
 			x_cookie_io_functions_t io_funcs)
 {
 	/* fopencookie is not supported on Windows.

@@ -284,7 +284,7 @@ typedef enum {
 static const char* put_timestamp(char* buf, size_t bufSz, TsType tsType)
 {
 	struct timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
+	csnip_x_clock_gettime(CLOCK_REALTIME, &ts);
 	struct tm broken_down;
 	if (tsType == TS_LOCAL) {
 #ifdef WIN32
@@ -313,7 +313,7 @@ static const char* put_timestamp(char* buf, size_t bufSz, TsType tsType)
 static const char* put_timestampnum(char* buf, size_t bufSz, TsType tsType)
 {
 	struct timespec ts;
-	clock_gettime(tsType == TS_MONO ? CLOCK_MONOTONIC : CLOCK_REALTIME,
+	csnip_x_clock_gettime(tsType == TS_MONO ? CLOCK_MONOTONIC : CLOCK_REALTIME,
 		&ts);
 	double ts_sec;
 	time_Convert(ts, ts_sec);
@@ -361,7 +361,7 @@ static const char* value_for_key(const char* keyStart,
 	case 7:
 		if (strncmp(keyStart, "timesec", 7) == 0) {
 			struct timespec ts;
-			clock_gettime(CLOCK_MONOTONIC, &ts);
+			csnip_x_clock_gettime(CLOCK_MONOTONIC, &ts);
 			snprintf(buf, bufSz, "%.16g",
 			  ts.tv_sec + ts.tv_nsec/1e9);
 			return buf;
