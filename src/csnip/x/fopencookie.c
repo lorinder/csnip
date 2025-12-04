@@ -8,8 +8,8 @@
 #include <csnip/x.h>
 
 #if defined(CSNIP_CONF__HAVE_FOPENCOOKIE)
-FILE* x_fopencookie(void* restrict cookie,
-			const char* restrict mode,
+FILE* x_fopencookie(void* RESTRICT_CPP cookie,
+			const char* RESTRICT_CPP mode,
 			x_cookie_io_functions_t io_funcs)
 {
 	cookie_io_functions_t io_funcs2 = {
@@ -73,8 +73,8 @@ static int fun_close(void* cw_)
 }
 
 
-FILE* x_fopencookie(void* restrict cookie,
-			const char* restrict mode,
+FILE* x_fopencookie(void* RESTRICT_CPP cookie,
+			const char* RESTRICT_CPP mode,
 			x_cookie_io_functions_t io_funcs)
 {
 	/* Create the cookie wrapper */
@@ -96,4 +96,27 @@ FILE* x_fopencookie(void* restrict cookie,
 		fun_close);
 
 }
+
+#elif defined(_WIN32)
+
+/* Windows stub implementation - fopencookie is not available on Windows */
+
+#include <stdio.h>
+
+FILE* x_fopencookie(void* RESTRICT_CPP cookie,
+			const char* RESTRICT_CPP mode,
+			x_cookie_io_functions_t io_funcs)
+{
+	/* fopencookie is not supported on Windows.
+	 * This is a stub that prints a warning and returns NULL.
+	 */
+	(void)cookie;      /* Suppress unused parameter warnings */
+	(void)mode;
+	(void)io_funcs;
+	
+	fprintf(stderr, "WARNING: x_fopencookie() called but not supported on Windows\n");
+	errno = ENOSYS;    /* Function not implemented */
+	return NULL;
+}
+
 #endif

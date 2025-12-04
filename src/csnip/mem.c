@@ -115,11 +115,22 @@ void csnip_mem_aligned_free(void* mem)
  * / _aligned_free() pair of functions.
  */
 
-void* csnip_mem_aligned_alloc(size_t nAlign, size_t nSize, int* err_ret)
+void* csnip_mem_aligned_alloc(size_t nAlign, size_t n, size_t size, int* err_ret)
 {
+	size_t alloc_sz = compute_alloc_amount(n, size);
+	if (alloc_sz == 0) {
+		if (err_ret)
+			*err_ret = csnip_err_RANGE;
+		return NULL;
+	}
+	
 	if (err_ret)
 		*err_ret = 0;
-	return _aligned_malloc(nSize, nAlign);
+	void* p_ret = _aligned_malloc(alloc_sz, nAlign);
+	if (p_ret == NULL && err_ret) {
+		*err_ret = csnip_err_NOMEM;
+	}
+	return p_ret;
 }
 
 void csnip_mem_aligned_free(void* mem)

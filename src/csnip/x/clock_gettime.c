@@ -3,6 +3,10 @@
 #include <csnip/csnip_conf.h>
 #include <csnip/x.h>
 
+#if defined(_WIN32)
+#include<errno.h>
+#endif
+
 #ifdef CSNIP_CONF__HAVE_CLOCK_GETTIME
 int x_csnip_clock_gettime_imp(csnip_x_clockid_t clk_id,
 			struct csnip_x_timespec* ts)
@@ -20,7 +24,7 @@ int x_csnip_clock_gettime_imp(csnip_x_clockid_t clk_id,
 
 		/* Didn't succeed;  we don't really know why not... */
 		errno = EINVAL;
-		return -1
+		return -1;
 	}
 
 	/* Wrong clk_id */
