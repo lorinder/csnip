@@ -17,7 +17,7 @@ typedef struct {
 	Ent *head, *tail;
 } EntList;
 
-CSNIP_DLIST_DECL_FUNCS(static cext_unused, EntList_, Ent*, args(EntList*))
+CSNIP_DLIST_DECL_FUNCS(cext_unused static, EntList_, Ent*, args(EntList*))
 CSNIP_DLIST_DEF_FUNCS(static, EntList_, Ent*, args(EntList* list),
 	list->head, list->tail, ptr_prev, ptr_next);
 

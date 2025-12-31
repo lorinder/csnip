@@ -28,7 +28,7 @@ CSNIP_LPHASH_TABLE_DEF_TYPE(int2str_map_s,	// tbltype
 			int2str_entry)		// entry type
 typedef struct int2str_map_s int2str_map;
 
-CSNIP_LPHASH_TABLE_DEF_FUNCS(static cext_unused, // scope
+CSNIP_LPHASH_TABLE_DEF_FUNCS(cext_unused static, // scope
 			int2str_,		// prefix
 			int,			// keytype
 			int2str_entry,		// entrytype

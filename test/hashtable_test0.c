@@ -53,12 +53,12 @@ static uint32_t u32hash( uint32_t a)
 
 CSNIP_LPHASH_TABLE_DEF_TYPE(u32set,	// struct table type
 			uint32_t)	// entry type
-CSNIP_LPHASH_TABLE_DECL_FUNCS(static,	// scope,
+CSNIP_LPHASH_TABLE_DECL_FUNCS(csnip_cext_unused static,	// scope,
 			u32set_,	// prefix
 			uint32_t,	// key type
 			uint32_t,	// entry type
 			struct u32set)	// table type
-CSNIP_LPHASH_TABLE_DEF_FUNCS(static csnip_cext_unused, // scope
+CSNIP_LPHASH_TABLE_DEF_FUNCS(static, 	// scope
 			u32set_,	// prefix
 			uint32_t,	// key type
 			uint32_t,	// entry type
@@ -307,7 +307,7 @@ done:
 CSNIP_LPHASH_TABLE_DEF_TYPE(cstrset, const char*)
 CSNIP_LPHASH_TABLE_DECL_FUNCS(static, cstrset_,
 				const char*, const char*, struct cstrset)
-CSNIP_LPHASH_TABLE_DEF_FUNCS(static csnip_cext_unused, cstrset_,
+CSNIP_LPHASH_TABLE_DEF_FUNCS(csnip_cext_unused static, cstrset_,
 				const char*, const char*, struct cstrset,
 				k1, k2, e,
 				csnip_hash_fnv32_s(k1, CSNIP_FNV32_INIT),

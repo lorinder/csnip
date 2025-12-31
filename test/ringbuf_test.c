@@ -69,11 +69,11 @@ typedef struct {
 	int head, len;
 } myRbType;
 
-CSNIP_RINGBUF_DECL_IDX_FUNCS(static cext_unused, RB_, int, args(myRbType*, int*))
-CSNIP_RINGBUF_DEF_IDX_FUNCS(static, RB_, int ,args(myRbType* rb, int* err),
+CSNIP_RINGBUF_DECL_IDX_FUNCS(static, RB_, int, args(myRbType*, int*))
+CSNIP_RINGBUF_DEF_IDX_FUNCS(cext_unused static, RB_, int ,args(myRbType* rb, int* err),
 	rb->head, rb->len, Static_len(rb->elem), *err)
-CSNIP_RINGBUF_DECL_VAL_FUNCS(static cext_unused, RB_, int, args(myRbType*, int*))
-CSNIP_RINGBUF_DEF_VAL_FUNCS(static, RB_, int, args(myRbType* rb, int* err),
+CSNIP_RINGBUF_DECL_VAL_FUNCS(static, RB_, int, args(myRbType*, int*))
+CSNIP_RINGBUF_DEF_VAL_FUNCS(cext_unused static, RB_, int, args(myRbType* rb, int* err),
 	rb->head, rb->len, Static_len(rb->elem), rb->elem, *err)
 
 int main(int argc, char** argv)

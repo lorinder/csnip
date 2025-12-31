@@ -97,7 +97,7 @@ typedef struct {
 
 static csnip_log_processor* proc = NULL;
 
-CSNIP_LPHASH_TABLE_DEF_FUNCS(static cext_unused,	/* scope */
+CSNIP_LPHASH_TABLE_DEF_FUNCS(cext_unused static,	/* scope */
 			ptbl_,				/* prefix */
 			const char*,			/* key type */
 			comp_prio,			/* entrytype */

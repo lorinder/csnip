@@ -14,11 +14,11 @@ typedef struct {
 CSNIP_MEMPOOL_DEF_TYPE(MyPool_s, My)
 typedef struct MyPool_s MyPool;
 
-CSNIP_MEMPOOL_DECL_FUNCS(static csnip_cext_unused,
+CSNIP_MEMPOOL_DECL_FUNCS(csnip_cext_unused static,
 		MyPool_,
 		My,
 		MyPool)
-CSNIP_MEMPOOL_DEF_FUNCS(static csnip_cext_unused,
+CSNIP_MEMPOOL_DEF_FUNCS(csnip_cext_unused static,
 		MyPool_,
 		My,
 		MyPool)

@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #define CSNIP_SHORT_NAMES
 #include <csnip/cext.h>
@@ -29,7 +28,7 @@ static int* make_rand_arr(int n, int rlim, uint32_t* pseed)
 /* Heap methods */
 
 CSNIP_HEAP_DEF_FUNCS(
-	static cext_unused,			// scope
+	cext_unused static,			// scope
 	IntHeap_,				// prefix
 	args(int* a, int n, int k),		// args
 	u, v,					// dummy vars
