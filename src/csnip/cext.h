@@ -57,7 +57,7 @@
  *	For the common pre-C23 compilers, it uses a compiler-specific
  *	alternative.
  */
-#if __STDC_VERSION >= 202311L
+#if __STDC_VERSION__ >= 202311L
 #  define csnip_cext_nodiscard		[[nodiscard]]
 #elif defined(__GNUC__) || defined(__clang__)
 #  define csnip_cext_nodiscard		__attribute__((warn_unused_result))
